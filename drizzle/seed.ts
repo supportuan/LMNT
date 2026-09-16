@@ -502,8 +502,14 @@ async function seed() {
     .returning();
 
   const seedPassword = process.env.SEED_PASSWORD || "password123";
-  if (process.env.NODE_ENV === "production" && seedPassword === "password123") {
-    throw new Error("Set SEED_PASSWORD to a unique value when seeding outside local development.");
+  if (
+    process.env.NODE_ENV === "production" &&
+    seedPassword === "password123" &&
+    process.env.ALLOW_DEMO_SEED !== "true"
+  ) {
+    throw new Error(
+      "Set SEED_PASSWORD to a unique value, or set ALLOW_DEMO_SEED=true for a one-time bootstrap.",
+    );
   }
 
   const passwordHash = await hashPassword(seedPassword);

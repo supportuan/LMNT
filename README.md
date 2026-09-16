@@ -140,4 +140,10 @@ git pull origin main
 npm run deploy
 ```
 
-Do not run `db:seed` in production.
+One-time production bootstrap (then create real users in the app):
+
+```bash
+ALLOW_DEMO_SEED=true SEED_PASSWORD=password123 npm run db:seed
+```
+
+Login: `admin@lmnt.local` / `password123` at `/login?portal=admin`. Change passwords after first sign-in.
