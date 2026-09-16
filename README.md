@@ -98,10 +98,10 @@ Use `t3.small` or larger in `ap-south-1` (same region as RDS). `t3.micro` will t
 sudo fallocate -l 2G /swapfile && sudo chmod 600 /swapfile && sudo mkswap /swapfile && sudo swapon /swapfile
 ```
 
-Build with live npm output so it does not look frozen:
+Build with live npm output so it does not look frozen (`--progress` must come before `build`):
 
 ```bash
-docker compose -f docker-compose.prod.yml build --progress=plain
+docker compose --progress=plain -f docker-compose.prod.yml build
 docker compose -f docker-compose.prod.yml up -d
 ```
 
@@ -121,3 +121,17 @@ docker compose -f docker-compose.prod.yml up -d --build
 ```
 
 That runs migrations against RDS, then serves the app on port 80. Do not run `db:seed` in production. Put HTTPS (Caddy, nginx, or an ALB) in front when you have a domain.
+
+If migrate fails, check the log and `.env`:
+
+```bash
+docker compose -f docker-compose.prod.yml logs migrate
+cat .env   # must include RDS_HOST, POSTGRES_PASSWORD, SESSION_SECRET, APP_URL
+```
+
+RDS security group must allow port **5432** from this EC2 instance. Re-run after fixing:
+
+```bash
+docker compose -f docker-compose.prod.yml run --rm migrate
+docker compose -f docker-compose.prod.yml up -d
+```

@@ -22,7 +22,9 @@ FROM deps AS migrate
 COPY drizzle.config.ts ./
 COPY drizzle ./drizzle
 COPY src/db ./src/db
-CMD ["npx", "drizzle-kit", "migrate"]
+COPY scripts/migrate-prod.sh ./scripts/migrate-prod.sh
+RUN chmod +x ./scripts/migrate-prod.sh
+CMD ["./scripts/migrate-prod.sh"]
 
 FROM node:22-alpine AS runner
 WORKDIR /app
