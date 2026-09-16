@@ -1,8 +1,12 @@
 import { config } from "dotenv";
 import { defineConfig } from "drizzle-kit";
+import path from "path";
+import { fileURLToPath } from "url";
 
-config({ path: ".env" });
-config({ path: ".env.local", override: true });
+const rootDir = path.dirname(fileURLToPath(import.meta.url));
+
+config({ path: path.join(rootDir, ".env") });
+config({ path: path.join(rootDir, ".env.local"), override: true });
 
 function isRdsHost(host: string) {
   return host.includes("rds.amazonaws.com");

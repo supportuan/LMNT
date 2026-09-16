@@ -23,6 +23,7 @@
     "db:deploy": "drizzle-kit migrate",
     "db:check-rds": "node scripts/check-rds.mjs",
     "db:migrate:prod": "sh scripts/migrate-prod.sh",
+    "db:migrate:run": "node scripts/run-migrate.mjs",
     "deploy": "bash scripts/deploy.sh"
   },
   "dependencies": {
