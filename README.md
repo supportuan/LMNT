@@ -87,15 +87,7 @@ Fresh production databases should use `npm run db:migrate` instead of `db:push`.
 Use `t3.small` or larger in `ap-south-1` (same region as RDS). On Ubuntu EC2:
 
 1. Security groups: EC2 inbound **22** and **80/443**. RDS inbound **5432** from the EC2 security group.
-2. Install Node 22 and PM2:
-
-```bash
-curl -fsSL https://deb.nodesource.com/setup_22.x | sudo -E bash -
-sudo apt install -y nodejs
-sudo npm install -g pm2
-```
-
-3. Copy `.env` to the server (never commit it). From your Mac:
+2. Copy `.env` to the server (never commit it). From your Mac:
 
 ```bash
 scp .env ubuntu@YOUR_EC2_IP:~/LMNT/.env
@@ -103,20 +95,16 @@ scp .env ubuntu@YOUR_EC2_IP:~/LMNT/.env
 
 `APP_URL` must match the public URL (`https://testing.lmnt.fit`).
 
-4. Deploy (requires Node 20+ — Ubuntu 22.04 often ships Node 12, which will fail):
+3. Deploy (`scripts/deploy.sh` auto-installs Node 22 via nvm if the system Node is old):
 
 ```bash
-node -v   # must be v20+
 cd ~/LMNT
 git pull origin main
-chmod +x scripts/deploy.sh
-npm run deploy
+bash scripts/deploy.sh
 pm2 startup   # run the command it prints once
 ```
 
-If `node -v` is below 20, install Node 22 first (step 2), log out/in, then run deploy again.
-
-5. Put nginx or Caddy in front of port **3000** for HTTPS on your domain.
+4. Put nginx or Caddy in front of port **3000** for HTTPS on your domain.
 
 Redeploy after code changes:
 
