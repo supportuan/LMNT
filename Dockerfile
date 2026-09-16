@@ -22,7 +22,7 @@ FROM deps AS migrate
 COPY drizzle.config.ts ./
 COPY drizzle ./drizzle
 COPY src/db ./src/db
-COPY scripts/migrate-prod.sh ./scripts/migrate-prod.sh
+COPY scripts/migrate-prod.sh scripts/check-rds.mjs ./scripts/
 RUN chmod +x ./scripts/migrate-prod.sh
 CMD ["./scripts/migrate-prod.sh"]
 

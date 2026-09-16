@@ -122,16 +122,24 @@ docker compose -f docker-compose.prod.yml up -d --build
 
 That runs migrations against RDS, then serves the app on port 80. Do not run `db:seed` in production. Put HTTPS (Caddy, nginx, or an ALB) in front when you have a domain.
 
-If migrate fails, check the log and `.env`:
+If migrate fails, rebuild the migrate image (stale images skip the RDS preflight):
 
 ```bash
-docker compose -f docker-compose.prod.yml logs migrate
-cat .env   # must include RDS_HOST, POSTGRES_PASSWORD, SESSION_SECRET, APP_URL
+docker compose -f docker-compose.prod.yml build migrate
+docker compose -f docker-compose.prod.yml run --rm migrate 2>&1 | tee migrate.log
 ```
 
-RDS security group must allow port **5432** from this EC2 instance. Re-run after fixing:
+Test RDS from EC2 (should print `?column?` / `1`):
+
+```bash
+docker run --rm -e PGPASSWORD=YOUR_PASSWORD postgres:16-alpine \
+  psql "postgresql://postgres:YOUR_PASSWORD@YOUR_RDS_HOST:5432/postgres?sslmode=require" \
+  -c "select 1"
+```
+
+If that times out (~30s), fix the **RDS security group**: inbound **5432** from the **EC2 security group** (same VPC). Then:
 
 ```bash
 docker compose -f docker-compose.prod.yml run --rm migrate
-docker compose -f docker-compose.prod.yml up -d
+docker compose -f docker-compose.prod.yml up -d --remove-orphans
 ```
