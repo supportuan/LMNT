@@ -1,23 +1,24 @@
 FROM node:22-alpine AS deps
 WORKDIR /app
+ENV NODE_OPTIONS=--dns-result-order=ipv4first
+ENV NPM_CONFIG_UPDATE_NOTIFIER=false
+ENV NPM_CONFIG_FUND=false
+ENV NPM_CONFIG_AUDIT=false
 COPY package.json package-lock.json ./
-RUN npm ci
+RUN --mount=type=cache,target=/root/.npm \
+    npm ci --no-audit --no-fund
 
-FROM node:22-alpine AS builder
-WORKDIR /app
-COPY --from=deps /app/node_modules ./node_modules
+FROM deps AS builder
 COPY . .
 ENV NEXT_TELEMETRY_DISABLED=1
 ENV NODE_ENV=production
+ENV NODE_OPTIONS="--dns-result-order=ipv4first --max-old-space-size=768"
 # next build imports the DB module; compose injects the real URL at runtime
 ENV DATABASE_URL=postgresql://build:build@127.0.0.1:5432/build
 ENV SESSION_SECRET=build-placeholder-not-used-at-runtime-xxxx
 RUN mkdir -p public && npm run build
 
-FROM node:22-alpine AS migrate
-WORKDIR /app
-COPY package.json package-lock.json ./
-RUN npm ci
+FROM deps AS migrate
 COPY drizzle.config.ts ./
 COPY drizzle ./drizzle
 COPY src/db ./src/db

@@ -92,7 +92,18 @@ Fresh production databases should use `npm run db:migrate` instead of `db:push`.
 
 ## Production (EC2 + Docker)
 
-Use `t3.small` or larger in `ap-south-1` (same region as RDS). `t3.micro` will OOM during `next build`.
+Use `t3.small` or larger in `ap-south-1` (same region as RDS). `t3.micro` will thrash during `npm ci` / `next build`. If the instance has 1GB RAM, add 2G swap first:
+
+```bash
+sudo fallocate -l 2G /swapfile && sudo chmod 600 /swapfile && sudo mkswap /swapfile && sudo swapon /swapfile
+```
+
+Build with live npm output so it does not look frozen:
+
+```bash
+docker compose -f docker-compose.prod.yml build --progress=plain
+docker compose -f docker-compose.prod.yml up -d
+```
 
 1. Security groups: EC2 inbound 22 and 80. RDS inbound 5432 from the EC2 security group only.
 2. On Ubuntu EC2, install Docker, clone the repo, create `.env` (never commit it):
