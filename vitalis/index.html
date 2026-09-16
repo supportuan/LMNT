@@ -1,0 +1,1277 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Vitalis — Daily Activity Overview</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --bg: #f0f8fc;
+      --surface: #ffffff;
+      --ink: #000000;
+      --ink-2: #3f4045;
+      --muted: #6b6c72;
+      --muted-2: #8c8c91;
+      --icon: #7f848c;
+      --hair: #e6eef4;
+      --chip: #eef6fc;
+      --blue: #3ea2e8;
+      --blue-deep: #0179da;
+      --blue-soft: #5db0e9;
+      --droplet: #055897;
+      --lime: #d2e659;
+      --lime-crown: #d7f17c;
+      --olive: #929e08;
+      --olive-nav: #94a103;
+      --track: #f3f3f3;
+      --wave: #7ec3dd;
+      --wave-soft: #dcecf3;
+      --shadow: 0 0.25rem 1.5rem rgba(21, 71, 110, 0.045);
+      --gap: 1.125rem;
+      --pad-l: 1.5rem;
+      --pad-r: 1.0625rem;
+      --pad-b: 0.8125rem;
+      --cpad-y: 2.125rem;
+      --cpad-x: 1.9375rem;
+      --glass: 2.1875rem;
+      --rail: 6.875rem;
+      --r-lg: 2.375rem;
+      --r-md: 2.25rem;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    html {
+      font-size: clamp(7px, min(100vw / 90.5, 100dvh / 67.875), 23px);
+    }
+
+    body {
+      font-family: "Inter", "Segoe UI", system-ui, -apple-system, sans-serif;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+      background: var(--bg);
+      color: var(--ink);
+      overflow: hidden;
+      height: 100dvh;
+    }
+
+    button { font: inherit; cursor: pointer; border: none; background: none; color: inherit; }
+    img { display: block; max-width: 100%; }
+    a { color: inherit; text-decoration: none; }
+
+    :focus-visible {
+      outline: 2px solid #0f7fd0;
+      outline-offset: 2px;
+    }
+
+    .hero :focus-visible,
+    .hydration :focus-visible {
+      outline-color: #fff;
+    }
+
+    .app {
+      display: flex;
+      width: 100%;
+      height: 100dvh;
+      border: 1px solid rgba(174, 183, 189, 0.7);
+      border-radius: 2.5rem;
+      background: var(--bg);
+      overflow: hidden;
+    }
+
+    /* —— Rail —— */
+    .rail {
+      width: var(--rail);
+      min-width: var(--rail);
+      background: var(--surface);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding-bottom: 1.25rem;
+      z-index: 20;
+    }
+
+    .logo {
+      width: 2.8125rem;
+      height: 2.8125rem;
+      margin-top: 2.3125rem;
+      flex-shrink: 0;
+    }
+
+    .nav {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 0.875rem;
+      margin-top: 2rem;
+      flex: 1;
+    }
+
+    .nav-b {
+      width: 3.25rem;
+      height: 3.25rem;
+      border-radius: 50%;
+      display: grid;
+      place-items: center;
+      color: var(--icon);
+      transition: background 0.2s, color 0.2s, box-shadow 0.2s;
+    }
+
+    .nav-b svg { width: 1.375rem; height: 1.375rem; }
+
+    .nav-b.is-active {
+      background: var(--olive-nav);
+      color: #fff;
+      box-shadow: 0 0.375rem 0.875rem rgba(148, 161, 3, 0.32);
+    }
+
+    .nav-rule {
+      width: 2.1875rem;
+      height: 1px;
+      background: #e3e8ec;
+      margin: 0.25rem 0;
+    }
+
+    .rail-foot {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 0.75rem;
+      margin-top: auto;
+    }
+
+    .rail-foot .nav-b { color: var(--icon); }
+
+    .profile-ring {
+      width: 3.375rem;
+      height: 3.375rem;
+      border-radius: 50%;
+      border: 2px solid var(--olive-nav);
+      padding: 2px;
+      overflow: hidden;
+    }
+
+    .profile-ring img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      border-radius: 50%;
+    }
+
+    .nav-b--menu { display: none; }
+
+    .rail [data-more] { display: flex; }
+    .nav-b--foot { display: none; }
+
+    /* —— Shell —— */
+    .shell {
+      flex: 1;
+      min-width: 0;
+      display: grid;
+      grid-template-rows: 121fr 469fr 447fr;
+      gap: var(--gap);
+      padding: 0 var(--pad-r) var(--pad-b) var(--pad-l);
+    }
+
+    /* —— Top bar —— */
+    .topbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1rem;
+      min-height: 0;
+    }
+
+    .topbar-copy h1 {
+      font-size: 2.25rem;
+      font-weight: 700;
+      line-height: 1.15;
+      letter-spacing: -0.021em;
+    }
+
+    .topbar-copy p {
+      font-size: 0.96875rem;
+      font-weight: 400;
+      color: var(--muted);
+      margin-top: 0.25rem;
+    }
+
+    .topbar-actions {
+      display: flex;
+      align-items: center;
+      gap: 0.875rem;
+      flex-shrink: 0;
+    }
+
+    .search {
+      display: flex;
+      align-items: center;
+      width: 19.9375rem;
+      height: 4.125rem;
+      background: var(--surface);
+      border: 1px solid var(--hair);
+      border-radius: 2.0625rem;
+      padding: 0 1.375rem;
+    }
+
+    .search input {
+      width: 100%;
+      border: none;
+      outline: none;
+      font-size: 1.125rem;
+      font-family: inherit;
+      background: transparent;
+      color: var(--ink);
+    }
+
+    .search input::placeholder { color: var(--muted-2); }
+
+    .upgrade {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      height: 4.125rem;
+      padding: 0 1.375rem;
+      background: var(--ink);
+      border-radius: 2.0625rem;
+      color: var(--lime-crown);
+      font-size: 1.1875rem;
+      font-weight: 600;
+      white-space: nowrap;
+    }
+
+    .upgrade svg { width: 1.375rem; height: 1.375rem; flex-shrink: 0; }
+
+    .me-top {
+      display: none;
+      width: 2.75rem;
+      height: 2.75rem;
+      border-radius: 50%;
+      border: 2px solid var(--olive-nav);
+      overflow: hidden;
+      flex-shrink: 0;
+    }
+
+    .me-top img { width: 100%; height: 100%; object-fit: cover; }
+
+    /* —— Row grids —— */
+    .row-a {
+      display: grid;
+      grid-template-columns: 735fr 546fr;
+      gap: 1.0625rem;
+      min-height: 0;
+    }
+
+    .row-b {
+      display: grid;
+      grid-template-columns: 407fr 439fr 416fr;
+      gap: var(--gap);
+      min-height: 0;
+    }
+
+    .card {
+      background: var(--surface);
+      box-shadow: var(--shadow);
+      overflow: hidden;
+      min-height: 0;
+    }
+
+    .card--lg { border-radius: var(--r-lg); }
+    .card--md { border-radius: var(--r-md); }
+
+    /* —— Hero —— */
+    .hero {
+      position: relative;
+      background: #1599e5;
+    }
+
+    .hero-photo {
+      position: absolute;
+      inset: 0;
+      background-image: url("https://images.higgs.ai/?default=1&output=webp&url=https%3A%2F%2Fd8j0ntlcm91z4.cloudfront.net%2Fuser_38xzZboKViGWJOttwIXH07lWA1P%2Fhf_20260730_081846_b55b106b-17b3-4020-8473-cacf0dcc852f.png&w=1920&q=85");
+      background-size: 118.08% auto;
+      background-position: 42.16% 16.47%;
+      background-repeat: no-repeat;
+    }
+
+    .hero h2 {
+      position: absolute;
+      left: 2.5625rem;
+      top: 2.0625rem;
+      font-size: 3.25rem;
+      font-weight: 600;
+      line-height: 3.875rem;
+      letter-spacing: -0.032em;
+      color: #fff;
+      max-width: 10.95em;
+      text-shadow: 0 0.125rem 0.75rem rgba(1, 121, 218, 0.35);
+      z-index: 2;
+    }
+
+    .hero-play {
+      position: absolute;
+      left: 51.4%;
+      top: 48.1%;
+      transform: translate(-50%, -50%);
+      width: 3.75rem;
+      height: 3.75rem;
+      border-radius: 50%;
+      background: rgba(255, 255, 255, 0.28);
+      border: 2px solid rgba(255, 255, 255, 0.55);
+      backdrop-filter: blur(6px);
+      display: grid;
+      place-items: center;
+      z-index: 2;
+    }
+
+    .hero-play svg { width: 1.125rem; height: 1.125rem; margin-left: 0.2rem; }
+
+    .hero-explore {
+      position: absolute;
+      left: 51.7%;
+      top: 58.8%;
+      transform: translateX(-50%);
+      font-size: 1.4375rem;
+      font-weight: 500;
+      color: #fff;
+      z-index: 2;
+    }
+
+    .hero-join {
+      position: absolute;
+      left: 2.5625rem;
+      bottom: 2rem;
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      z-index: 2;
+    }
+
+    .hero-join-label {
+      font-size: 0.9375rem;
+      font-weight: 500;
+      color: rgba(255, 255, 255, 0.92);
+    }
+
+    .avatar-stack {
+      display: flex;
+      align-items: center;
+    }
+
+    .avatar-stack img {
+      width: 3.375rem;
+      height: 3.375rem;
+      border-radius: 50%;
+      border: 2px solid #fff;
+      object-fit: cover;
+      margin-left: -0.875rem;
+    }
+
+    .avatar-stack img:first-child { margin-left: 0; }
+
+    .hero-members {
+      color: #fff;
+      line-height: 1.2;
+    }
+
+    .hero-members strong {
+      display: block;
+      font-size: 1.375rem;
+      font-weight: 700;
+    }
+
+    .hero-members span {
+      font-size: 0.875rem;
+      font-weight: 400;
+      opacity: 0.9;
+    }
+
+    .hero-cta {
+      position: absolute;
+      right: 2rem;
+      bottom: 2rem;
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      height: 4.375rem;
+      padding: 0 0.375rem 0 1.75rem;
+      background: var(--ink);
+      border-radius: 2.1875rem;
+      color: #fff;
+      font-size: 1.125rem;
+      font-weight: 600;
+      z-index: 2;
+    }
+
+    .hero-cta-icon {
+      width: 3.25rem;
+      height: 3.25rem;
+      border-radius: 50%;
+      background: #fff;
+      color: var(--ink);
+      display: grid;
+      place-items: center;
+      flex-shrink: 0;
+    }
+
+    .hero-cta-icon svg { width: 1.125rem; height: 1.125rem; }
+
+    /* —— Hydration —— */
+    .hydration {
+      background: linear-gradient(145deg, #3199e5 0%, #3ea2e8 46%, #43a6ea 100%);
+      color: #fff;
+      padding: var(--cpad-y) var(--cpad-x);
+      display: grid;
+      grid-template-columns: 1fr auto;
+      grid-template-rows: auto 1fr auto;
+      gap: 1rem;
+      position: relative;
+    }
+
+    .hydration-head h3 {
+      font-size: 1.25rem;
+      font-weight: 600;
+      grid-column: 1;
+    }
+
+    .hydration-head p {
+      font-size: 0.9375rem;
+      font-weight: 400;
+      line-height: 1.55;
+      opacity: 0.95;
+      margin-top: 0.5rem;
+      max-width: 16em;
+    }
+
+    .well-done {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      margin-top: 1rem;
+      padding: 0.625rem 1.125rem;
+      background: var(--lime);
+      color: #16180c;
+      border-radius: 2rem;
+      font-size: 0.9375rem;
+      font-weight: 600;
+    }
+
+    .well-done svg { width: 1.125rem; height: 1.125rem; }
+
+    .hydration-amount {
+      grid-column: 2;
+      grid-row: 1 / span 2;
+      text-align: right;
+      align-self: start;
+    }
+
+    .hydration-amount .big {
+      font-size: 5.625rem;
+      font-weight: 300;
+      line-height: 1;
+      letter-spacing: -0.02em;
+    }
+
+    .hydration-amount .unit {
+      font-size: 2.125rem;
+      font-weight: 400;
+      opacity: 0.95;
+    }
+
+    .cups {
+      grid-column: 1 / -1;
+      display: grid;
+      grid-template-columns: repeat(6, 1fr);
+      gap: 0.5rem 0.375rem;
+      max-width: 22rem;
+    }
+
+    .cup-btn {
+      display: flex;
+      justify-content: center;
+      padding: 0;
+    }
+
+    .cup-btn svg { width: 2.1875rem; height: auto; }
+
+    .range-toggles {
+      grid-column: 2;
+      display: flex;
+      gap: 0.5rem;
+      justify-content: flex-end;
+      align-self: end;
+    }
+
+    .range-btn {
+      width: 3.875rem;
+      height: 3.875rem;
+      border-radius: 50%;
+      font-size: 1rem;
+      font-weight: 600;
+      color: #fff;
+      background: rgba(255, 255, 255, 0.22);
+      transition: background 0.2s, color 0.2s;
+    }
+
+    .range-btn[aria-pressed="true"] {
+      background: #fff;
+      color: var(--ink);
+    }
+
+    /* —— Sleep —— */
+    .sleep {
+      padding: var(--cpad-y) var(--cpad-x);
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+    }
+
+    .sleep-top {
+      display: flex;
+      align-items: flex-start;
+      gap: 0.75rem;
+    }
+
+    .sleep-avatars img {
+      width: 2.4375rem;
+      height: 2.4375rem;
+      border-radius: 50%;
+      border: 2px solid #fff;
+      object-fit: cover;
+      margin-left: -0.625rem;
+      box-shadow: var(--shadow);
+    }
+
+    .sleep-avatars img:first-child { margin-left: 0; }
+
+    .sleep h3 {
+      font-size: 1.6875rem;
+      font-weight: 500;
+      line-height: 2.1875rem;
+      letter-spacing: -0.01em;
+      flex: 1;
+    }
+
+    .sleep-tag {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.375rem;
+      padding: 0.375rem 0.875rem;
+      background: var(--ink);
+      color: #fff;
+      border-radius: 2rem;
+      font-size: 0.8125rem;
+      font-weight: 500;
+      white-space: nowrap;
+    }
+
+    .sleep-tag svg { width: 0.875rem; height: 0.875rem; }
+
+    .sleep p {
+      font-size: 0.9375rem;
+      line-height: 1.6;
+      color: var(--muted);
+    }
+
+    .sleep-foot {
+      margin-top: auto;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .sleep-pager-label {
+      font-size: 1.5rem;
+      font-weight: 600;
+    }
+
+    .sleep-pager-label span {
+      font-weight: 400;
+      color: var(--muted);
+    }
+
+    .pager-btns { display: flex; gap: 0.5rem; }
+
+    .pager-btn {
+      width: 2.5rem;
+      height: 2.5rem;
+      border-radius: 50%;
+      border: 1px solid var(--hair);
+      display: grid;
+      place-items: center;
+      color: var(--icon);
+    }
+
+    /* —— Calories —— */
+    .calories {
+      padding: var(--cpad-y) var(--cpad-x);
+      display: flex;
+      flex-direction: column;
+      gap: 0.875rem;
+    }
+
+    .cal-head {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+    }
+
+    .cal-title-row {
+      display: flex;
+      align-items: center;
+      gap: 0.625rem;
+    }
+
+    .chip-icon {
+      width: 2.5rem;
+      height: 2.5rem;
+      border-radius: 0.75rem;
+      background: var(--chip);
+      display: grid;
+      place-items: center;
+    }
+
+    .chip-icon svg { width: 1.25rem; height: 1.25rem; }
+
+    .cal-head h3 { font-size: 1.25rem; font-weight: 600; }
+
+    .cal-head .right-val {
+      font-size: 1.125rem;
+      font-weight: 600;
+      text-align: right;
+    }
+
+    .cal-head .right-val small {
+      font-weight: 400;
+      color: var(--muted);
+    }
+
+    .cal-sub {
+      font-size: 0.8125rem;
+      color: var(--muted);
+    }
+
+    .cal-big {
+      font-size: 3.75rem;
+      font-weight: 300;
+      line-height: 1;
+      letter-spacing: -0.02em;
+    }
+
+    .cal-big small {
+      font-size: 1.25rem;
+      font-weight: 400;
+      color: var(--muted);
+    }
+
+    .cal-scale {
+      display: flex;
+      justify-content: space-between;
+      font-size: 0.75rem;
+      color: var(--muted-2);
+    }
+
+    .bars {
+      display: flex;
+      align-items: flex-end;
+      gap: 0.3125rem;
+      height: 3.875rem;
+    }
+
+    .bar {
+      flex: 1;
+      max-width: 0.46875rem;
+      height: 100%;
+      border-radius: 999px;
+      background: var(--track);
+    }
+
+    .bar.on { background: var(--olive); }
+
+    .macros {
+      display: flex;
+      justify-content: space-between;
+      gap: 0.5rem;
+      margin-top: auto;
+      font-size: 0.8125rem;
+      font-weight: 500;
+      color: var(--ink-2);
+    }
+
+    /* —— Weight —— */
+    .weight {
+      padding: var(--cpad-y) var(--cpad-x);
+      display: flex;
+      flex-direction: column;
+      gap: 0.75rem;
+    }
+
+    .weight-head {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+    }
+
+    .weight-head h3 { font-size: 1.25rem; font-weight: 600; }
+
+    .weight-head .ht {
+      font-size: 1.125rem;
+      font-weight: 600;
+    }
+
+    .weight-head .ht small { font-weight: 400; color: var(--muted); }
+
+    .weight-sub {
+      font-size: 0.8125rem;
+      color: var(--muted);
+    }
+
+    .sparkline {
+      width: 100%;
+      height: auto;
+      flex: 1;
+      min-height: 4rem;
+    }
+
+    .weight-foot {
+      display: flex;
+      align-items: flex-end;
+      justify-content: space-between;
+      gap: 1rem;
+    }
+
+    .weight-num {
+      font-size: 7.4375rem;
+      font-weight: 300;
+      line-height: 0.9;
+      letter-spacing: -0.03em;
+    }
+
+    .weight-num small {
+      font-size: 2rem;
+      font-weight: 400;
+    }
+
+    .weight-msg {
+      text-align: right;
+      font-size: 0.9375rem;
+      color: var(--muted);
+      line-height: 1.45;
+    }
+
+    .weight-msg strong {
+      display: block;
+      color: var(--ink);
+      font-weight: 700;
+      font-size: 1.0625rem;
+    }
+
+    /* —— Tablet —— */
+    @media (min-width: 621px) and (max-width: 1180px), (max-aspect-ratio: 1/1) and (min-width: 621px) {
+      body { overflow: auto; height: auto; min-height: 100dvh; }
+      .app { height: auto; min-height: 100dvh; }
+
+      .shell {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        grid-template-rows: auto;
+        grid-template-areas:
+          "topbar topbar"
+          "hero hero"
+          "hydration sleep"
+          "calories weight";
+        overflow-y: auto;
+      }
+
+      .topbar { grid-area: topbar; }
+      .row-a, .row-b { display: contents; }
+      .hero { grid-area: hero; min-height: 18rem; }
+      .hydration { grid-area: hydration; }
+      .sleep { grid-area: sleep; }
+      .calories { grid-area: calories; }
+      .weight { grid-area: weight; }
+
+      .hero h2, .hero-play, .hero-explore, .hero-join, .hero-cta {
+        position: static;
+        transform: none;
+      }
+
+      .hero {
+        display: flex;
+        flex-direction: column;
+        padding: 0;
+        gap: 0;
+      }
+
+      .hero-photo { position: relative; min-height: 14rem; flex: 1; }
+
+      .hero h2 {
+        padding: 1.25rem 1.5rem 0;
+        color: var(--ink);
+        text-shadow: none;
+      }
+
+      .hero-play { margin: 1rem auto 0; }
+      .hero-explore { margin: 0.5rem auto 0; color: var(--blue-deep); text-align: center; }
+      .hero-join { padding: 1rem 1.5rem; }
+      .hero-join-label { color: var(--muted); }
+      .hero-cta { margin: 0 1.5rem 1.5rem; align-self: flex-start; position: static; }
+
+      .hydration {
+        grid-template-columns: 1fr;
+        grid-template-rows: auto auto auto;
+      }
+
+      .hydration-amount {
+        grid-column: 1;
+        grid-row: auto;
+        text-align: left;
+      }
+
+      .range-toggles {
+        grid-column: 1;
+        justify-content: flex-start;
+      }
+    }
+
+    /* —— Mobile —— */
+    @media (max-width: 620px) {
+      body { overflow: auto; height: auto; }
+      .app {
+        flex-direction: column;
+        border-radius: 0;
+        border: none;
+        min-height: 100dvh;
+        height: auto;
+        padding-bottom: calc(var(--glass) + 4.5rem);
+      }
+
+      .rail {
+        position: fixed;
+        left: 50%;
+        bottom: 0.75rem;
+        transform: translateX(-50%);
+        width: min(92vw, 22rem);
+        min-width: 0;
+        height: var(--glass);
+        flex-direction: row;
+        justify-content: space-around;
+        align-items: center;
+        padding: 0 0.75rem;
+        border-radius: 999px;
+        background: rgba(255, 255, 255, 0.82);
+        backdrop-filter: blur(20px);
+        -webkit-backdrop-filter: blur(20px);
+        box-shadow: var(--shadow);
+        border: 1px solid rgba(255, 255, 255, 0.6);
+      }
+
+      .rail [data-more] { display: none; }
+      .rail.is-open [data-more] { display: grid; }
+
+      .logo, .rail-foot, .nav-rule { display: none; }
+      .nav-b--foot { display: none; }
+      .rail.is-open .nav-b--foot { display: grid; }
+
+      .nav {
+        flex-direction: row;
+        margin: 0;
+        width: 100%;
+        justify-content: space-around;
+      }
+
+      .nav-b--menu { display: grid; }
+
+      .shell {
+        display: flex;
+        flex-direction: column;
+        gap: var(--gap);
+        padding: 0 1rem 1rem;
+      }
+
+      .topbar {
+        position: sticky;
+        top: 0;
+        z-index: 10;
+        background: rgba(240, 248, 252, 0.88);
+        backdrop-filter: blur(12px);
+        padding: 0.75rem 0;
+      }
+
+      .topbar-copy h1 { font-size: 1.5rem; }
+      .topbar-copy p { display: none; }
+      .search, .upgrade { display: none; }
+      .me-top { display: block; }
+
+      .row-a, .row-b {
+        display: flex;
+        flex-direction: column;
+        gap: var(--gap);
+      }
+
+      .hero {
+        display: flex;
+        flex-direction: column;
+        min-height: auto;
+      }
+
+      .hero-photo {
+        position: relative;
+        min-height: 14rem;
+        background-size: cover;
+        background-position: center;
+      }
+
+      .hero h2 {
+        position: static;
+        font-size: 2rem;
+        line-height: 1.2;
+        padding: 1.25rem 1.25rem 0;
+        text-shadow: none;
+        color: var(--ink);
+      }
+
+      .hero-play, .hero-explore {
+        position: static;
+        transform: none;
+        margin: 1rem auto 0;
+      }
+
+      .hero-explore { color: var(--blue-deep); margin-top: 0.5rem; }
+
+      .hero-join {
+        position: static;
+        padding: 1rem 1.25rem;
+      }
+
+      .hero-join-label { color: var(--muted); }
+
+      .hero-cta {
+        position: static;
+        width: calc(100% - 2.5rem);
+        margin: 0 1.25rem 1.25rem;
+        justify-content: space-between;
+      }
+
+      .cups {
+        max-width: none;
+        grid-template-columns: repeat(6, 1fr);
+      }
+
+      .cup-btn svg { width: 100%; max-width: 2.5rem; }
+    }
+
+    @media (max-width: 400px) {
+      .hero h2 { font-size: 2rem; }
+      .macros { flex-direction: column; gap: 0.25rem; font-size: 0.75rem; }
+      .sleep h3 { font-size: 1.375rem; line-height: 1.35; }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after {
+        animation: none !important;
+        transition: none !important;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="app">
+    <aside class="rail" id="rail" aria-label="Primary navigation">
+      <svg class="logo" viewBox="0 0 45 45" role="img" aria-label="Vitalis">
+        <g fill="#8f9f05">
+          <circle cx="9.4" cy="9.4" r="3.7"/><circle cx="18.8" cy="9.4" r="3.7"/>
+          <circle cx="28.2" cy="9.4" r="3.7"/><circle cx="37.6" cy="9.4" r="3.7"/>
+          <circle cx="9.4" cy="18.8" r="3.7"/><circle cx="18.8" cy="18.8" r="3.7"/>
+          <circle cx="28.2" cy="18.8" r="3.7"/><circle cx="37.6" cy="18.8" r="3.7"/>
+          <circle cx="9.4" cy="28.2" r="3.7"/><circle cx="18.8" cy="28.2" r="3.7"/>
+          <circle cx="28.2" cy="28.2" r="3.7"/><circle cx="37.6" cy="28.2" r="3.7"/>
+          <circle cx="9.4" cy="37.6" r="3.7"/><circle cx="18.8" cy="37.6" r="3.7"/>
+          <circle cx="28.2" cy="37.6" r="3.7"/><circle cx="37.6" cy="37.6" r="3.7"/>
+        </g>
+      </svg>
+
+      <nav class="nav">
+        <button type="button" class="nav-b is-active" aria-label="Home" aria-current="page">
+          <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 3 3 10.5V20a1 1 0 0 0 1 1h5v-6h6v6h5a1 1 0 0 0 1-1v-9.5L12 3z"/><circle cx="12" cy="11" r="1.5" fill="currentColor"/></svg>
+        </button>
+        <button type="button" class="nav-b" aria-label="Activity">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="4" y="4" width="16" height="16" rx="4"/><polyline points="7 15 10 11 13 14 17 8"/></svg>
+        </button>
+        <button type="button" class="nav-b" data-more aria-label="Messages">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 6h14a2 2 0 0 1 2 2v6a2 2 0 0 1-2 2H9l-4 3V8a2 2 0 0 1 2-2z"/><path d="M8 12h8" stroke-linecap="round"/></svg>
+        </button>
+        <div class="nav-rule" aria-hidden="true"></div>
+        <button type="button" class="nav-b" data-more aria-label="Notifications">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 3a5 5 0 0 1 5 5v3.5l1.5 2.5H5.5L7 11.5V8a5 5 0 0 1 5-5z"/><path d="M10 18a2 2 0 0 0 4 0"/></svg>
+        </button>
+        <button type="button" class="nav-b" data-more aria-label="Settings">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"/></svg>
+        </button>
+        <button type="button" class="nav-b nav-b--menu" data-menu aria-label="Open menu" aria-expanded="false">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 7h16M4 12h16M4 17h16" stroke-linecap="round"/></svg>
+        </button>
+        <button type="button" class="nav-b nav-b--foot" data-more aria-label="Sign out">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10 17l-5-5 5-5"/><path d="M5 12h10"/><path d="M14 5h5v14h-5"/></svg>
+        </button>
+        <button type="button" class="nav-b nav-b--foot" data-more aria-label="Help">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M9.5 9a2.5 2.5 0 1 1 4.2 1.8c-.8.7-1.7 1-1.7 2.7"/><circle cx="12" cy="17" r=".75" fill="currentColor"/></svg>
+        </button>
+      </nav>
+
+      <div class="rail-foot">
+        <button type="button" class="nav-b" aria-label="Sign out">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10 17l-5-5 5-5"/><path d="M5 12h10"/><path d="M14 5h5v14h-5"/></svg>
+        </button>
+        <button type="button" class="nav-b" aria-label="Help">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M9.5 9a2.5 2.5 0 1 1 4.2 1.8c-.8.7-1.7 1-1.7 2.7"/><circle cx="12" cy="17" r=".75" fill="currentColor"/></svg>
+        </button>
+        <div class="profile-ring">
+          <img src="https://images.unsplash.com/photo-1544005313-94ddf0286df2?auto=format&fit=facearea&facepad=2.4&w=160&h=160&q=70" alt="Andreas Voss" width="54" height="54" />
+        </div>
+      </div>
+    </aside>
+
+    <div class="shell">
+      <header class="topbar">
+        <div class="topbar-copy">
+          <h1>Hi, Andreas!</h1>
+          <p>Let's look at your daily activity overview.</p>
+        </div>
+        <div class="topbar-actions">
+          <label class="search">
+            <input type="search" placeholder="Search for healthy metrics" aria-label="Search for healthy metrics" />
+          </label>
+          <button type="button" class="upgrade">
+            <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+              <path d="M12 2l2.2 5.8L20 10l-5.8 2.2L12 18l-2.2-5.8L4 10l5.8-2.2L12 2z"/>
+              <path d="M6 14l1 2.5L9.5 17.5 7 19l-1-2.5L3.5 15 6 14z" opacity=".85"/>
+            </svg>
+            Upgrade
+          </button>
+          <div class="me-top">
+            <img src="https://images.unsplash.com/photo-1544005313-94ddf0286df2?auto=format&fit=facearea&facepad=2.4&w=160&h=160&q=70" alt="Andreas Voss" width="44" height="44" />
+          </div>
+        </div>
+      </header>
+
+      <section class="row-a">
+        <article class="card card--lg hero">
+          <div class="hero-photo" role="img" aria-label="Home workout hero"></div>
+          <h2>Your Home Workout Starts Here!</h2>
+          <button type="button" class="hero-play" aria-label="Play intro video">
+            <svg viewBox="0 0 24 24" fill="#fff"><path d="M8 5v14l11-7z"/></svg>
+          </button>
+          <p class="hero-explore">Explore Now</p>
+          <div class="hero-join">
+            <div>
+              <div class="hero-join-label">Join program with:</div>
+              <div class="avatar-stack" style="margin-top:0.5rem">
+                <img src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=facearea&facepad=2.6&w=140&h=140&q=70" alt="" width="54" height="54" />
+                <img src="https://images.unsplash.com/photo-1517841905240-472988babdf9?auto=format&fit=facearea&facepad=2.6&w=140&h=140&q=70" alt="" width="54" height="54" />
+                <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=facearea&facepad=2.6&w=140&h=140&q=70" alt="" width="54" height="54" />
+              </div>
+            </div>
+            <div class="hero-members">
+              <strong>5.8K+</strong>
+              <span>Members</span>
+            </div>
+          </div>
+          <button type="button" class="hero-cta">
+            Start Free Trial
+            <span class="hero-cta-icon" aria-hidden="true">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M13 6l6 6-6 6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            </span>
+          </button>
+        </article>
+
+        <article class="card card--lg hydration">
+          <div class="hydration-head">
+            <h3>Hydration Status</h3>
+            <p>Drive your goal water daily.<br />Build healthy habits and achieve your focus.</p>
+            <button type="button" class="well-done">
+              <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M7 10.5 10 14l7-8"/><path d="M12 21a9 9 0 1 0 0-18 9 9 0 0 0 0 18z" fill="none" stroke="currentColor" stroke-width="1.5"/></svg>
+              Well Done
+            </button>
+          </div>
+          <div class="hydration-amount">
+            <div class="big">2.15L</div>
+            <div class="unit">/Day</div>
+          </div>
+          <div class="cups" id="cups" role="group" aria-label="8 of 24 glasses logged"></div>
+          <div class="range-toggles" role="group" aria-label="Hydration range">
+            <button type="button" class="range-btn" data-range="D" aria-pressed="true">D</button>
+            <button type="button" class="range-btn" data-range="W" aria-pressed="false">W</button>
+            <button type="button" class="range-btn" data-range="M" aria-pressed="false">M</button>
+          </div>
+        </article>
+      </section>
+
+      <section class="row-b">
+        <article class="card card--md sleep">
+          <div class="sleep-top">
+            <div class="sleep-avatars">
+              <img src="https://images.unsplash.com/photo-1438761681033-6461ffad8d80?auto=format&fit=facearea&facepad=2.6&w=120&h=120&q=70" alt="" width="39" height="39" />
+              <img src="https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=facearea&facepad=2.6&w=120&h=120&q=70" alt="" width="39" height="39" />
+              <img src="https://images.unsplash.com/photo-1552374196-c4e7ffc6e126?auto=format&fit=facearea&facepad=2.6&w=120&h=120&q=70" alt="" width="39" height="39" />
+            </div>
+            <h3>Experience the Goodness of Deep Sleep</h3>
+            <span class="sleep-tag">
+              <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M21 14.5A8.5 8.5 0 1 1 9.5 3a6.5 6.5 0 1 0 11.5 11.5z"/></svg>
+              Deep sleep
+            </span>
+          </div>
+          <p>Discover tips and techniques for better, deeper sleep. Wake up refreshed and experience the true benefits of restful nights.</p>
+          <div class="sleep-foot">
+            <div class="sleep-pager-label"><strong>2</strong><span>/5</span></div>
+            <div class="pager-btns">
+              <button type="button" class="pager-btn" aria-label="Previous">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 6l-6 6 6 6" stroke-linecap="round"/></svg>
+              </button>
+              <button type="button" class="pager-btn" aria-label="Next">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 6l6 6-6 6" stroke-linecap="round"/></svg>
+              </button>
+            </div>
+          </div>
+        </article>
+
+        <article class="card card--md calories">
+          <div class="cal-head">
+            <div class="cal-title-row">
+              <span class="chip-icon" aria-hidden="true">
+                <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 22c3.5-1.5 6-4.5 6-8.5C18 8 15 4 12 2 9 4 6 8 6 13.5 6 17.5 8.5 20.5 12 22z"/></svg>
+              </span>
+              <h3>Calories</h3>
+            </div>
+            <div class="right-val">2.350<small>Kcal</small></div>
+          </div>
+          <div class="cal-sub">Lack of physical activity · Daily dose</div>
+          <div class="cal-big">2.040<small>/Kcal</small></div>
+          <div class="cal-scale"><span>0</span><span>2.350</span></div>
+          <div class="bars" id="bars" role="img" aria-label="Calorie intake chart"></div>
+          <div class="macros">
+            <span>269 Gram Carbohydrates</span>
+            <span>164 Gram Proteins</span>
+            <span>110 Gram Fats</span>
+          </div>
+        </article>
+
+        <article class="card card--md weight">
+          <div class="weight-head">
+            <div class="cal-title-row">
+              <span class="chip-icon" aria-hidden="true">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M8 8l4-4 4 4M8 16l4 4 4-4"/></svg>
+              </span>
+              <h3>Weight</h3>
+            </div>
+            <div class="ht">188<small>Cm</small></div>
+          </div>
+          <div class="weight-sub">Healthy weight is 68 Kg - 84 Kg · Tall body</div>
+          <svg class="sparkline" viewBox="0 0 351 116" aria-hidden="true">
+            <defs>
+              <linearGradient id="wg1" x1="0" y1="0" x2="351" y2="0">
+                <stop offset="0%" stop-color="#6ec0da" stop-opacity="0"/>
+                <stop offset="50%" stop-color="#6ec0da" stop-opacity="1"/>
+                <stop offset="100%" stop-color="#6ec0da" stop-opacity="0"/>
+              </linearGradient>
+              <linearGradient id="wg2" x1="0" y1="0" x2="351" y2="0">
+                <stop offset="0%" stop-color="#6ec0da" stop-opacity="0"/>
+                <stop offset="40%" stop-color="#6ec0da" stop-opacity=".55"/>
+                <stop offset="100%" stop-color="#6ec0da" stop-opacity="0"/>
+              </linearGradient>
+            </defs>
+            <path d="M0 88 C 40 82, 60 70, 81 14 S 120 95, 160 72 S 220 40, 260 58 S 310 78, 351 64" fill="none" stroke="url(#wg1)" stroke-width="11" stroke-linecap="round"/>
+            <path d="M0 98 C 35 92, 70 78, 110 68 S 170 82, 210 76 S 280 88, 351 80" fill="none" stroke="url(#wg2)" stroke-width="11" stroke-linecap="round" opacity=".65"/>
+            <circle cx="81" cy="14" r="7" fill="#83c5dd"/>
+          </svg>
+          <div class="weight-foot">
+            <div class="weight-num">82<small>kg</small></div>
+            <div class="weight-msg">
+              Of the weekly<br />plan completed<br /><strong>Keep it up!</strong>
+            </div>
+          </div>
+        </article>
+      </section>
+    </div>
+  </div>
+
+  <svg width="0" height="0" aria-hidden="true" focusable="false" style="position:absolute">
+    <symbol id="cup" viewBox="0 0 35 43">
+      <path d="M6 4h23c2 0 3.5 1.5 3.5 3.5v22c0 6-4.5 10.5-10.5 10.5h-9C7.5 40 3 35.5 3 29.5V7.5C3 5.5 4.5 4 6 4z" fill="var(--cup-fill, rgba(255,255,255,.94))"/>
+      <path d="M29 10h2.5c2 0 3.5 1.2 3.5 4v8c0 4-2 6.5-5 6.5H29" fill="none" stroke="var(--cup-fill, rgba(255,255,255,.94))" stroke-width="2"/>
+    </symbol>
+  </svg>
+
+  <script>
+    (function () {
+      var cupPattern = [
+        [1, 1, 1, 1, 1, 0],
+        [1, 0, 1, 0, 1, 0],
+        [0, 0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 0, 0],
+      ];
+
+      var cupsEl = document.getElementById("cups");
+      var filled = 0;
+      cupPattern.forEach(function (row) {
+        row.forEach(function (on) {
+          if (on) filled += 1;
+          var btn = document.createElement("button");
+          btn.type = "button";
+          btn.className = "cup-btn";
+          btn.style.setProperty("--cup-fill", on ? "#055897" : "rgba(255,255,255,.94)");
+          btn.innerHTML = '<svg aria-hidden="true"><use href="#cup"/></svg>';
+          cupsEl.appendChild(btn);
+        });
+      });
+      cupsEl.setAttribute("aria-label", filled + " of 24 glasses logged");
+
+      var barsEl = document.getElementById("bars");
+      for (var i = 0; i < 30; i++) {
+        var bar = document.createElement("div");
+        bar.className = "bar" + (i < 21 ? " on" : "");
+        barsEl.appendChild(bar);
+      }
+
+      document.querySelectorAll(".range-btn").forEach(function (btn) {
+        btn.addEventListener("click", function () {
+          document.querySelectorAll(".range-btn").forEach(function (b) {
+            b.setAttribute("aria-pressed", "false");
+          });
+          btn.setAttribute("aria-pressed", "true");
+        });
+      });
+
+      var rail = document.getElementById("rail");
+      var menuBtn = document.querySelector("[data-menu]");
+
+      if (menuBtn) {
+        menuBtn.addEventListener("click", function (e) {
+          e.stopPropagation();
+          var open = rail.classList.toggle("is-open");
+          menuBtn.setAttribute("aria-expanded", open ? "true" : "false");
+        });
+      }
+
+      document.addEventListener("click", function (e) {
+        if (!rail.classList.contains("is-open")) return;
+        if (!rail.contains(e.target)) {
+          rail.classList.remove("is-open");
+          if (menuBtn) menuBtn.setAttribute("aria-expanded", "false");
+        }
+      });
+
+      document.addEventListener("keydown", function (e) {
+        if (e.key === "Escape" && rail.classList.contains("is-open")) {
+          rail.classList.remove("is-open");
+          if (menuBtn) menuBtn.setAttribute("aria-expanded", "false");
+        }
+      });
+
+    })();
+  </script>
+</body>
+</html>

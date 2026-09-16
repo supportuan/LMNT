@@ -1,0 +1,321 @@
+.coachPro {
+  --blue: #00a6d6;
+  --black: #0b0d0e;
+  --graphite: #15191b;
+  --charcoal: #22272a;
+  --white: #f5f4f0;
+  --muted: #a7afb3;
+  --line: #2d3337;
+  min-height: 100vh;
+  background: var(--black);
+  color: var(--white);
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+}
+
+.coachPro .wrap {
+  max-width: 1180px;
+  margin: auto;
+  padding: 18px 16px 70px;
+}
+
+.coachPro header {
+  padding: 12px 0 18px;
+  border-bottom: 1px solid var(--line);
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 0.035em;
+}
+
+.coachPro header span {
+  color: var(--blue);
+}
+
+.coachPro h1 {
+  font-size: clamp(34px, 5vw, 62px);
+  line-height: 1.02;
+  margin: 28px 0 10px;
+  font-weight: 750;
+  letter-spacing: -0.035em;
+  color: var(--blue);
+}
+
+.coachPro .lede {
+  max-width: 900px;
+  line-height: 1.6;
+  color: var(--muted);
+}
+
+.coachPro .grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 18px;
+}
+
+.coachPro .card {
+  border: 1px solid var(--line);
+  border-radius: 18px;
+  padding: 18px;
+  background: var(--graphite);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.22);
+}
+
+.coachPro .card h2 {
+  font-size: 19px;
+  margin: 0 0 6px;
+  color: var(--blue);
+}
+
+.coachPro .sub {
+  font-size: 12px;
+  color: var(--muted);
+  line-height: 1.5;
+  margin-bottom: 14px;
+}
+
+.coachPro .fields {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+}
+
+.coachPro .wide {
+  grid-column: 1 / -1;
+}
+
+.coachPro .field {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.coachPro label {
+  font-size: 11px;
+  font-weight: 900;
+}
+
+.coachPro input,
+.coachPro select {
+  padding: 11px;
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  background: #101416;
+  font-size: 14px;
+  color: var(--white);
+  font: inherit;
+}
+
+.coachPro .bodyGrid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 8px;
+}
+
+.coachPro .bodyCard {
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  padding: 9px;
+  background: var(--graphite);
+  cursor: pointer;
+  text-align: center;
+}
+
+.coachPro .bodyCard.active {
+  border: 2px solid var(--blue);
+  box-shadow: 0 0 0 2px rgba(0, 166, 214, 0.14);
+}
+
+.coachPro .bodyCard svg {
+  width: 100%;
+  height: 110px;
+}
+
+.coachPro .bodyCard b {
+  font-size: 11px;
+  display: block;
+}
+
+.coachPro .bodyCard small {
+  font-size: 9px;
+  color: var(--muted);
+}
+
+.coachPro .check {
+  display: flex;
+  gap: 9px;
+  align-items: flex-start;
+  font-size: 11px;
+  line-height: 1.45;
+  margin: 10px 0;
+}
+
+.coachPro .check input {
+  width: auto;
+  margin-top: 2px;
+}
+
+.coachPro button {
+  border: 0;
+  border-radius: 11px;
+  padding: 11px 13px;
+  background: var(--blue);
+  color: var(--black);
+  font-weight: 900;
+  cursor: pointer;
+  font: inherit;
+}
+
+.coachPro button.secondary {
+  background: var(--charcoal);
+  color: var(--white);
+}
+
+.coachPro .build {
+  width: 100%;
+  font-size: 16px;
+  padding: 15px;
+  margin-top: 14px;
+}
+
+.coachPro .week {
+  border: 1px solid var(--line);
+  border-radius: 15px;
+  padding: 12px;
+  margin: 10px 0;
+}
+
+.coachPro .day {
+  background: var(--charcoal);
+  border-radius: 12px;
+  padding: 10px;
+  margin-top: 8px;
+}
+
+.coachPro .programTable {
+  width: 100%;
+  border-collapse: collapse;
+  background: var(--graphite);
+  border: 1px solid var(--line);
+  margin-top: 10px;
+  font-size: 11px;
+}
+
+.coachPro .programTable th {
+  background: var(--blue);
+  color: #071014;
+  font-size: 10px;
+  text-align: left;
+  padding: 9px;
+}
+
+.coachPro .programTable td {
+  border-top: 1px solid var(--line);
+  padding: 9px;
+  vertical-align: top;
+}
+
+.coachPro .logpanel {
+  margin-top: 10px;
+  background: #f7f7f5 !important;
+  color: #111416 !important;
+  border: 1px solid #d9d9d5 !important;
+  border-radius: 12px;
+  padding: 18px;
+}
+
+.coachPro .logpanel b,
+.coachPro .logpanel label,
+.coachPro .logpanel span {
+  color: #111416 !important;
+}
+
+.coachPro .logpanel input,
+.coachPro .logpanel select {
+  background: #fff !important;
+  color: #111416 !important;
+  border: 1px solid #cfcfca !important;
+  width: 100%;
+  padding: 8px;
+  font-size: 11px;
+  border-radius: 8px;
+}
+
+.coachPro .loggrid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 7px;
+  margin-top: 8px;
+}
+
+.coachPro .autoMetrics {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 8px;
+  margin: 10px 0;
+}
+
+.coachPro .autoMetric {
+  background: #e9f6fa;
+  border: 1px solid #c7e7f1;
+  border-radius: 10px;
+  padding: 9px;
+  font-size: 10px;
+  color: #111416 !important;
+}
+
+.coachPro .autoMetric b {
+  display: block;
+  font-size: 17px;
+  color: #111416 !important;
+}
+
+.coachPro .actions {
+  display: flex;
+  gap: 9px;
+  flex-wrap: wrap;
+  margin-top: 14px;
+}
+
+.coachPro .complete {
+  background: var(--blue) !important;
+  color: #071014 !important;
+}
+
+.coachPro .share {
+  background: #e9ecec !important;
+  color: #111416 !important;
+  border: 1px solid #cfd3d4 !important;
+}
+
+.coachPro .pathway {
+  display: flex;
+  gap: 9px;
+  flex-wrap: wrap;
+  margin: 8px 0 18px;
+  font-size: 10px;
+  font-weight: 900;
+  letter-spacing: 0.08em;
+}
+
+.coachPro .pathStep {
+  flex: 1;
+  min-width: 120px;
+  padding: 10px;
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  text-align: center;
+  color: var(--blue);
+}
+
+@media (max-width: 900px) {
+  .coachPro .grid,
+  .coachPro .fields {
+    grid-template-columns: 1fr;
+  }
+  .coachPro .bodyGrid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  .coachPro .loggrid,
+  .coachPro .autoMetrics {
+    grid-template-columns: 1fr 1fr;
+  }
+}

@@ -1,0 +1,338 @@
+.coachMirror {
+  --bg: #131313;
+  --card: #1c1b1b;
+  --ink: #e5e2e1;
+  --muted: #8e9379;
+  --sky: #00dbe9;
+  --sky2: rgba(0, 219, 233, 0.12);
+  --line: rgba(255, 255, 255, 0.1);
+  --char: #2a2a2a;
+  min-height: auto;
+  background: transparent;
+  font-family: Inter, system-ui, -apple-system, Segoe UI, Arial, sans-serif;
+  color: var(--ink);
+}
+
+.coachMirror .wrap {
+  max-width: none;
+  margin: 0;
+  padding: 0;
+}
+
+.coachMirror .hero,
+.coachMirror .card {
+  border-radius: 26px;
+  padding: 28px;
+  margin-bottom: 16px;
+}
+
+.coachMirror .hero {
+  background: var(--char);
+  color: #fff;
+  border: 1px solid var(--line);
+}
+
+.coachMirror .hero small {
+  color: var(--sky);
+  font-weight: 900;
+  letter-spacing: 0.14em;
+}
+
+.coachMirror .hero h1 {
+  font-size: clamp(40px, 6vw, 66px);
+  line-height: 1;
+  margin: 8px 0;
+}
+
+.coachMirror .card {
+  background: var(--card);
+  border: 1px solid var(--line);
+  box-shadow: none;
+}
+
+.coachMirror .row {
+  display: flex;
+  gap: 10px;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.coachMirror .grid2 {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+
+.coachMirror .grid4 {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 10px;
+}
+
+.coachMirror label {
+  display: block;
+  font-size: 13px;
+  font-weight: 850;
+  margin: 13px 0 6px;
+}
+
+.coachMirror input,
+.coachMirror select {
+  width: 100%;
+  padding: 12px 13px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: #2a2a2a;
+  color: var(--ink);
+  font: inherit;
+}
+
+.coachMirror .btn {
+  border: 0;
+  background: var(--sky);
+  color: #002022;
+  font-weight: 850;
+  padding: 13px 17px;
+  border-radius: 8px;
+  cursor: pointer;
+  font: inherit;
+}
+
+.coachMirror .btn.alt {
+  background: transparent;
+  color: var(--ink);
+  border: 1px solid var(--line);
+}
+
+.coachMirror .note {
+  font-size: 13px;
+  color: var(--muted);
+}
+
+.coachMirror .call {
+  padding: 17px;
+  border-radius: 17px;
+  background: var(--sky2);
+  margin: 12px 0;
+}
+
+.coachMirror .call.warn {
+  background: rgba(251, 191, 36, 0.12);
+  border: 1px solid rgba(251, 191, 36, 0.3);
+}
+
+.coachMirror .day {
+  display: flex;
+  gap: 7px;
+  flex-wrap: wrap;
+  margin: 15px 0;
+}
+
+.coachMirror .slot {
+  flex: 1;
+  min-width: 105px;
+  padding: 9px;
+  border-radius: 8px;
+  background: #2a2a2a;
+  text-align: center;
+  font-size: 12px;
+  border: 1px solid var(--line);
+}
+
+.coachMirror .slot.on {
+  background: var(--sky);
+  color: #002022;
+  font-weight: 800;
+  border-color: var(--sky);
+}
+
+.coachMirror .client {
+  background: #2a2a2a;
+  padding: 18px;
+  border-radius: 12px;
+  border: 1px solid var(--line);
+}
+
+.coachMirror .client h2 {
+  margin: 0 0 6px;
+}
+
+.coachMirror .tag {
+  display: inline-block;
+  background: #2a2a2a;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  padding: 6px 9px;
+  font-size: 12px;
+  margin: 3px;
+}
+
+.coachMirror .prompt {
+  font-size: 23px;
+  font-weight: 900;
+  margin: 22px 0 12px;
+}
+
+.coachMirror .choices {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 10px;
+}
+
+.coachMirror .choice {
+  border: 1px solid var(--line);
+  background: #2a2a2a;
+  text-align: left;
+  padding: 14px;
+  color: var(--ink);
+  min-height: 58px;
+  position: relative;
+  border-radius: 8px;
+  cursor: pointer;
+  font: inherit;
+}
+
+.coachMirror .choice.sel {
+  background: var(--sky2);
+  border: 2px solid var(--sky);
+}
+
+.coachMirror .num {
+  position: absolute;
+  right: 9px;
+  top: 9px;
+  width: 23px;
+  height: 23px;
+  border-radius: 50%;
+  background: var(--sky);
+  color: #002022;
+  display: grid;
+  place-items: center;
+  font-size: 12px;
+  font-weight: 900;
+}
+
+.coachMirror .big {
+  font-size: clamp(34px, 5vw, 54px);
+  font-weight: 950;
+  line-height: 1;
+}
+
+.coachMirror .spectrum {
+  height: 12px;
+  border-radius: 99px;
+  background: linear-gradient(90deg, #353534, var(--sky));
+  position: relative;
+  margin: 34px 0 17px;
+}
+
+.coachMirror .dot {
+  position: absolute;
+  width: 24px;
+  height: 24px;
+  background: #1c1b1b;
+  border: 6px solid var(--sky);
+  border-radius: 50%;
+  top: -6px;
+  transform: translateX(-50%);
+}
+
+.coachMirror .meter {
+  display: grid;
+  grid-template-columns: 170px 1fr;
+  gap: 10px;
+  align-items: center;
+  margin: 10px 0;
+}
+
+.coachMirror .bar {
+  height: 10px;
+  background: #2a2a2a;
+  border-radius: 99px;
+  overflow: hidden;
+}
+
+.coachMirror .bar i {
+  display: block;
+  height: 100%;
+  background: var(--sky);
+}
+
+.coachMirror .box {
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  padding: 16px;
+  background: #2a2a2a;
+}
+
+.coachMirror .box b {
+  display: block;
+  color: var(--sky);
+  margin-bottom: 6px;
+}
+
+.coachMirror .calc {
+  font-size: 34px;
+  font-weight: 950;
+  color: var(--sky);
+}
+
+.coachMirror .checklist {
+  display: grid;
+  gap: 8px;
+}
+
+.coachMirror .check {
+  display: flex;
+  gap: 10px;
+  align-items: flex-start;
+  padding: 11px 12px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: #2a2a2a;
+}
+
+.coachMirror .check span:first-child {
+  font-weight: 900;
+  color: var(--sky);
+}
+
+.coachMirror .step {
+  display: grid;
+  grid-template-columns: 56px 1fr;
+  gap: 12px;
+  align-items: start;
+  padding: 13px 0;
+  border-bottom: 1px solid var(--line);
+}
+
+.coachMirror .step:last-child {
+  border-bottom: 0;
+}
+
+.coachMirror .stepnum {
+  width: 42px;
+  height: 42px;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  background: var(--sky2);
+  color: var(--sky);
+  font-weight: 950;
+}
+
+.coachMirror footer {
+  text-align: center;
+  color: var(--muted);
+  font-size: 12px;
+  padding: 20px;
+}
+
+@media (max-width: 780px) {
+  .coachMirror .grid2,
+  .coachMirror .grid4,
+  .coachMirror .choices {
+    grid-template-columns: 1fr;
+  }
+}

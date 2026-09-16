@@ -1,0 +1,317 @@
+<!DOCTYPE html><html class="dark" lang="en" style=""><head>
+<meta charset="utf-8">
+<meta content="width=device-width, initial-scale=1.0" name="viewport">
+<title>Workout Builder - ProTrainer</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com" rel="preconnect">
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&amp;family=JetBrains+Mono:wght@500;700&amp;display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "on-tertiary": "#00363a",
+                        "inverse-on-surface": "#313030",
+                        "background": "#131313",
+                        "on-error-container": "#ffdad6",
+                        "primary-fixed": "#c3f400",
+                        "on-primary": "#283500",
+                        "tertiary-fixed-dim": "#00dbe9",
+                        "on-tertiary-fixed-variant": "#004f54",
+                        "surface-dim": "#131313",
+                        "on-secondary-fixed-variant": "#802a00",
+                        "surface": "#131313",
+                        "surface-bright": "#393939",
+                        "on-primary-fixed-variant": "#3c4d00",
+                        "outline-variant": "#444933",
+                        "surface-container-high": "#2a2a2a",
+                        "error": "#ffb4ab",
+                        "surface-container": "#201f1f",
+                        "primary-container": "#c3f400",
+                        "on-secondary-fixed": "#370e00",
+                        "tertiary": "#ffffff",
+                        "outline": "#8e9379",
+                        "on-tertiary-fixed": "#002022",
+                        "primary": "#ffffff",
+                        "surface-variant": "#353534",
+                        "secondary-container": "#ff5e07",
+                        "secondary": "#ffb59a",
+                        "error-container": "#93000a",
+                        "inverse-primary": "#506600",
+                        "on-secondary-container": "#531900",
+                        "secondary-fixed": "#ffdbce",
+                        "secondary-fixed-dim": "#ffb59a",
+                        "on-secondary": "#5a1b00",
+                        "surface-container-low": "#1c1b1b",
+                        "primary-fixed-dim": "#abd600",
+                        "on-primary-container": "#556d00",
+                        "tertiary-fixed": "#7df4ff",
+                        "on-surface": "#e5e2e1",
+                        "on-background": "#e5e2e1",
+                        "inverse-surface": "#e5e2e1",
+                        "on-tertiary-container": "#006f77",
+                        "surface-tint": "#abd600",
+                        "on-error": "#690005",
+                        "on-surface-variant": "#c4c9ac",
+                        "surface-container-lowest": "#0e0e0e",
+                        "tertiary-container": "#7df4ff",
+                        "surface-container-highest": "#353534",
+                        "on-primary-fixed": "#161e00"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.125rem",
+                        "lg": "0.25rem",
+                        "xl": "0.5rem",
+                        "full": "0.75rem"
+                    },
+                    "spacing": {
+                        "stack-sm": "8px",
+                        "stack-xs": "4px",
+                        "margin-mobile": "16px",
+                        "margin-desktop": "32px",
+                        "stack-xl": "40px",
+                        "stack-lg": "24px",
+                        "gutter": "16px",
+                        "stack-md": "16px",
+                        "base": "4px"
+                    },
+                    "fontFamily": {
+                        "label-sm": ["JetBrains Mono"],
+                        "headline-lg-mobile": ["Inter"],
+                        "body-md": ["Inter"],
+                        "data-lg": ["JetBrains Mono"],
+                        "headline-md": ["Inter"],
+                        "display-lg": ["Inter"],
+                        "headline-lg": ["Inter"],
+                        "body-lg": ["Inter"]
+                    },
+                    "fontSize": {
+                        "label-sm": ["12px", { "lineHeight": "16px", "fontWeight": "500" }],
+                        "headline-lg-mobile": ["24px", { "lineHeight": "32px", "fontWeight": "700" }],
+                        "body-md": ["16px", { "lineHeight": "24px", "fontWeight": "400" }],
+                        "data-lg": ["24px", { "lineHeight": "32px", "fontWeight": "700" }],
+                        "headline-md": ["20px", { "lineHeight": "28px", "fontWeight": "600" }],
+                        "display-lg": ["48px", { "lineHeight": "52px", "letterSpacing": "-0.04em", "fontWeight": "800" }],
+                        "headline-lg": ["32px", { "lineHeight": "40px", "letterSpacing": "-0.02em", "fontWeight": "700" }],
+                        "body-lg": ["18px", { "lineHeight": "28px", "fontWeight": "400" }]
+                    }
+                }
+            }
+        }
+    </script>
+<style>
+        .ghost-border { border: 1px solid rgba(255, 255, 255, 0.1); }
+        .drag-handle { cursor: grab; }
+        .drag-handle:active { cursor: grabbing; }
+        /* Custom scrollbar for dark athletic theme */
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: #131313; }
+        ::-webkit-scrollbar-thumb { background: #353534; border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: #444933; }
+    </style>
+</head>
+<body class="bg-background text-on-background font-body-md min-h-screen flex overflow-hidden">
+<!-- SideNavBar (Shared Component) -->
+<nav class="bg-surface-container h-screen w-64 fixed left-0 top-0 bg-surface-container-low border-r border-outline-variant flex flex-col h-full p-stack-md z-50 hidden md:flex">
+<div class="flex items-center gap-stack-sm mb-stack-xl">
+<div class="w-10 h-10 rounded-full bg-surface-variant overflow-hidden">
+<img alt="Trainer profile picture" class="w-full h-full object-cover" data-alt="Close-up portrait of a fitness trainer in a dark, moody gym environment. High contrast lighting highlighting muscular definition. Intense, focused expression. Shot on 35mm lens." src="https://lh3.googleusercontent.com/aida-public/AB6AXuCFayBfhbc6ldnw3jz1gn6xQUdcoP9kmCAlThSBSMs9GTvPRPYnJnTj9h8e5dbZQCrFHU5bO8dgISvY2yX4jVqyVF5KtxPiB-z2hIebLPtvyvTVyMD6lBdm9olTA2tfi1wDMj20w4qLABgk2gbLTywAfrZgPUMCMtAQq4LgNqYTmKkf-aY5reXbpsYKnK5Nl-quEyV1x3B0kukrLv9GrFJhuJkElsRh0mf-g04WABO7Pbf5ux8RWvNU">
+</div>
+<div>
+<h1 class="font-headline-lg text-headline-lg font-bold text-primary">LMNT</h1>
+<p class="font-label-sm text-label-sm text-on-surface-variant">Management Portal</p>
+</div>
+</div>
+<div class="flex flex-col gap-stack-sm flex-1">
+<a class="flex items-center gap-stack-md p-stack-sm text-on-surface-variant hover:text-primary hover:bg-surface-variant transition-colors scale-95 active:transition-transform rounded-lg" href="#">
+<span class="material-symbols-outlined" data-icon="dashboard">dashboard</span>
+<span class="">Dashboard</span>
+</a>
+<a class="flex items-center gap-stack-md p-stack-sm text-on-surface-variant hover:text-primary hover:bg-surface-variant transition-colors scale-95 active:transition-transform rounded-lg" href="#">
+<span class="material-symbols-outlined" data-icon="groups">groups</span>
+<span class="">Clients</span>
+</a>
+<a class="flex items-center gap-stack-md p-stack-sm text-primary-fixed bg-secondary-container rounded-lg font-bold scale-95 active:transition-transform" href="#">
+<span class="material-symbols-outlined" data-icon="fitness_center" style="font-variation-settings: 'FILL' 1;">fitness_center</span>
+<span class="">Workouts</span>
+</a>
+<a class="flex items-center gap-stack-md p-stack-sm text-on-surface-variant hover:text-primary hover:bg-surface-variant transition-colors scale-95 active:transition-transform rounded-lg" href="#">
+<span class="material-symbols-outlined" data-icon="calendar_today">calendar_today</span>
+<span class="">Schedule</span>
+</a>
+<a class="flex items-center gap-stack-md p-stack-sm text-on-surface-variant hover:text-primary hover:bg-surface-variant transition-colors scale-95 active:transition-transform rounded-lg" href="#">
+<span class="material-symbols-outlined" data-icon="payments">payments</span>
+<span class="">Payments</span>
+</a>
+</div>
+</nav>
+<!-- Main Content Wrapper -->
+<div class="flex-1 md:ml-64 flex flex-col h-screen">
+<!-- TopNavBar (Shared Component) -->
+<header class="bg-background fixed top-0 right-0 w-full md:w-[calc(100%-16rem)] h-16 border-b border-outline-variant z-40 flex items-center justify-between px-margin-mobile md:px-margin-desktop">
+<div class="flex items-center gap-stack-md w-full md:w-auto">
+<button class="md:hidden text-on-surface-variant p-2">
+<span class="material-symbols-outlined">menu</span>
+</button>
+<div class="flex-1 md:w-96 flex items-center bg-surface-container rounded-lg px-stack-sm h-10 focus-within:ring-2 focus-within:ring-primary transition-all">
+<span class="material-symbols-outlined text-on-surface-variant mr-stack-sm">search</span>
+<input class="bg-transparent border-none focus:ring-0 text-on-surface font-body-md w-full placeholder:text-on-surface-variant" placeholder="Search exercises, clients, routines..." type="text">
+</div>
+</div>
+<div class="hidden md:flex items-center gap-stack-md">
+<h2 class="font-headline-md text-headline-md font-extrabold text-on-surface mr-stack-lg">LMNT Portal</h2>
+<button class="text-on-surface-variant hover:text-primary transition-all">
+<span class="material-symbols-outlined" data-icon="notifications">notifications</span>
+</button>
+<div class="w-8 h-8 rounded-full overflow-hidden ghost-border">
+<img alt="Trainer avatar" class="w-full h-full object-cover" data-alt="Small avatar icon of a fitness trainer. Moody cinematic lighting. Solid dark background." src="https://lh3.googleusercontent.com/aida-public/AB6AXuAYzh7fuExVBo4IVJ97RZvkmvrN0TXm0HPdsVc9ktx6rc07XI5r2968S_zzoS19WwURkwhB1v8MsYDW0bHCbcxOPkj_mch07Ev3zzVaGcMxuDYrTQeSGQUjg9W2vIwkKtfj8o-VcDWvsv374NHdnycqaPEFXdNGlu2d5wWxYYK4iO9JvILg8ogCbdZKpPYrPsVkrPKr4BrrdYokjmNhqa0bSRHy9h47s7JViI8qxar7AfYnjlaX0Jux">
+</div>
+</div>
+</header>
+<!-- Builder Layout -->
+<main class="flex-1 mt-16 flex overflow-hidden">
+<!-- Left Sidebar: Exercise Library -->
+<aside class="w-80 bg-surface-container-low border-r border-outline-variant flex flex-col h-full">
+<div class="p-stack-md border-b border-outline-variant">
+<h3 class="font-headline-md text-headline-md text-on-surface mb-stack-sm">Exercise Library</h3>
+<!-- Filters -->
+<div class="flex gap-stack-sm overflow-x-auto pb-2 scrollbar-hide">
+<button class="px-3 py-1 rounded-full bg-primary-container text-on-primary-container font-label-sm text-label-sm whitespace-nowrap border border-primary-container">All</button>
+<button class="px-3 py-1 rounded-full bg-transparent text-on-surface-variant font-label-sm text-label-sm whitespace-nowrap ghost-border hover:border-primary-fixed hover:text-primary-fixed transition-colors">Chest</button>
+<button class="px-3 py-1 rounded-full bg-transparent text-on-surface-variant font-label-sm text-label-sm whitespace-nowrap ghost-border hover:border-primary-fixed hover:text-primary-fixed transition-colors">Back</button>
+<button class="px-3 py-1 rounded-full bg-transparent text-on-surface-variant font-label-sm text-label-sm whitespace-nowrap ghost-border hover:border-primary-fixed hover:text-primary-fixed transition-colors">Legs</button>
+</div>
+</div>
+<!-- Exercise List -->
+<div class="flex-1 overflow-y-auto p-stack-md space-y-stack-sm">
+<!-- Exercise Item 1 -->
+<div class="bg-surface-container rounded-lg p-stack-sm ghost-border hover:border-primary-fixed transition-colors cursor-pointer group flex items-center gap-stack-sm drag-handle">
+<div class="w-12 h-12 rounded bg-surface-variant overflow-hidden shrink-0">
+<img class="w-full h-full object-cover group-hover:opacity-80 transition-opacity" data-alt="High contrast, moody photo of a barbell bench press setup in a dark gym. Dramatic spot lighting. Industrial athletic aesthetic." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDRCr5CZLAQp-0AGZ1jtjPPHdJ5rmGJH6KlkYRMPMShBrs5cKd-_6rrVqlaUZ1wxs4-jFuw6GZ7l_oZAb0ViB58PhFdj6VR60uZ8NUBjkZOVDgYBUNeYxsVJQKVfKex0fnmyavVEcWAEp_1UX6wPITj58t2g9jT2dFH-mEM43M8vHRV-R1Wd1qwrvk3MM5TUddPMJGDkle7-D_VvLIz4O8fMxnybLNr0MsH3fAAra_ysWxd0v6_BJOC">
+</div>
+<div class="flex-1 min-w-0">
+<h4 class="text-on-surface font-body-md truncate group-hover:text-primary-fixed transition-colors">Barbell Bench Press</h4>
+<p class="text-on-surface-variant font-label-sm text-label-sm">Chest • Barbell</p>
+</div>
+<span class="material-symbols-outlined text-outline-variant group-hover:text-primary-fixed">drag_indicator</span>
+</div>
+<!-- Exercise Item 2 -->
+<div class="bg-surface-container rounded-lg p-stack-sm ghost-border hover:border-primary-fixed transition-colors cursor-pointer group flex items-center gap-stack-sm drag-handle">
+<div class="w-12 h-12 rounded bg-surface-variant overflow-hidden shrink-0">
+<img class="w-full h-full object-cover group-hover:opacity-80 transition-opacity" data-alt="Cinematic shot of a pull-up bar in a dark, high-end gym facility. Neon green ambient light accent. Sharp focus." src="https://lh3.googleusercontent.com/aida-public/AB6AXuAi0a3ByrfEANw42lUgn9EmMRlBZ-lgN1lSLhgnlVwgccCFg-vLL5JjXKamiL8M26Qhc5k3YTvjr_CYvMyPsNZNz7qTUpemDknA84cNQSJfxTC2YGBvsoVI8ytESOb2n5yYwkQBJa5lFLg8DZMiTAk1r-UtA9IQnb7y-Dxmq2UiRrcZNX4i6WNek6JTJcAeR4LXCHuoBcRHpRfDEDahXlBvEwddhfAgL7cfrfrV2VB-cW_Al1ARVAe4">
+</div>
+<div class="flex-1 min-w-0">
+<h4 class="text-on-surface font-body-md truncate group-hover:text-primary-fixed transition-colors">Weighted Pull-up</h4>
+<p class="text-on-surface-variant font-label-sm text-label-sm">Back • Bodyweight</p>
+</div>
+<span class="material-symbols-outlined text-outline-variant group-hover:text-primary-fixed">drag_indicator</span>
+</div>
+</div>
+</aside>
+<!-- Main Area: Routine Builder -->
+<section class="flex-1 bg-background flex flex-col h-full overflow-hidden">
+<!-- Builder Header -->
+<div class="p-margin-desktop pb-stack-lg border-b border-outline-variant flex justify-between items-end">
+<div>
+<input class="bg-transparent border-b-2 border-transparent hover:border-surface-variant focus:border-primary-fixed focus:ring-0 text-headline-lg font-headline-lg text-on-surface w-full max-w-xl transition-colors px-0 py-1 mb-stack-xs" type="text" value="Hypertrophy Phase 1: Upper">
+<p class="text-on-surface-variant font-body-md flex items-center gap-2">
+<span class="material-symbols-outlined text-sm">schedule</span> Est. 65 min
+                            <span class="text-surface-variant">|</span>
+<span class="material-symbols-outlined text-sm">local_fire_department</span> High Intensity
+                        </p>
+</div>
+<div class="flex gap-stack-sm">
+<button class="px-6 py-3 rounded-lg border-2 border-primary-fixed text-primary-fixed font-bold hover:bg-primary-fixed hover:text-black transition-colors">Save Draft</button>
+<button class="px-6 py-3 rounded-lg bg-primary-fixed text-black font-bold hover:bg-primary-fixed-dim transition-colors">Assign to Client</button>
+</div>
+</div>
+<!-- Canvas -->
+<div class="flex-1 overflow-y-auto p-margin-desktop bg-[#0A0A0A]">
+<div class="max-w-4xl mx-auto space-y-stack-lg">
+<!-- Workout Block A -->
+<div class="bg-surface-container-high rounded-xl ghost-border overflow-hidden">
+<!-- Block Header -->
+<div class="bg-surface-container-lowest px-stack-md py-stack-sm flex justify-between items-center border-b border-outline-variant">
+<div class="flex items-center gap-stack-sm">
+<span class="bg-secondary-container text-black font-data-lg text-data-lg w-10 h-10 rounded flex items-center justify-center">A</span>
+<h3 class="font-headline-md text-headline-md text-on-surface">Primary Push</h3>
+</div>
+<div class="flex gap-2">
+<button class="text-on-surface-variant hover:text-primary"><span class="material-symbols-outlined">more_vert</span></button>
+</div>
+</div>
+<!-- Block Content -->
+<div class="p-stack-md">
+<!-- Exercise Row -->
+<div class="flex flex-col gap-stack-sm">
+<div class="flex items-center justify-between mb-2">
+<h4 class="font-body-lg text-body-lg text-primary font-bold">Barbell Bench Press</h4>
+<button class="text-error hover:text-error-container"><span class="material-symbols-outlined">delete</span></button>
+</div>
+<!-- Sets Table -->
+<div class="grid grid-cols-12 gap-4 text-on-surface-variant font-label-sm text-label-sm mb-2 px-2 uppercase tracking-wider">
+<div class="col-span-1">Set</div>
+<div class="col-span-3">Target Reps</div>
+<div class="col-span-3">Target Weight</div>
+<div class="col-span-2">Rest</div>
+<div class="col-span-3">Notes</div>
+</div>
+<!-- Set 1 -->
+<div class="grid grid-cols-12 gap-4 items-center bg-surface-container-low p-2 rounded-lg ghost-border">
+<div class="col-span-1 font-data-lg text-primary text-center">1</div>
+<div class="col-span-3">
+<input class="w-full bg-surface-variant border-none rounded text-center text-on-surface font-data-lg h-10 focus:ring-1 focus:ring-primary-fixed" type="text" value="8-10">
+</div>
+<div class="col-span-3 relative">
+<input class="w-full bg-surface-variant border-none rounded text-center text-on-surface font-data-lg h-10 focus:ring-1 focus:ring-primary-fixed" type="text" value="225">
+<span class="absolute right-3 top-2.5 text-on-surface-variant text-sm">lbs</span>
+</div>
+<div class="col-span-2 flex items-center justify-center gap-1">
+<span class="material-symbols-outlined text-tertiary-fixed-dim text-sm">timer</span>
+<span class="text-tertiary-fixed-dim font-data-lg">120s</span>
+</div>
+<div class="col-span-3">
+<input class="w-full bg-transparent border-b border-outline-variant focus:border-primary-fixed focus:ring-0 text-on-surface font-body-md px-1" placeholder="RPE 8" type="text">
+</div>
+</div>
+<!-- Set 2 -->
+<div class="grid grid-cols-12 gap-4 items-center bg-surface-container-low p-2 rounded-lg ghost-border">
+<div class="col-span-1 font-data-lg text-primary text-center">2</div>
+<div class="col-span-3">
+<input class="w-full bg-surface-variant border-none rounded text-center text-on-surface font-data-lg h-10 focus:ring-1 focus:ring-primary-fixed" type="text" value="8-10">
+</div>
+<div class="col-span-3 relative">
+<input class="w-full bg-surface-variant border-none rounded text-center text-on-surface font-data-lg h-10 focus:ring-1 focus:ring-primary-fixed" type="text" value="225">
+<span class="absolute right-3 top-2.5 text-on-surface-variant text-sm">lbs</span>
+</div>
+<div class="col-span-2 flex items-center justify-center gap-1">
+<span class="material-symbols-outlined text-tertiary-fixed-dim text-sm">timer</span>
+<span class="text-tertiary-fixed-dim font-data-lg">120s</span>
+</div>
+<div class="col-span-3">
+<input class="w-full bg-transparent border-b border-outline-variant focus:border-primary-fixed focus:ring-0 text-on-surface font-body-md px-1" placeholder="Add notes..." type="text">
+</div>
+</div>
+<button class="mt-2 text-primary-fixed hover:text-primary-fixed-dim font-label-sm text-label-sm flex items-center gap-1 self-start">
+<span class="material-symbols-outlined text-sm">add</span> Add Set
+                                    </button>
+</div>
+</div>
+</div>
+<!-- Drop Zone -->
+<div class="border-2 border-dashed border-outline-variant rounded-xl h-32 flex flex-col items-center justify-center text-outline-variant hover:border-primary-fixed hover:text-primary-fixed transition-colors bg-surface-container-low bg-opacity-50">
+<span class="material-symbols-outlined text-3xl mb-2">library_add</span>
+<p class="font-body-md">Drag exercise here to add a new block</p>
+</div>
+</div>
+</div>
+</section>
+</main>
+</div>
+
+
+</body></html>

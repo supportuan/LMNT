@@ -1,0 +1,325 @@
+.coachMatch {
+  --bg: #0f1419;
+  --surface: #1a2229;
+  --ink: #f4f6f8;
+  --muted: #8b98a5;
+  --line: #2f3b47;
+  --accent: #c4f042;
+  --accent2: #7dd3fc;
+  min-height: 100vh;
+  background: var(--bg);
+  color: var(--ink);
+  font-family: Inter, system-ui, sans-serif;
+}
+
+.coachMatch .hero {
+  background: linear-gradient(135deg, #121820 0%, #1e2a36 50%, #0f1419 100%);
+  border-bottom: 1px solid var(--line);
+  padding: 48px 24px 36px;
+}
+
+.coachMatch .heroInner {
+  max-width: 1100px;
+  margin: auto;
+}
+
+.coachMatch .eyebrow {
+  font-size: 11px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--accent);
+  font-weight: 800;
+}
+
+.coachMatch h1 {
+  font-size: clamp(36px, 5vw, 56px);
+  line-height: 1.05;
+  margin: 10px 0;
+  letter-spacing: -0.03em;
+}
+
+.coachMatch .lede {
+  color: var(--muted);
+  max-width: 640px;
+  line-height: 1.6;
+}
+
+.coachMatch .filters {
+  max-width: 1100px;
+  margin: -20px auto 0;
+  padding: 0 24px;
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.coachMatch .filters select,
+.coachMatch .filters input {
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  padding: 10px 14px;
+  color: var(--ink);
+  font: inherit;
+}
+
+.coachMatch .shell {
+  max-width: 1100px;
+  margin: auto;
+  padding: 32px 24px 60px;
+}
+
+.coachMatch .grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 16px;
+}
+
+.coachMatch .card {
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 20px;
+  overflow: hidden;
+  transition: border-color 0.15s;
+}
+
+.coachMatch .card:hover {
+  border-color: #3d4f61;
+}
+
+.coachMatch .goalHint {
+  margin-top: 12px;
+  font-size: 13px;
+  color: var(--muted);
+}
+
+.coachMatch .goalHint strong {
+  color: var(--accent2);
+}
+
+.coachMatch .viewTabs {
+  display: flex;
+  gap: 6px;
+}
+
+.coachMatch .tab {
+  border: 1px solid var(--line);
+  background: var(--surface);
+  color: var(--muted);
+  border-radius: 10px;
+  padding: 10px 14px;
+  font: inherit;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.coachMatch .tab.active {
+  color: var(--ink);
+  border-color: var(--accent2);
+}
+
+.coachMatch .banner.success {
+  margin-bottom: 16px;
+  padding: 14px 16px;
+  border-radius: 12px;
+  background: rgba(5, 150, 105, 0.15);
+  color: #6ee7b7;
+  border: 1px solid rgba(5, 150, 105, 0.35);
+}
+
+.coachMatch .avatar {
+  height: 120px;
+  background: linear-gradient(135deg, #243040, #151c24);
+  display: grid;
+  place-items: center;
+  font-size: 36px;
+  font-weight: 900;
+  color: var(--accent2);
+  position: relative;
+}
+
+.coachMatch .scoreBadge {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  background: rgba(15, 20, 25, 0.85);
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  padding: 4px 10px;
+  font-size: 12px;
+  font-weight: 800;
+  color: var(--accent);
+}
+
+.coachMatch .nameRow {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.coachMatch .verifiedBadge {
+  font-size: 10px;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  padding: 4px 8px;
+  border-radius: 999px;
+  background: rgba(196, 240, 66, 0.15);
+  color: var(--accent);
+  border: 1px solid rgba(196, 240, 66, 0.35);
+}
+
+.coachMatch .reasons {
+  margin: 10px 0;
+  padding-left: 18px;
+  font-size: 11px;
+  color: var(--muted);
+  line-height: 1.45;
+}
+
+.coachMatch .reasons li {
+  margin-bottom: 4px;
+}
+
+.coachMatch .load {
+  margin-top: 8px;
+}
+
+.coachMatch .meetingSelect {
+  width: 100%;
+  margin-top: 12px;
+  background: #121820;
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  padding: 10px 12px;
+  color: var(--ink);
+  font: inherit;
+}
+
+.coachMatch .actions {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+  margin-top: 10px;
+}
+
+.coachMatch .actions .btn {
+  grid-column: 1 / -1;
+  margin-top: 0;
+}
+
+.coachMatch .btnSecondary {
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  padding: 10px;
+  background: #121820;
+  color: var(--ink);
+  font-weight: 700;
+  cursor: pointer;
+  font: inherit;
+}
+
+.coachMatch .btnSecondary.muted {
+  color: var(--muted);
+}
+
+.coachMatch .statusPill {
+  margin-top: 14px;
+  text-align: center;
+  padding: 12px;
+  border-radius: 12px;
+  font-size: 12px;
+  font-weight: 800;
+}
+
+.coachMatch .statusPill.requested {
+  background: rgba(125, 211, 252, 0.12);
+  color: var(--accent2);
+  border: 1px solid rgba(125, 211, 252, 0.35);
+}
+
+.coachMatch .statusPill.matched {
+  background: rgba(196, 240, 66, 0.12);
+  color: var(--accent);
+  border: 1px solid rgba(196, 240, 66, 0.35);
+}
+
+.coachMatch .cardPassed {
+  opacity: 0.55;
+}
+
+.coachMatch .cardSaved {
+  border-color: rgba(125, 211, 252, 0.45);
+}
+
+.coachMatch .body {
+  padding: 16px;
+}
+
+.coachMatch .name {
+  font-size: 20px;
+  font-weight: 800;
+}
+
+.coachMatch .centre {
+  font-size: 12px;
+  color: var(--muted);
+  margin-top: 4px;
+}
+
+.coachMatch .tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin: 12px 0;
+}
+
+.coachMatch .tag {
+  font-size: 10px;
+  font-weight: 800;
+  padding: 5px 8px;
+  border-radius: 999px;
+  background: #243040;
+  color: var(--accent2);
+}
+
+.coachMatch .meta {
+  font-size: 12px;
+  color: var(--muted);
+  line-height: 1.5;
+}
+
+.coachMatch .btn {
+  width: 100%;
+  margin-top: 14px;
+  border: 0;
+  border-radius: 12px;
+  padding: 12px;
+  background: var(--accent);
+  color: #111;
+  font-weight: 900;
+  cursor: pointer;
+  font: inherit;
+}
+
+.coachMatch .empty {
+  grid-column: 1 / -1;
+  text-align: center;
+  padding: 48px;
+  color: var(--muted);
+  border: 1px dashed var(--line);
+  border-radius: 16px;
+}
+
+@media (max-width: 900px) {
+  .coachMatch .grid {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+@media (max-width: 620px) {
+  .coachMatch .grid {
+    grid-template-columns: 1fr;
+  }
+}

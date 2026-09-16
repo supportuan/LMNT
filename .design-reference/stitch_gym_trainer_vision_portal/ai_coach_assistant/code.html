@@ -1,0 +1,352 @@
+<!DOCTYPE html><html class="dark" lang="en"><head>
+<meta charset="utf-8">
+<meta content="width=device-width, initial-scale=1.0" name="viewport">
+<title>AI Coach Assistant - Kinetic Pro</title>
+<!-- Material Symbols Outlined -->
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@100..900&amp;family=JetBrains+Mono:wght@100..900&amp;display=swap" rel="stylesheet">
+<!-- Tailwind CSS -->
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<!-- Tailwind Theme Config -->
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "error-container": "#93000a",
+                        "tertiary": "#ffffff",
+                        "primary-container": "#c3f400",
+                        "surface-container-lowest": "#0e0e0e",
+                        "secondary-fixed": "#ffdbce",
+                        "on-error": "#690005",
+                        "surface-variant": "#353534",
+                        "tertiary-fixed": "#7df4ff",
+                        "on-surface-variant": "#c4c9ac",
+                        "on-tertiary-fixed": "#002022",
+                        "surface-dim": "#131313",
+                        "surface-bright": "#393939",
+                        "surface-tint": "#abd600",
+                        "on-error-container": "#ffdad6",
+                        "on-primary-fixed-variant": "#3c4d00",
+                        "outline": "#8e9379",
+                        "primary": "#ffffff",
+                        "secondary": "#ffb59a",
+                        "inverse-surface": "#e5e2e1",
+                        "secondary-container": "#ff5e07",
+                        "tertiary-container": "#7df4ff",
+                        "surface-container-highest": "#353534",
+                        "surface-container-low": "#1c1b1b",
+                        "on-secondary-container": "#531900",
+                        "error": "#ffb4ab",
+                        "on-secondary-fixed": "#370e00",
+                        "tertiary-fixed-dim": "#00dbe9",
+                        "on-tertiary": "#00363a",
+                        "on-primary-fixed": "#161e00",
+                        "primary-fixed": "#c3f400",
+                        "on-secondary-fixed-variant": "#802a00",
+                        "on-tertiary-container": "#006f77",
+                        "primary-fixed-dim": "#abd600",
+                        "surface": "#131313",
+                        "on-tertiary-fixed-variant": "#004f54",
+                        "secondary-fixed-dim": "#ffb59a",
+                        "outline-variant": "#444933",
+                        "background": "#131313",
+                        "on-background": "#e5e2e1",
+                        "on-primary": "#283500",
+                        "inverse-primary": "#506600",
+                        "surface-container": "#201f1f",
+                        "on-secondary": "#5a1b00",
+                        "on-surface": "#e5e2e1",
+                        "surface-container-high": "#2a2a2a",
+                        "inverse-on-surface": "#313030",
+                        "on-primary-container": "#556d00"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.125rem",
+                        "lg": "0.25rem",
+                        "xl": "0.5rem",
+                        "full": "0.75rem"
+                    },
+                    "spacing": {
+                        "stack-lg": "24px",
+                        "margin-mobile": "16px",
+                        "stack-xs": "4px",
+                        "gutter": "16px",
+                        "stack-xl": "40px",
+                        "margin-desktop": "32px",
+                        "stack-sm": "8px",
+                        "base": "4px",
+                        "stack-md": "16px"
+                    },
+                    "fontFamily": {
+                        "headline-lg-mobile": ["Inter"],
+                        "headline-md": ["Inter"],
+                        "label-sm": ["JetBrains Mono"],
+                        "display-lg": ["Inter"],
+                        "data-lg": ["JetBrains Mono"],
+                        "body-md": ["Inter"],
+                        "body-lg": ["Inter"],
+                        "headline-lg": ["Inter"]
+                    },
+                    "fontSize": {
+                        "headline-lg-mobile": ["24px", { "lineHeight": "32px", "fontWeight": "700" }],
+                        "headline-md": ["20px", { "lineHeight": "28px", "fontWeight": "600" }],
+                        "label-sm": ["12px", { "lineHeight": "16px", "fontWeight": "500" }],
+                        "display-lg": ["48px", { "lineHeight": "52px", "letterSpacing": "-0.04em", "fontWeight": "800" }],
+                        "data-lg": ["24px", { "lineHeight": "32px", "fontWeight": "700" }],
+                        "body-md": ["16px", { "lineHeight": "24px", "fontWeight": "400" }],
+                        "body-lg": ["18px", { "lineHeight": "28px", "fontWeight": "400" }],
+                        "headline-lg": ["32px", { "lineHeight": "40px", "letterSpacing": "-0.02em", "fontWeight": "700" }]
+                    }
+                }
+            }
+        }
+    </script>
+<style>
+        .ghost-border {
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        .ai-gradient {
+            background: linear-gradient(135deg, rgba(195, 244, 0, 0.1) 0%, rgba(13, 13, 13, 0) 100%);
+        }
+        /* Custom scrollbar for dark athletic theme */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #131313;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #353534;
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #c4c9ac;
+        }
+    </style>
+</head>
+<body class="bg-background text-on-background font-body-md flex h-screen overflow-hidden selection:bg-primary-fixed selection:text-on-primary-fixed">
+<!-- Mobile TopNavBar (md:hidden) -->
+<nav class="md:hidden flex justify-between items-center w-full px-margin-mobile h-16 bg-surface-dim dark:bg-surface-dim border-b border-outline-variant fixed top-0 z-50">
+<div class="font-headline-lg-mobile text-headline-lg-mobile font-black text-primary-fixed dark:text-primary-fixed">Kinetic Dark</div>
+<div class="flex gap-stack-sm text-primary-fixed dark:text-primary-fixed">
+<span class="material-symbols-outlined cursor-pointer active:scale-95 duration-150 p-2 hover:bg-surface-container-highest dark:hover:bg-surface-container-highest rounded-full transition-colors" data-icon="notifications">notifications</span>
+<span class="material-symbols-outlined cursor-pointer active:scale-95 duration-150 p-2 hover:bg-surface-container-highest dark:hover:bg-surface-container-highest rounded-full transition-colors" data-icon="settings">settings</span>
+<img alt="Trainer Profile" class="w-8 h-8 rounded-full ml-2 object-cover border border-outline-variant" data-alt="A close-up, high-contrast black and white portrait of a focused athletic trainer in a dimly lit gym, wearing a sleek dark performance shirt. Professional, intense mood." src="https://lh3.googleusercontent.com/aida-public/AB6AXuD17BdF_CuV5H1QDf_melBDmqhug4_XeIfR1csD54GYX8emWhoWtZEadQM7Pu6PdO0QGV769EjZ24zfrQyHSnuQMOQB9FPLbCItL7kQwAx9upQhvTQSSnU7DCISUN1H33xL0Ih2t5YDt1ZpWS1m0mwbUz9Ym6kXJ-QBkGkBT96ZBFgGUlvY7h2GLO8ST0egjiXF6kzdyfH86ZTymt3DR4zbRF7gab7EFUXkNw8dupmudw1P1uM76ddd">
+</div>
+</nav>
+<!-- Desktop SideNavBar (hidden md:flex) -->
+<aside class="hidden md:flex flex-col h-full py-stack-lg px-stack-md bg-surface-container-low dark:bg-surface-container-low border-r border-outline-variant w-64 shrink-0 z-40">
+<div class="mb-stack-xl flex items-center gap-stack-sm px-stack-sm">
+<img alt="Kinetic Logo" class="w-10 h-10 rounded" data-alt="Minimalist geometric logo featuring sharp angled lines in electric green against a pure black background, representing speed and kinetic energy in an athletic context." src="https://lh3.googleusercontent.com/aida-public/AB6AXuClFiqiAYMDam0yQLqXMjgb0J_IWxJ-uJFMx0d8l3nittRE2yC_HayRSY2cYVzXwzk9jhVVvdP26X4_988xGUrXYyF9J5nMsjSPp_M3SMcyMsUkBKxgdnYp1irKD4HZvGcPJE9zmNPTAsqssAQe9usDhZnqiO48Jgqyf0A8ci-roesuMha5UgoNb-IwHj_NnZBBG3kjkaYABBSKmbZ4i8gK-6_QlwgQko0J8UOuSZRktrTrquCbSvcM">
+<div>
+<h1 class="font-headline-md text-headline-md font-bold text-primary-fixed dark:text-primary-fixed">LMNT</h1>
+<p class="font-label-sm text-label-sm text-on-surface-variant">Elite Trainer Portal</p>
+</div>
+</div>
+<nav class="flex flex-col gap-stack-xs flex-1">
+<!-- Dashboard -->
+<a class="flex items-center gap-stack-sm px-stack-md py-3 text-on-surface-variant dark:text-on-surface-variant hover:text-primary-fixed hover:bg-surface-container-highest dark:hover:bg-surface-container-highest transition-all duration-200 ease-in-out rounded-lg font-body-md text-body-md" href="#">
+<span class="material-symbols-outlined" data-icon="dashboard">dashboard</span>
+<span class="">Dashboard</span>
+</a>
+<!-- Clients (Active) -->
+<a class="flex items-center gap-stack-sm px-stack-md py-3 bg-primary-container dark:bg-primary-container text-on-primary-container dark:text-on-primary-container rounded-xl font-bold border-l-4 border-primary-fixed transition-all duration-200 ease-in-out font-body-md text-body-md" href="#">
+<span class="material-symbols-outlined" data-icon="group" style="font-variation-settings: 'FILL' 1;">group</span>
+<span class="">Clients</span>
+</a>
+<!-- Workouts -->
+<a class="flex items-center gap-stack-sm px-stack-md py-3 text-on-surface-variant dark:text-on-surface-variant hover:text-primary-fixed hover:bg-surface-container-highest dark:hover:bg-surface-container-highest transition-all duration-200 ease-in-out rounded-lg font-body-md text-body-md" href="#">
+<span class="material-symbols-outlined" data-icon="fitness_center">fitness_center</span>
+<span class="">Workouts</span>
+</a>
+<!-- Schedule -->
+<a class="flex items-center gap-stack-sm px-stack-md py-3 text-on-surface-variant dark:text-on-surface-variant hover:text-primary-fixed hover:bg-surface-container-highest dark:hover:bg-surface-container-highest transition-all duration-200 ease-in-out rounded-lg font-body-md text-body-md" href="#">
+<span class="material-symbols-outlined" data-icon="calendar_today">calendar_today</span>
+<span class="">Schedule</span>
+</a>
+<!-- Payments -->
+<a class="flex items-center gap-stack-sm px-stack-md py-3 text-on-surface-variant dark:text-on-surface-variant hover:text-primary-fixed hover:bg-surface-container-highest dark:hover:bg-surface-container-highest transition-all duration-200 ease-in-out rounded-lg font-body-md text-body-md" href="#">
+<span class="material-symbols-outlined" data-icon="payments">payments</span>
+<span class="">Payments</span>
+</a>
+</nav>
+<button class="mt-auto w-full bg-primary-fixed text-on-primary-fixed font-headline-md text-headline-md font-bold py-3 rounded-lg hover:bg-primary-fixed-dim transition-colors flex items-center justify-center gap-2">
+<span class="material-symbols-outlined" data-icon="add">add</span>
+            Start New Session
+        </button>
+</aside>
+<!-- Main Content Canvas -->
+<main class="flex-1 h-full overflow-y-auto pt-20 md:pt-0 px-margin-mobile md:px-margin-desktop py-stack-lg bg-surface">
+<!-- Header -->
+<header class="mb-stack-xl flex flex-col md:flex-row justify-between items-start md:items-end gap-stack-md">
+<div>
+<div class="flex items-center gap-2 mb-2">
+<span class="material-symbols-outlined text-primary-fixed" data-icon="smart_toy">smart_toy</span>
+<span class="font-label-sm text-label-sm text-primary-fixed tracking-wider uppercase">Beta Feature</span>
+</div>
+<h2 class="font-headline-lg-mobile md:font-headline-lg text-headline-lg-mobile md:text-headline-lg text-on-background">AI Coach Assistant</h2>
+<p class="font-body-md text-body-md text-on-surface-variant mt-1 max-w-2xl">Real-time sentiment analysis and behavioral insights to optimize client engagement and retention.</p>
+</div>
+<div class="flex gap-3">
+<button class="bg-surface-container-high hover:bg-surface-container-highest text-on-background px-4 py-2 rounded-lg font-body-md border border-outline-variant transition-colors flex items-center gap-2">
+<span class="material-symbols-outlined text-sm" data-icon="refresh">refresh</span> Analyze Roster
+                </button>
+</div>
+</header>
+<!-- Grid Layout for Content -->
+<div class="grid grid-cols-1 lg:grid-cols-12 gap-gutter">
+<!-- Left Column: Insights & Personas (Col span 7) -->
+<div class="lg:col-span-7 flex flex-col gap-stack-lg">
+<!-- Client Interaction Insights Dashboard (Bento Style) -->
+<section>
+<h3 class="font-headline-md text-headline-md text-on-background mb-stack-md flex items-center gap-2">
+<span class="material-symbols-outlined" data-icon="monitoring">monitoring</span>
+                        Client Interaction Insights
+                    </h3>
+<div class="grid grid-cols-2 gap-stack-sm">
+<!-- Metric 1 -->
+<div class="bg-surface-container-low ghost-border p-stack-md rounded-xl flex flex-col justify-between">
+<span class="font-label-sm text-label-sm text-on-surface-variant">Global Roster Sentiment</span>
+<div class="mt-2 flex items-baseline gap-2">
+<span class="font-display-lg text-display-lg text-primary-fixed">92</span>
+<span class="font-label-sm text-label-sm text-primary-fixed">/100</span>
+</div>
+<div class="mt-4 w-full bg-surface-container-high h-2 rounded-full overflow-hidden">
+<div class="bg-primary-fixed h-full w-[92%]"></div>
+</div>
+</div>
+<!-- Metric 2 -->
+<div class="bg-surface-container-low ghost-border p-stack-md rounded-xl flex flex-col justify-between">
+<span class="font-label-sm text-label-sm text-on-surface-variant">Engagement Risk</span>
+<div class="mt-2 flex items-baseline gap-2">
+<span class="font-display-lg text-display-lg text-error">3</span>
+<span class="font-body-md text-body-md text-on-surface-variant">Clients</span>
+</div>
+<p class="font-label-sm text-label-sm text-error mt-4 flex items-center gap-1">
+<span class="material-symbols-outlined text-xs" data-icon="warning">warning</span> Requires action
+                            </p>
+</div>
+</div>
+</section>
+<!-- Management Tips (Personas) -->
+<section>
+<h3 class="font-headline-md text-headline-md text-on-background mb-stack-md flex items-center gap-2">
+<span class="material-symbols-outlined" data-icon="psychology">psychology</span>
+                        Behavioral Management Tips
+                    </h3>
+<div class="grid grid-cols-1 md:grid-cols-2 gap-stack-md">
+<!-- Persona Card 1 -->
+<div class="bg-surface-container-low ghost-border p-stack-md rounded-xl hover:border-primary-fixed/50 transition-colors group cursor-pointer">
+<div class="flex items-center gap-3 mb-3">
+<div class="w-10 h-10 rounded bg-surface-container-high flex items-center justify-center group-hover:bg-primary-container transition-colors">
+<span class="material-symbols-outlined text-on-surface-variant group-hover:text-on-primary-container" data-icon="trending_down">trending_down</span>
+</div>
+<div>
+<h4 class="font-headline-md text-headline-md text-on-background text-base">The Unmotivated</h4>
+<span class="font-label-sm text-label-sm text-primary-fixed">AI Strategy Pattern</span>
+</div>
+</div>
+<p class="font-body-md text-body-md text-on-surface-variant mb-4">Focus on micro-goals. Reduce perceived friction by emphasizing showing up over performance intensity this week.</p>
+<div class="flex flex-wrap gap-2">
+<span class="bg-surface-container px-2 py-1 rounded text-xs text-on-surface-variant border border-outline-variant">Lower Volume</span>
+<span class="bg-surface-container px-2 py-1 rounded text-xs text-on-surface-variant border border-outline-variant">Higher Praise</span>
+</div>
+</div>
+<!-- Persona Card 2 -->
+<div class="bg-surface-container-low ghost-border p-stack-md rounded-xl hover:border-tertiary-container/50 transition-colors group cursor-pointer">
+<div class="flex items-center gap-3 mb-3">
+<div class="w-10 h-10 rounded bg-surface-container-high flex items-center justify-center group-hover:bg-tertiary-container transition-colors">
+<span class="material-symbols-outlined text-on-surface-variant group-hover:text-on-tertiary-container" data-icon="local_fire_department">local_fire_department</span>
+</div>
+<div>
+<h4 class="font-headline-md text-headline-md text-on-background text-base">The Overachiever</h4>
+<span class="font-label-sm text-label-sm text-tertiary-fixed">AI Strategy Pattern</span>
+</div>
+</div>
+<p class="font-body-md text-body-md text-on-surface-variant mb-4">High risk of burnout/injury detected in recent load data. Enforce mandatory active recovery days. Frame rest as performance enhancement.</p>
+<div class="flex flex-wrap gap-2">
+<span class="bg-surface-container px-2 py-1 rounded text-xs text-on-surface-variant border border-outline-variant">Mobility Focus</span>
+<span class="bg-surface-container px-2 py-1 rounded text-xs text-on-surface-variant border border-outline-variant">Data Restraint</span>
+</div>
+</div>
+</div>
+</section>
+</div>
+<!-- Right Column: AI Communication Scripts (Col span 5) -->
+<div class="lg:col-span-5 h-full">
+<section class="flex flex-col h-full max-h-[800px] bg-surface-container-lowest ghost-border rounded-2xl overflow-hidden relative">
+<!-- Header -->
+<div class="p-stack-md border-b border-outline-variant bg-surface-container-low/50 backdrop-blur-sm sticky top-0 z-10 flex justify-between items-center">
+<div class="flex items-center gap-2">
+<span class="relative flex h-3 w-3">
+<span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-primary-fixed opacity-75"></span>
+<span class="relative inline-flex rounded-full h-3 w-3 bg-primary-fixed"></span>
+</span>
+<h3 class="font-headline-md text-headline-md text-on-background text-lg">Smart Scripts</h3>
+</div>
+<button class="text-on-surface-variant hover:text-primary-fixed transition-colors">
+<span class="material-symbols-outlined" data-icon="more_horiz">more_horiz</span>
+</button>
+</div>
+<!-- Feed Area -->
+<div class="flex-1 overflow-y-auto p-stack-md flex flex-col gap-stack-md ai-gradient">
+<!-- AI Suggestion 1: Late Cancellation -->
+<div class="bg-surface-container border-l-2 border-error p-stack-md rounded-r-xl rounded-bl-xl shadow-lg relative">
+<div class="flex justify-between items-start mb-2">
+<span class="font-label-sm text-label-sm text-error bg-error/10 px-2 py-1 rounded">Scenario: Late Cancellation</span>
+<span class="text-xs text-on-surface-variant font-data-lg">Client: Marcus T.</span>
+</div>
+<p class="font-body-md text-body-md text-on-background mb-4">"Hey Marcus, noticed you had to drop out of today's session. Hope everything is alright! Let's get you rescheduled for later this week so we don't lose the momentum we built on Tuesday. Let me know what times work."</p>
+<div class="flex justify-end gap-2 mt-2">
+<button class="text-on-surface-variant hover:text-primary-fixed font-label-sm flex items-center gap-1 transition-colors">
+<span class="material-symbols-outlined text-sm" data-icon="edit">edit</span> Refine
+                                </button>
+<button class="bg-surface-container-highest hover:bg-surface-bright text-on-background px-3 py-1.5 rounded flex items-center gap-2 font-label-sm border border-outline-variant transition-colors group">
+<span class="material-symbols-outlined text-sm group-hover:text-primary-fixed" data-icon="content_copy">content_copy</span> Copy Script
+                                </button>
+</div>
+</div>
+<!-- AI Suggestion 2: PR Celebration -->
+<div class="bg-surface-container border-l-2 border-primary-fixed p-stack-md rounded-r-xl rounded-bl-xl shadow-lg relative">
+<div class="flex justify-between items-start mb-2">
+<span class="font-label-sm text-label-sm text-primary-fixed bg-primary-fixed/10 px-2 py-1 rounded">Scenario: Milestone/PR</span>
+<span class="text-xs text-on-surface-variant font-data-lg">Client: Sarah K.</span>
+</div>
+<p class="font-body-md text-body-md text-on-background mb-4">"Huge congrats on hitting that 225lb deadlift PR today, Sarah! 🔥 Your consistency with the accessory work is seriously paying off. Take it easy tomorrow, and let's plan the next target block next week."</p>
+<div class="flex justify-end gap-2 mt-2">
+<button class="text-on-surface-variant hover:text-primary-fixed font-label-sm flex items-center gap-1 transition-colors">
+<span class="material-symbols-outlined text-sm" data-icon="edit">edit</span> Refine
+                                </button>
+<button class="bg-surface-container-highest hover:bg-surface-bright text-on-background px-3 py-1.5 rounded flex items-center gap-2 font-label-sm border border-outline-variant transition-colors group">
+<span class="material-symbols-outlined text-sm group-hover:text-primary-fixed" data-icon="content_copy">content_copy</span> Copy Script
+                                </button>
+</div>
+</div>
+<!-- AI Suggestion 3: Inactivity -->
+<div class="bg-surface-container border-l-2 border-secondary-fixed p-stack-md rounded-r-xl rounded-bl-xl shadow-lg relative opacity-75">
+<div class="flex justify-between items-start mb-2">
+<span class="font-label-sm text-label-sm text-secondary-fixed bg-secondary-fixed/10 px-2 py-1 rounded">Scenario: 7-Day Inactivity</span>
+<span class="text-xs text-on-surface-variant font-data-lg">Client: David L.</span>
+</div>
+<p class="font-body-md text-body-md text-on-surface-variant italic mb-2">Drafting suggestion based on historical engagement patterns...</p>
+</div>
+</div>
+<!-- Input Area -->
+<div class="p-stack-md border-t border-outline-variant bg-surface-container-low">
+<div class="relative">
+<input class="w-full bg-surface-container-highest border border-outline-variant rounded-full py-3 pl-4 pr-12 text-on-background font-body-md focus:outline-none focus:border-primary-fixed focus:ring-1 focus:ring-primary-fixed transition-colors placeholder:text-on-surface-variant/50" placeholder="Ask AI for a custom scenario script..." type="text">
+<button class="absolute right-2 top-1/2 -translate-y-1/2 w-8 h-8 flex items-center justify-center bg-primary-fixed text-on-primary-fixed rounded-full hover:bg-primary-fixed-dim transition-colors">
+<span class="material-symbols-outlined text-sm" data-icon="arrow_upward">arrow_upward</span>
+</button>
+</div>
+</div>
+</section>
+</div>
+</div>
+</main>
+
+
+</body></html>

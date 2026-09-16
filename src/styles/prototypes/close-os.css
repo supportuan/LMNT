@@ -1,0 +1,530 @@
+.closeOs {
+  --bg: #131313;
+  --surface: #1c1b1b;
+  --ink: #e5e2e1;
+  --muted: #8e9379;
+  --line: rgba(255, 255, 255, 0.1);
+  --blue: #c3f400;
+  --blue2: rgba(195, 244, 0, 0.12);
+  --green: #4ade80;
+  --amber: #fbbf24;
+  --red: #f87171;
+  --shadow: none;
+  --radius: 12px;
+  min-height: auto;
+  background: transparent;
+  color: var(--ink);
+  font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+}
+
+.closeOs.embedded .shell {
+  padding: 0;
+  max-width: none;
+}
+
+.closeOs .embedded-tabs {
+  display: flex;
+  gap: 6px;
+  margin-bottom: 16px;
+  overflow: auto;
+  flex-wrap: wrap;
+}
+
+.closeOs button,
+.closeOs input,
+.closeOs textarea,
+.closeOs select {
+  font: inherit;
+}
+
+.closeOs button {
+  cursor: pointer;
+}
+
+.closeOs .nav {
+  position: sticky;
+  top: 0;
+  z-index: 20;
+  background: rgba(255, 255, 255, 0.92);
+  backdrop-filter: blur(16px);
+  border-bottom: 1px solid var(--line);
+}
+
+.closeOs .navin {
+  max-width: 1260px;
+  margin: auto;
+  padding: 14px 18px;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.closeOs .brand {
+  font-weight: 900;
+  letter-spacing: -0.03em;
+  font-size: 21px;
+}
+
+.closeOs .brand small {
+  display: block;
+  color: var(--muted);
+  font-size: 10px;
+  letter-spacing: 0.03em;
+  font-weight: 700;
+}
+
+.closeOs .tabs {
+  display: flex;
+  gap: 6px;
+  margin-left: auto;
+  overflow: auto;
+}
+
+.closeOs .tab {
+  border: 0;
+  background: transparent;
+  padding: 9px 12px;
+  border-radius: 12px;
+  font-weight: 800;
+  color: #586174;
+  white-space: nowrap;
+}
+
+.closeOs .tab.active {
+  background: var(--blue);
+  color: #161e00;
+}
+
+.closeOs .shell {
+  max-width: 1260px;
+  margin: auto;
+  padding: 22px 18px 60px;
+}
+
+.closeOs .hero {
+  display: grid;
+  grid-template-columns: 1.12fr 0.88fr;
+  gap: 18px;
+  align-items: stretch;
+}
+
+.closeOs .card {
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  padding: 20px;
+  box-shadow: var(--shadow);
+}
+
+.closeOs h1 {
+  font-size: 42px;
+  line-height: 1;
+  letter-spacing: -0.045em;
+  margin: 0 0 12px;
+}
+
+.closeOs h2 {
+  font-size: 19px;
+  margin: 0 0 14px;
+}
+
+.closeOs p {
+  color: var(--muted);
+  line-height: 1.55;
+}
+
+.closeOs .eyebrow {
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  color: var(--blue);
+  font-weight: 900;
+}
+
+.closeOs .btn {
+  border: 0;
+  border-radius: 13px;
+  padding: 11px 14px;
+  font-weight: 900;
+}
+
+.closeOs .primary {
+  background: var(--blue);
+  color: #161e00;
+}
+
+.closeOs .soft {
+  background: var(--surface);
+  color: var(--ink);
+  border: 1px solid var(--line);
+}
+
+.closeOs .danger {
+  background: rgba(248, 113, 113, 0.12);
+  color: var(--red);
+}
+
+.closeOs .mini {
+  padding: 8px 10px;
+  font-size: 12px;
+}
+
+.closeOs .row {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.closeOs .grid2 {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 18px;
+}
+
+.closeOs .grid3 {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 14px;
+}
+
+.closeOs label {
+  font-size: 12px;
+  font-weight: 800;
+  color: var(--muted);
+}
+
+.closeOs .field {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin: 9px 0;
+}
+
+.closeOs input,
+.closeOs select,
+.closeOs textarea {
+  width: 100%;
+  border: 1px solid var(--line);
+  background: #2a2a2a;
+  border-radius: 8px;
+  padding: 11px 12px;
+  color: var(--ink);
+  outline: none;
+}
+
+.closeOs textarea {
+  min-height: 180px;
+  resize: vertical;
+}
+
+.closeOs .micbox {
+  background: #101828;
+  color: white;
+  border-radius: 18px;
+  padding: 18px;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  flex-wrap: wrap;
+}
+
+.closeOs .micdot {
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  background: #ff5252;
+  box-shadow: 0 0 0 7px rgba(255, 82, 82, 0.14);
+}
+
+.closeOs .micbox .meta {
+  color: #cbd5e1;
+  font-size: 12px;
+}
+
+.closeOs .micbox .push {
+  margin-left: auto;
+}
+
+.closeOs .notice {
+  font-size: 12px;
+  color: var(--muted);
+  background: #2a2a2a;
+  border: 1px solid var(--line);
+  padding: 10px 12px;
+  border-radius: 8px;
+}
+
+.closeOs .stat {
+  padding: 14px;
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  background: #2a2a2a;
+}
+
+.closeOs .stat b {
+  font-size: 25px;
+  display: block;
+}
+
+.closeOs .stat span {
+  font-size: 11px;
+  color: var(--muted);
+  font-weight: 800;
+}
+
+.closeOs .scorewrap {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+}
+
+.closeOs .ring {
+  width: 118px;
+  height: 118px;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  position: relative;
+  background: conic-gradient(var(--blue) 0 0%, #edf0f5 0);
+  flex-shrink: 0;
+}
+
+.closeOs .ring:after {
+  content: "";
+  position: absolute;
+  width: 88px;
+  height: 88px;
+  border-radius: 50%;
+  background: var(--surface);
+}
+
+.closeOs .ring b {
+  z-index: 1;
+  font-size: 30px;
+}
+
+.closeOs .bars {
+  flex: 1;
+}
+
+.closeOs .bar {
+  display: grid;
+  grid-template-columns: 135px 1fr 36px;
+  gap: 8px;
+  align-items: center;
+  font-size: 12px;
+  margin: 8px 0;
+}
+
+.closeOs .track {
+  height: 8px;
+  background: #2a2a2a;
+  border-radius: 999px;
+  overflow: hidden;
+}
+
+.closeOs .fill {
+  height: 100%;
+  border-radius: 999px;
+  background: var(--blue);
+}
+
+.closeOs .badge {
+  display: inline-block;
+  padding: 6px 9px;
+  border-radius: 999px;
+  font-size: 11px;
+  font-weight: 900;
+  margin: 2px;
+  background: var(--blue2);
+  color: var(--blue);
+}
+
+.closeOs .badge.green {
+  background: rgba(74, 222, 128, 0.12);
+  color: var(--green);
+}
+
+.closeOs .badge.amber {
+  background: rgba(251, 191, 36, 0.12);
+  color: var(--amber);
+}
+
+.closeOs .badge.red {
+  background: rgba(248, 113, 113, 0.12);
+  color: var(--red);
+}
+
+.closeOs .divider {
+  border-top: 1px solid var(--line);
+  margin: 16px 0;
+}
+
+.closeOs .timeline {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.closeOs .moment {
+  border: 1px solid var(--line);
+  border-radius: 15px;
+  padding: 13px;
+}
+
+.closeOs .moment .time {
+  font-size: 10px;
+  font-weight: 900;
+  color: var(--blue);
+}
+
+.closeOs .moment .quote {
+  font-size: 13px;
+  font-weight: 800;
+  margin: 4px 0;
+}
+
+.closeOs .moment .why {
+  font-size: 12px;
+  color: var(--muted);
+  line-height: 1.45;
+}
+
+.closeOs .moment.good {
+  border-left: 4px solid var(--green);
+}
+
+.closeOs .moment.warn {
+  border-left: 4px solid var(--amber);
+}
+
+.closeOs .moment.bad {
+  border-left: 4px solid var(--red);
+}
+
+.closeOs .script {
+  border-left: 3px solid var(--blue);
+  background: #2a2a2a;
+  padding: 13px;
+  border-radius: 0 8px 8px 0;
+  line-height: 1.55;
+  font-size: 13px;
+  margin: 10px 0;
+}
+
+.closeOs .listitem {
+  padding: 12px 0;
+  border-top: 1px solid var(--line);
+}
+
+.closeOs .listitem:first-child {
+  border-top: 0;
+}
+
+.closeOs .listitem b {
+  display: block;
+  font-size: 13px;
+}
+
+.closeOs .listitem span {
+  font-size: 12px;
+  color: var(--muted);
+  line-height: 1.5;
+  display: block;
+  margin-top: 4px;
+}
+
+.closeOs .prospect {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 10px;
+  padding: 13px;
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  margin: 9px 0;
+  background: var(--surface);
+  cursor: pointer;
+}
+
+.closeOs .prospect b {
+  font-size: 14px;
+}
+
+.closeOs .prospect small {
+  display: block;
+  color: var(--muted);
+  margin-top: 4px;
+}
+
+.closeOs .kicker {
+  font-weight: 900;
+  font-size: 12px;
+  color: var(--muted);
+}
+
+.closeOs .empty {
+  padding: 28px;
+  text-align: center;
+  color: var(--muted);
+  border: 1px dashed var(--line);
+  border-radius: 12px;
+}
+
+.closeOs .toggle {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 12px;
+  color: var(--muted);
+  margin: 10px 0;
+}
+
+.closeOs .toggle input {
+  width: auto;
+}
+
+.closeOs .obcard {
+  padding: 14px 0;
+  border-top: 1px solid var(--line);
+}
+
+.closeOs .obcard:first-child {
+  border: 0;
+}
+
+.closeOs .obcard b {
+  font-size: 14px;
+}
+
+.closeOs .obcard .route {
+  font-size: 12px;
+  color: #475467;
+  line-height: 1.5;
+  margin-top: 6px;
+}
+
+.closeOs .footer {
+  margin-top: 28px;
+  text-align: center;
+  color: #98a2b3;
+  font-size: 11px;
+}
+
+.closeOs .small {
+  font-size: 12px;
+}
+
+@media (max-width: 900px) {
+  .closeOs .hero,
+  .closeOs .grid2,
+  .closeOs .grid3 {
+    grid-template-columns: 1fr;
+  }
+  .closeOs h1 {
+    font-size: 34px;
+  }
+  .closeOs .tabs {
+    max-width: 60vw;
+  }
+}

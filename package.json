@@ -1,0 +1,52 @@
+{
+  "name": "lmnt",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "npm run db:check && next dev --turbopack",
+    "dev:clean": "npm run db:check && rm -rf .next && next dev --turbopack",
+    "dev:webpack": "npm run db:check && rm -rf .next && next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "eslint",
+    "db:check": "pg_isready -h 127.0.0.1 -p 5432 || (echo '\\n❌ Postgres is not running on 127.0.0.1:5432\\n   Homebrew: brew services start postgresql@16\\n   Stale lock: rm -f /opt/homebrew/var/postgresql@16/postmaster.pid && brew services restart postgresql@16\\n   Docker:   docker compose up -d\\n' && exit 1)",
+    "db:up": "docker compose up -d",
+    "db:generate": "drizzle-kit generate",
+    "db:migrate": "drizzle-kit migrate",
+    "db:push": "drizzle-kit push",
+    "db:seed": "tsx drizzle/seed.ts",
+    "db:seed-schedule": "tsx drizzle/seed-schedule.ts",
+    "db:seed-ops": "tsx drizzle/seed-ops.ts",
+    "db:setup": "npm run db:push && npm run db:seed",
+    "db:deploy": "drizzle-kit migrate"
+  },
+  "dependencies": {
+    "bcryptjs": "^3.0.2",
+    "dotenv": "^17.2.1",
+    "drizzle-orm": "^0.44.5",
+    "hls.js": "^1.7.3",
+    "jose": "^6.1.0",
+    "next": "^15.5.2",
+    "nodemailer": "^10.0.10",
+    "postgres": "^3.4.7",
+    "react": "^19.1.1",
+    "react-dom": "^19.1.1",
+    "recharts": "^2.15.4",
+    "zod": "^4.1.5"
+  },
+  "devDependencies": {
+    "@eslint/eslintrc": "^3.3.1",
+    "@tailwindcss/postcss": "^4.1.12",
+    "@types/bcryptjs": "^2.4.6",
+    "@types/node": "^22.18.0",
+    "@types/nodemailer": "^8.0.2",
+    "@types/react": "^19.1.12",
+    "@types/react-dom": "^19.1.9",
+    "drizzle-kit": "^0.31.4",
+    "eslint": "^9.34.0",
+    "eslint-config-next": "^15.5.2",
+    "tailwindcss": "^4.1.12",
+    "tsx": "^4.20.5",
+    "typescript": "^5.9.2"
+  }
+}
