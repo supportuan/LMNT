@@ -89,3 +89,24 @@ createdb lmnt_coach_os
 ```
 
 Fresh production databases should use `npm run db:migrate` instead of `db:push`. Existing local databases can keep using `db:push`.
+
+## Production (EC2 + Docker)
+
+Use `t3.small` or larger in `ap-south-1` (same region as RDS). `t3.micro` will OOM during `next build`.
+
+1. Security groups: EC2 inbound 22 and 80. RDS inbound 5432 from the EC2 security group only.
+2. On Ubuntu EC2, install Docker, clone the repo, create `.env` (never commit it):
+
+```bash
+curl -fsSL https://get.docker.com | sudo sh
+sudo usermod -aG docker ubuntu
+newgrp docker
+```
+3. `APP_URL` must be the public URL users open (`http://EC2_PUBLIC_IP` or `https://your-domain`).
+4. Start:
+
+```bash
+docker compose -f docker-compose.prod.yml up -d --build
+```
+
+That runs migrations against RDS, then serves the app on port 80. Do not run `db:seed` in production. Put HTTPS (Caddy, nginx, or an ALB) in front when you have a domain.
