@@ -95,20 +95,26 @@ sudo apt install -y nodejs
 sudo npm install -g pm2
 ```
 
-3. Clone, create `.env` in the project root (never commit it). `APP_URL` must match the public URL (`https://testing.lmnt.fit`).
-4. Build, migrate, start:
+3. Copy `.env` to the server (never commit it). From your Mac:
 
 ```bash
+scp .env ubuntu@YOUR_EC2_IP:~/LMNT/.env
+```
+
+`APP_URL` must match the public URL (`https://testing.lmnt.fit`).
+
+4. Deploy (requires Node 20+ — Ubuntu 22.04 often ships Node 12, which will fail):
+
+```bash
+node -v   # must be v20+
 cd ~/LMNT
 git pull origin main
-npm ci
-npm run build
-npm run db:check-rds
-npm run db:migrate:prod
-pm2 start ecosystem.config.cjs
-pm2 save
-pm2 startup   # run the command it prints
+chmod +x scripts/deploy.sh
+npm run deploy
+pm2 startup   # run the command it prints once
 ```
+
+If `node -v` is below 20, install Node 22 first (step 2), log out/in, then run deploy again.
 
 5. Put nginx or Caddy in front of port **3000** for HTTPS on your domain.
 
@@ -116,10 +122,7 @@ Redeploy after code changes:
 
 ```bash
 git pull origin main
-npm ci
-npm run build
-npm run db:migrate:prod
-pm2 restart lmnt --update-env
+npm run deploy
 ```
 
 Do not run `db:seed` in production.

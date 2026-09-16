@@ -1,3 +1,4 @@
+import "./load-env.mjs";
 import postgres from "postgres";
 
 const host = process.env.RDS_HOST?.trim();

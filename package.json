@@ -2,6 +2,9 @@
   "name": "lmnt",
   "version": "0.1.0",
   "private": true,
+  "engines": {
+    "node": ">=20"
+  },
   "scripts": {
     "dev": "npm run db:check && next dev --turbopack",
     "dev:clean": "npm run db:check && rm -rf .next && next dev --turbopack",
@@ -19,7 +22,8 @@
     "db:setup": "npm run db:push && npm run db:seed",
     "db:deploy": "drizzle-kit migrate",
     "db:check-rds": "node scripts/check-rds.mjs",
-    "db:migrate:prod": "sh scripts/migrate-prod.sh"
+    "db:migrate:prod": "sh scripts/migrate-prod.sh",
+    "deploy": "bash scripts/deploy.sh"
   },
   "dependencies": {
     "bcryptjs": "^3.0.2",
