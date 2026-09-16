@@ -104,7 +104,34 @@ bash scripts/deploy.sh
 pm2 startup   # run the command it prints once
 ```
 
-4. Put nginx or Caddy in front of port **3000** for HTTPS on your domain.
+4. **DNS:** point `testing.lmnt.fit` A record → EC2 public IP.
+
+5. **nginx + HTTPS** (EC2 security group must allow **80** and **443**):
+
+```bash
+cd ~/LMNT
+git pull origin main
+chmod +x deploy/nginx/setup.sh
+bash deploy/nginx/setup.sh testing.lmnt.fit support@lmnt.fit
+```
+
+Manual alternative:
+
+```bash
+sudo apt install -y nginx certbot python3-certbot-nginx
+sudo cp deploy/nginx/lmnt.conf /etc/nginx/sites-available/lmnt
+sudo ln -sf /etc/nginx/sites-available/lmnt /etc/nginx/sites-enabled/lmnt
+sudo rm -f /etc/nginx/sites-enabled/default
+sudo nginx -t && sudo systemctl reload nginx
+sudo certbot --nginx -d testing.lmnt.fit
+```
+
+Confirm `.env` has `APP_URL=https://testing.lmnt.fit`, then:
+
+```bash
+pm2 restart lmnt --update-env
+curl -s https://testing.lmnt.fit/api/health
+```
 
 Redeploy after code changes:
 
