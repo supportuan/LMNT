@@ -5,7 +5,7 @@ Local modular monolith for multi-branch gym operations with PostgreSQL and serve
 ## Stack
 
 - Next.js 15 (App Router)
-- PostgreSQL 16 (Docker)
+- PostgreSQL 16
 - Drizzle ORM
 - JWT session cookies
 
@@ -15,8 +15,7 @@ Local modular monolith for multi-branch gym operations with PostgreSQL and serve
 # 1. Install dependencies
 npm install
 
-# 2. Start Postgres
-docker compose up -d
+# 2. Start Postgres (Homebrew) and set DATABASE_URL in .env
 
 # 3. Create tables and seed demo data
 npm run db:setup
@@ -69,77 +68,58 @@ Password for seeded local accounts: `password123`
 
 ## Database
 
-Postgres is bound to `127.0.0.1:5432` in Docker so it is not published on the LAN. Override `POSTGRES_PASSWORD` in the environment instead of using the compose default on a shared host.
-
-**Option A — Docker (local)**
-
-```bash
-docker compose up -d
-# DATABASE_URL=postgresql://lmnt:lmnt_dev@127.0.0.1:5432/lmnt_coach_os
-```
-
-**Option B — local Homebrew Postgres**
+**Local — Homebrew Postgres**
 
 ```bash
 brew install postgresql@16
 brew services start postgresql@16
 createdb lmnt_coach_os
 # create user lmnt / password lmnt_dev, then grant schema access
-# uses port 5432 (see .env.local)
+# DATABASE_URL=postgresql://lmnt:lmnt_dev@127.0.0.1:5432/lmnt_coach_os
 ```
+
+**Production — AWS RDS** (see `.env.example` for `RDS_HOST`, `POSTGRES_*`, `APP_URL`)
 
 Fresh production databases should use `npm run db:migrate` instead of `db:push`. Existing local databases can keep using `db:push`.
 
-## Production (EC2 + Docker)
+## Production (EC2 + PM2)
 
-Use `t3.small` or larger in `ap-south-1` (same region as RDS). `t3.micro` will thrash during `npm ci` / `next build`. If the instance has 1GB RAM, add 2G swap first:
+Use `t3.small` or larger in `ap-south-1` (same region as RDS). On Ubuntu EC2:
 
-```bash
-sudo fallocate -l 2G /swapfile && sudo chmod 600 /swapfile && sudo mkswap /swapfile && sudo swapon /swapfile
-```
-
-Build with live npm output so it does not look frozen (`--progress` must come before `build`):
+1. Security groups: EC2 inbound **22** and **80/443**. RDS inbound **5432** from the EC2 security group.
+2. Install Node 22 and PM2:
 
 ```bash
-docker compose --progress=plain -f docker-compose.prod.yml build
-docker compose -f docker-compose.prod.yml up -d
+curl -fsSL https://deb.nodesource.com/setup_22.x | sudo -E bash -
+sudo apt install -y nodejs
+sudo npm install -g pm2
 ```
 
-1. Security groups: EC2 inbound 22 and 80. RDS inbound 5432 from the EC2 security group only.
-2. On Ubuntu EC2, install Docker, clone the repo, create `.env` (never commit it):
+3. Clone, create `.env` in the project root (never commit it). `APP_URL` must match the public URL (`https://testing.lmnt.fit`).
+4. Build, migrate, start:
 
 ```bash
-curl -fsSL https://get.docker.com | sudo sh
-sudo usermod -aG docker ubuntu
-newgrp docker
+cd ~/LMNT
+git pull origin main
+npm ci
+npm run build
+npm run db:check-rds
+npm run db:migrate:prod
+pm2 start ecosystem.config.cjs
+pm2 save
+pm2 startup   # run the command it prints
 ```
-3. `APP_URL` must be the public URL users open (`http://EC2_PUBLIC_IP` or `https://your-domain`).
-4. Start:
+
+5. Put nginx or Caddy in front of port **3000** for HTTPS on your domain.
+
+Redeploy after code changes:
 
 ```bash
-docker compose -f docker-compose.prod.yml up -d --build
+git pull origin main
+npm ci
+npm run build
+npm run db:migrate:prod
+pm2 restart lmnt --update-env
 ```
 
-That runs migrations against RDS, then serves the app on port 80. Do not run `db:seed` in production. Put HTTPS (Caddy, nginx, or an ALB) in front when you have a domain.
-
-If migrate fails, rebuild the migrate image (stale images skip the RDS preflight):
-
-```bash
-docker compose -f docker-compose.prod.yml build migrate
-docker compose -f docker-compose.prod.yml run --rm migrate 2>&1 | tee migrate.log
-```
-
-Test RDS from EC2 (should print `?column?` / `1`):
-
-```bash
-docker run --rm -e PGPASSWORD=YOUR_PASSWORD postgres:16-alpine \
-  psql "postgresql://postgres:YOUR_PASSWORD@YOUR_RDS_HOST:5432/postgres?sslmode=require" \
-  -c "select 1"
-```
-
-If that times out (~30s), fix the **RDS security group**: inbound **5432** from the **EC2 security group** (same VPC). Then:
-
-```bash
-docker compose -f docker-compose.prod.yml run --rm migrate
-docker compose -f docker-compose.prod.yml up -d --remove-orphans
-```
+Do not run `db:seed` in production.

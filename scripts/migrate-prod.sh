@@ -7,12 +7,12 @@ echo "POSTGRES_USER=${POSTGRES_USER:-postgres}"
 echo "POSTGRES_DB=${POSTGRES_DB:-postgres}"
 
 if [ -z "${RDS_HOST:-}" ]; then
-  echo "ERROR: RDS_HOST is not set. Add it to .env in ~/LMNT/.env"
+  echo "ERROR: RDS_HOST is not set. Add it to .env in the project root."
   exit 1
 fi
 
 if [ -z "${POSTGRES_PASSWORD:-}" ]; then
-  echo "ERROR: POSTGRES_PASSWORD is not set. Add it to .env in ~/LMNT/.env"
+  echo "ERROR: POSTGRES_PASSWORD is not set. Add it to .env in the project root."
   exit 1
 fi
 

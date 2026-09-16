@@ -9,8 +9,7 @@
     "build": "next build",
     "start": "next start",
     "lint": "eslint",
-    "db:check": "pg_isready -h 127.0.0.1 -p 5432 || (echo '\\n❌ Postgres is not running on 127.0.0.1:5432\\n   Homebrew: brew services start postgresql@16\\n   Stale lock: rm -f /opt/homebrew/var/postgresql@16/postmaster.pid && brew services restart postgresql@16\\n   Docker:   docker compose up -d\\n' && exit 1)",
-    "db:up": "docker compose up -d",
+    "db:check": "pg_isready -h 127.0.0.1 -p 5432 || (echo '\\n❌ Postgres is not running on 127.0.0.1:5432\\n   Homebrew: brew services start postgresql@16\\n   Stale lock: rm -f /opt/homebrew/var/postgresql@16/postmaster.pid && brew services restart postgresql@16\\n' && exit 1)",
     "db:generate": "drizzle-kit generate",
     "db:migrate": "drizzle-kit migrate",
     "db:push": "drizzle-kit push",
@@ -18,7 +17,9 @@
     "db:seed-schedule": "tsx drizzle/seed-schedule.ts",
     "db:seed-ops": "tsx drizzle/seed-ops.ts",
     "db:setup": "npm run db:push && npm run db:seed",
-    "db:deploy": "drizzle-kit migrate"
+    "db:deploy": "drizzle-kit migrate",
+    "db:check-rds": "node scripts/check-rds.mjs",
+    "db:migrate:prod": "sh scripts/migrate-prod.sh"
   },
   "dependencies": {
     "bcryptjs": "^3.0.2",
