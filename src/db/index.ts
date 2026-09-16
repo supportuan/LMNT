@@ -13,11 +13,11 @@ const globalForDb = globalThis as unknown as {
   postgres: SqlClient | undefined;
 };
 
-function sslOption() {
-  if (/sslmode=disable/i.test(connectionString)) return false;
+function sslOption(url: string) {
+  if (/sslmode=disable/i.test(url)) return false;
   if (
-    connectionString.includes("rds.amazonaws.com") ||
-    /sslmode=(require|verify)/i.test(connectionString)
+    url.includes("rds.amazonaws.com") ||
+    /sslmode=(require|verify)/i.test(url)
   ) {
     return { rejectUnauthorized: false };
   }
@@ -33,7 +33,7 @@ const client: SqlClient =
     idle_timeout: 20,
     max_lifetime: 60 * 30,
     connect_timeout: 10,
-    ssl: sslOption(),
+    ssl: sslOption(connectionString),
   });
 
 if (process.env.NODE_ENV !== "production") {
