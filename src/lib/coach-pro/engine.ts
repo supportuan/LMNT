@@ -147,11 +147,13 @@ export function swapExerciseInPattern(pattern: string, currentName: string) {
 }
 
 /** @deprecated Session logs are persisted via workout-complete API */
-export function loadSessionLogs(_clientKey: string): SessionLog[] {
+export function loadSessionLogs(..._args: [string]): SessionLog[] {
+  void _args;
   return [];
 }
 
 /** @deprecated Session logs are persisted via workout-complete API */
-export function saveSessionLog(_clientKey: string, _log: SessionLog) {
+export function saveSessionLog(..._args: [string, SessionLog]) {
+  void _args;
   // no-op — use /api/client/workout-complete
 }
