@@ -12,6 +12,8 @@ const schema = z.object({
   programmeId: z.string().uuid().optional(),
   scheduledAt: z.string().datetime(),
   trainerId: z.string().uuid().optional(),
+  kind: z.enum(["pt", "assessment"]).optional(),
+  assessmentId: z.string().uuid().optional(),
 });
 
 export async function POST(request: Request) {
@@ -45,6 +47,8 @@ export async function POST(request: Request) {
       memberId: body.memberId,
       trainerId,
       programmeId: body.programmeId,
+      assessmentId: body.assessmentId,
+      kind: body.kind ?? "pt",
       scheduledAt: new Date(body.scheduledAt),
       status: "scheduled",
     })

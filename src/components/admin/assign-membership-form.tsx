@@ -11,11 +11,13 @@ export function AssignMembershipForm({
   members,
   trainers,
   packages,
+  buttonLabel = "Assign plan",
 }: {
   centres: { id: string; name: string }[];
   members: { id: string; name: string; centreId: string }[];
   trainers: { id: string; name: string; centreId: string | null }[];
   packages: { id: string; name: string; sessionCount: number; priceInr: number; trainerShareBps: number }[];
+  buttonLabel?: string;
 }) {
   const router = useRouter();
   const [open, setOpen] = useState(false);
@@ -77,7 +79,7 @@ export function AssignMembershipForm({
   if (!open) {
     return (
       <Button type="button" variant="secondary" onClick={() => setOpen(true)} disabled={members.length === 0 || packages.length === 0}>
-        Assign plan
+        {buttonLabel}
       </Button>
     );
   }

@@ -28,10 +28,10 @@ export function WeightTrendChart({
       <ResponsiveContainer width="100%" height="100%">
         <LineChart data={data}>
           <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.08)" />
-          <XAxis dataKey="date" tick={{ fontSize: 11, fill: "#8e9379" }} />
-          <YAxis domain={["auto", "auto"]} tick={{ fontSize: 11, fill: "#8e9379" }} />
-          <Tooltip contentStyle={{ background: "#1c1b1b", border: "1px solid rgba(255,255,255,0.1)" }} />
-          <Line type="monotone" dataKey="weight" stroke="#c3f400" strokeWidth={2} dot={{ r: 3 }} />
+          <XAxis dataKey="date" tick={{ fontSize: 11, fill: "var(--moss-400)" }} />
+          <YAxis domain={["auto", "auto"]} tick={{ fontSize: 11, fill: "var(--moss-400)" }} />
+          <Tooltip contentStyle={{ background: "var(--jet-900)", border: "1px solid var(--moss-800)" }} />
+          <Line type="monotone" dataKey="weight" stroke="var(--emerald-neon)" strokeWidth={2} dot={{ r: 3 }} />
         </LineChart>
       </ResponsiveContainer>
     </div>
@@ -54,10 +54,10 @@ export function SessionRpeChart({
       <ResponsiveContainer width="100%" height="100%">
         <LineChart data={data}>
           <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.08)" />
-          <XAxis dataKey="date" tick={{ fontSize: 11, fill: "#8e9379" }} />
-          <YAxis domain={[1, 10]} tick={{ fontSize: 11, fill: "#8e9379" }} />
-          <Tooltip contentStyle={{ background: "#1c1b1b", border: "1px solid rgba(255,255,255,0.1)" }} />
-          <Line type="monotone" dataKey="rpe" stroke="#00dbe9" strokeWidth={2} dot={{ r: 3 }} />
+          <XAxis dataKey="date" tick={{ fontSize: 11, fill: "var(--moss-400)" }} />
+          <YAxis domain={[1, 10]} tick={{ fontSize: 11, fill: "var(--moss-400)" }} />
+          <Tooltip contentStyle={{ background: "var(--jet-900)", border: "1px solid var(--moss-800)" }} />
+          <Line type="monotone" dataKey="rpe" stroke="var(--moss-300)" strokeWidth={2} dot={{ r: 3 }} />
         </LineChart>
       </ResponsiveContainer>
     </div>

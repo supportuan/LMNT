@@ -5,6 +5,18 @@ const nextConfig: NextConfig = {
     remotePatterns: [],
   },
   serverExternalPackages: ["postgres"],
+  async redirects() {
+    return [
+      { source: "/app/home", destination: "/app/member-view", permanent: true },
+      { source: "/app/overview", destination: "/", permanent: false },
+      { source: "/app/close-os", destination: "/app/leads/consultation", permanent: true },
+      { source: "/app/coach-pro", destination: "/app/programs", permanent: true },
+      { source: "/app/workout-planner", destination: "/app/programs", permanent: true },
+      { source: "/app/coach-mirror", destination: "/app/development/coach-mirror", permanent: true },
+      { source: "/app/sales", destination: "/app/leads", permanent: true },
+      { source: "/app/programmes", destination: "/app/programs", permanent: true },
+    ];
+  },
   async headers() {
     const headers = [
       { key: "X-Frame-Options", value: "DENY" },

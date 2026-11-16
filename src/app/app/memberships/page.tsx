@@ -1,17 +1,19 @@
 import Link from "next/link";
 import { redirect } from "next/navigation";
+import { AddGymMembershipForm } from "@/components/admin/add-gym-membership-form";
 import { AssignMembershipForm } from "@/components/admin/assign-membership-form";
 import { AssignTrainerSelect } from "@/components/admin/assign-trainer-select";
 import { OrgPackagesAdmin } from "@/components/admin/org-packages-admin";
 import { RecordPaymentButton } from "@/components/trainer/record-payment-button";
 import { Badge, DataTable, PageHeader, Panel, StatCard } from "@/components/ui";
 import { workspaceCentreLabel } from "@/lib/branch-scope";
-import { formatInr } from "@/lib/format";
+import { formatDate, formatInr } from "@/lib/format";
 import { canAccessModule, getRoleHome, hasPermission, PERMISSIONS } from "@/lib/policy";
 import { getSession } from "@/lib/session";
 import { bpsToPercent, collectedInr } from "@/lib/trainer-share";
 import { getScheduleTrainers } from "@/modules/admin-queries";
-import { getCentreMembers, getCentresForSession, getMemberships } from "@/modules/queries";
+import { displayStatusTone } from "@/lib/gym-membership";
+import { getCentreMembers, getCentresForSession, getGymMembershipsList, getMemberships } from "@/modules/queries";
 import { getOrgPackages } from "@/modules/sales-queries";
 
 export const dynamic = "force-dynamic";
@@ -21,8 +23,9 @@ export default async function MembershipsPage() {
   if (!session) redirect("/login");
   if (!canAccessModule(session.activeRole, "memberships")) redirect(getRoleHome(session.activeRole));
 
-  const [plans, packages, members, trainers, centres] = await Promise.all([
+  const [plans, gymPacks, packages, members, trainers, centres] = await Promise.all([
     getMemberships(session),
+    getGymMembershipsList(session),
     getOrgPackages(session),
     getCentreMembers(session),
     getScheduleTrainers(session),
@@ -78,18 +81,29 @@ export default async function MembershipsPage() {
         description={`Catalog, trainer share, and assigned memberships for ${workspaceLabel}.`}
         action={
           canAssign ? (
-            <AssignMembershipForm
-              centres={orderedCentres}
-              members={members.map((member) => ({ id: member.id, name: member.name, centreId: member.centreId }))}
-              trainers={trainers}
-              packages={activeCatalog.map((pkg) => ({
-                id: pkg.id,
-                name: pkg.name,
-                sessionCount: pkg.sessionCount,
-                priceInr: pkg.priceInr,
-                trainerShareBps: pkg.trainerShareBps,
-              }))}
-            />
+            <div className="flex flex-wrap gap-2">
+              <AddGymMembershipForm
+                centres={orderedCentres}
+                members={members.map((member) => ({
+                  id: member.id,
+                  name: member.name,
+                  centreId: member.centreId,
+                }))}
+              />
+              <AssignMembershipForm
+                centres={orderedCentres}
+                members={members.map((member) => ({ id: member.id, name: member.name, centreId: member.centreId }))}
+                trainers={trainers}
+                packages={activeCatalog.map((pkg) => ({
+                  id: pkg.id,
+                  name: pkg.name,
+                  sessionCount: pkg.sessionCount,
+                  priceInr: pkg.priceInr,
+                  trainerShareBps: pkg.trainerShareBps,
+                }))}
+                buttonLabel="Assign PT pack"
+              />
+            </div>
           ) : undefined
         }
       />
@@ -123,7 +137,34 @@ export default async function MembershipsPage() {
       </div>
 
       <h2 className="mb-3 text-sm font-semibold uppercase tracking-wider text-[var(--workspace-muted)]">
-        Assigned memberships · {workspaceLabel}
+        Gym packs (facility access) · {workspaceLabel}
+      </h2>
+      <DataTable
+        headers={["Member", "Pack", "Branch", "Start", "End", "Status"]}
+        rows={
+          gymPacks.length === 0
+            ? [["—", "No gym packs yet", "—", "—", "—", "—"]]
+            : gymPacks.map((pack) => [
+                <Link
+                  key={pack.id}
+                  href={`/app/clients/${pack.memberId}`}
+                  className="font-medium hover:text-[var(--workspace-accent)]"
+                >
+                  {pack.memberName}
+                </Link>,
+                pack.packLabel,
+                pack.centreName,
+                formatDate(pack.startsAt),
+                formatDate(pack.endsAt),
+                <Badge key={pack.id} tone={displayStatusTone(pack.displayStatus)}>
+                  {pack.displayStatus}
+                </Badge>,
+              ])
+        }
+      />
+
+      <h2 className="mb-3 mt-10 text-sm font-semibold uppercase tracking-wider text-[var(--workspace-muted)]">
+        PT packs (sessions) · {workspaceLabel}
       </h2>
       <DataTable
         headers={["Member", "Plan", "Branch", "Trainer", "Sessions", "Value", "Trainer revenue", "Due", ""]}

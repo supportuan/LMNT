@@ -7,6 +7,7 @@ import {
   auditEntries,
   centres,
   coachingRelationships,
+  gymMemberships,
   inventoryItems,
   leads,
   memberPlans,
@@ -24,6 +25,7 @@ import { trainerCollectedInr } from "@/lib/trainer-share";
 import { assetNeedsAttention, assetUiStatus } from "@/lib/asset-status";
 import type { SessionPayload } from "@/lib/session";
 import { orgAndCentreScope, scopedCentreIds, withCentreScope } from "@/lib/branch-scope";
+import { gymMembershipDisplayStatus, packLabel } from "@/lib/gym-membership";
 import { getReportingSnapshot } from "@/lib/metrics";
 
 export async function getAnalytics(session: SessionPayload) {
@@ -471,6 +473,8 @@ export type CentreMemberRow = {
   planName: string | null;
   planStatus: string | null;
   planEndsAt: Date | null;
+  gymPackLabel: string | null;
+  gymDisplayStatus: string | null;
   amountDue: number;
   attendance30d: number;
 };
@@ -516,6 +520,17 @@ export async function getCentreMembers(session: SessionPayload): Promise<CentreM
       .orderBy(desc(memberPlans.createdAt))
       .limit(1);
 
+    const [gym] = await db
+      .select({
+        packMonths: gymMemberships.packMonths,
+        status: gymMemberships.status,
+        endsAt: gymMemberships.endsAt,
+      })
+      .from(gymMemberships)
+      .where(eq(gymMemberships.memberId, m.id))
+      .orderBy(desc(gymMemberships.createdAt))
+      .limit(1);
+
     const [attendance] = await db
       .select({ value: count() })
       .from(attendanceRecords)
@@ -530,6 +545,8 @@ export async function getCentreMembers(session: SessionPayload): Promise<CentreM
       planName: plan?.planName ?? null,
       planStatus: plan?.planStatus ?? null,
       planEndsAt: plan?.planEndsAt ?? null,
+      gymPackLabel: gym ? packLabel(gym.packMonths) : null,
+      gymDisplayStatus: gym ? gymMembershipDisplayStatus(gym.status, gym.endsAt) : null,
       amountDue: plan?.amountDue ?? 0,
       attendance30d: attendance?.value ?? 0,
     });
@@ -596,6 +613,42 @@ export async function getMarketplaceTrainers(organisationId: string) {
       bio: r.bio ?? defaultBio,
       sessionsPerWeek: r.sessionsPerWeek ?? "3–5 sessions / week",
     }));
+}
+
+export async function getGymMembershipsList(session: SessionPayload) {
+  const scope = orgAndCentreScope(session, gymMemberships.organisationId, gymMemberships.centreId);
+  const rows = await db
+    .select({
+      id: gymMemberships.id,
+      memberId: gymMemberships.memberId,
+      memberName: members.name,
+      centreName: centres.name,
+      packMonths: gymMemberships.packMonths,
+      startsAt: gymMemberships.startsAt,
+      endsAt: gymMemberships.endsAt,
+      status: gymMemberships.status,
+    })
+    .from(gymMemberships)
+    .innerJoin(members, eq(gymMemberships.memberId, members.id))
+    .innerJoin(centres, eq(gymMemberships.centreId, centres.id))
+    .where(scope)
+    .orderBy(desc(gymMemberships.createdAt));
+
+  return rows.map((row) => ({
+    ...row,
+    packLabel: packLabel(row.packMonths),
+    displayStatus: gymMembershipDisplayStatus(row.status, row.endsAt),
+  }));
+}
+
+export async function getLatestGymMembership(memberId: string) {
+  const [row] = await db
+    .select()
+    .from(gymMemberships)
+    .where(eq(gymMemberships.memberId, memberId))
+    .orderBy(desc(gymMemberships.createdAt))
+    .limit(1);
+  return row ?? null;
 }
 
 export async function getMemberships(session: SessionPayload) {

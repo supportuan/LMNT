@@ -442,7 +442,7 @@ Client: ...`}
                   <div
                     className="ring"
                     style={{
-                      background: `conic-gradient(var(--blue) 0 ${report.total}%, #edf0f5 ${report.total}% 100%)`,
+                      background: `conic-gradient(var(--blue) 0 ${report.total}%, var(--moss-800) ${report.total}% 100%)`,
                     }}
                   >
                     <b>{report.total}</b>

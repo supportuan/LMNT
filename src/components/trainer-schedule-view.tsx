@@ -61,7 +61,7 @@ export function TrainerScheduleView({ sessions }: { sessions: ScheduleSession[] 
           type="button"
           onClick={() => setTab("today")}
           className={`rounded-lg px-4 py-2 text-sm font-medium ${
-            tab === "today" ? "bg-orange-600 text-lime-300" : "bg-zinc-900 text-zinc-400"
+            tab === "today" ? "bg-[var(--emerald-neon)] text-[var(--emerald-neon-ink)] font-semibold" : "bg-[var(--moss-tint)] text-[var(--workspace-muted)] hover:text-[var(--workspace-text)]"
           }`}
         >
           Today
@@ -70,7 +70,7 @@ export function TrainerScheduleView({ sessions }: { sessions: ScheduleSession[] 
           type="button"
           onClick={() => setTab("week")}
           className={`rounded-lg px-4 py-2 text-sm font-medium ${
-            tab === "week" ? "bg-orange-600 text-lime-300" : "bg-zinc-900 text-zinc-400"
+            tab === "week" ? "bg-[var(--emerald-neon)] text-[var(--emerald-neon-ink)] font-semibold" : "bg-[var(--moss-tint)] text-[var(--workspace-muted)] hover:text-[var(--workspace-text)]"
           }`}
         >
           Week
@@ -79,13 +79,13 @@ export function TrainerScheduleView({ sessions }: { sessions: ScheduleSession[] 
 
       {tab === "today" && (
         <div className="space-y-4">
-          <div className="grid gap-4 rounded-xl border border-zinc-800 bg-zinc-900/50 p-5 lg:grid-cols-[1.4fr_1fr]">
+          <div className="grid gap-4 rounded-xl border border-[var(--workspace-border)] bg-[var(--workspace-surface)] p-5 lg:grid-cols-[1.4fr_1fr]">
             <div>
-              <div className="text-xs uppercase tracking-wider text-zinc-500">Next client</div>
+              <div className="text-xs uppercase tracking-wider text-[var(--workspace-subtle)]">Next client</div>
               <div className="mt-1 text-2xl font-bold">
                 {nextSession ? nextSession.memberName : "No session booked"}
               </div>
-              <div className="mt-1 text-sm text-zinc-400">
+              <div className="mt-1 text-sm text-[var(--workspace-muted)]">
                 {nextSession
                   ? `${new Date(nextSession.scheduledAt).toLocaleString()} · ${nextSession.programmeTitle ?? "PT session"}`
                   : "Open Week to review your timetable."}
@@ -105,26 +105,26 @@ export function TrainerScheduleView({ sessions }: { sessions: ScheduleSession[] 
             </div>
           )}
 
-          <section className="rounded-xl border border-zinc-800 p-4">
-            <h3 className="mb-3 text-sm font-semibold uppercase tracking-wider text-zinc-400">
+          <section className="rounded-xl border border-[var(--workspace-border)] p-4">
+            <h3 className="mb-3 text-sm font-semibold uppercase tracking-wider text-[var(--workspace-muted)]">
               Today&apos;s sessions
             </h3>
             {todaySessions.length === 0 ? (
-              <p className="text-sm text-zinc-500">No sessions today. Protect recovery time.</p>
+              <p className="text-sm text-[var(--workspace-subtle)]">No sessions today. Protect recovery time.</p>
             ) : (
               <div className="space-y-2">
                 {todaySessions.map((s) => (
                   <div
                     key={s.id}
-                    className="flex items-center justify-between rounded-lg border border-zinc-800 px-4 py-3 text-sm"
+                    className="flex items-center justify-between rounded-lg border border-[var(--workspace-border)] px-4 py-3 text-sm"
                   >
                     <div>
                       <div className="font-medium">{s.memberName}</div>
-                      <div className="text-zinc-500">
+                      <div className="text-[var(--workspace-subtle)]">
                         {new Date(s.scheduledAt).toLocaleTimeString()} · {s.programmeTitle ?? "PT"}
                       </div>
                     </div>
-                    <span className="capitalize text-zinc-400">{s.status}</span>
+                    <span className="capitalize text-[var(--workspace-muted)]">{s.status}</span>
                   </div>
                 ))}
               </div>
@@ -142,7 +142,7 @@ function Stat({ label, value }: { label: string; value: string }) {
   return (
     <div className="rounded-lg bg-black/40 px-3 py-2">
       <div className="text-lg font-bold">{value}</div>
-      <div className="text-[10px] uppercase text-zinc-500">{label}</div>
+      <div className="text-[10px] uppercase text-[var(--workspace-subtle)]">{label}</div>
     </div>
   );
 }

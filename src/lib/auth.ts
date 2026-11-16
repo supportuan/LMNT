@@ -138,6 +138,13 @@ export async function buildSessionForRole(
     return null;
   }
 
+  const { resolvePermissionsForSession } = await import("@/modules/rbac-queries");
+  const permissions = await resolvePermissionsForSession({
+    userId: base.user.id,
+    organisationId: base.organisationId,
+    activeRole,
+  });
+
   return createSessionToken({
     userId: base.user.id,
     email: base.user.email,
@@ -148,6 +155,7 @@ export async function buildSessionForRole(
     centreIds: base.centreIds,
     centreNames: base.centreNames,
     roles: base.roles,
+    permissions,
     activeCentreId: null,
     sessionVersion: base.user.sessionVersion ?? 1,
   });

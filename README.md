@@ -30,17 +30,15 @@ Login with an account you create. The login screen does not ship demo credential
 
 ## Local seed (development only)
 
-`npm run db:setup` loads sample gym data for local work. Do not use these accounts in production.
+`npm run db:setup` loads org/centres and `admin@lmnt.local` by default. Do not use seed accounts in production.
 
-Password for seeded local accounts: `password123`
+Password: `SEED_PASSWORD` (default `password123`)
 
 | Email | Role | Branch |
 |---|---|---|
 | admin@lmnt.local | Admin | All |
-| manager.indiranagar@lmnt.local | Centre Manager | Indiranagar |
-| trainer.indiranagar@lmnt.local | Trainer | Indiranagar |
-| client.indiranagar@lmnt.local | Client | Indiranagar |
-| manager.koramangala@lmnt.local | Centre Manager | Koramangala |
+
+Optional staff/client demos (`SEED_DEMO_STAFF=true`): `manager.indiranagar@lmnt.local`, `manager.koramangala@lmnt.local`, `trainer.indiranagar@lmnt.local`, `client.indiranagar@lmnt.local`.
 
 ## Tenancy model
 

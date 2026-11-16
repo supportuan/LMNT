@@ -60,7 +60,7 @@ export function StatCard({
           {label}
         </div>
         {icon && (
-          <div className="neu-control flex h-9 w-9 shrink-0 items-center justify-center text-[var(--workspace-accent)]">
+          <div className="neu-control flex h-9 w-9 shrink-0 items-center justify-center text-[var(--emerald-neon)]">
             {icon}
           </div>
         )}
@@ -83,7 +83,7 @@ export function StatCard({
     return (
       <Link
         href={href}
-        className="neu-card block p-[var(--card-padding)] transition hover:bg-[var(--workspace-elevated)]"
+        className="neu-card block p-[var(--card-padding)] transition hover:bg-[var(--workspace-elevated)] hover:shadow-[0_4px_14px_rgba(0,0,0,0.5),inset_0_0_0_1px_var(--moss-700)]"
       >
         {content}
       </Link>
@@ -148,7 +148,7 @@ export function DataTable({
               rows.map((row, index) => (
                 <tr
                   key={index}
-                  className="border-t border-[var(--workspace-border)] transition-colors hover:bg-[var(--workspace-elevated)]"
+                  className="border-t border-[var(--workspace-border)] transition-colors hover:bg-[var(--workspace-secondary-muted)]"
                 >
                   {row.map((cell, cellIndex) => (
                     <td key={cellIndex} className="px-5 py-3.5 align-middle text-[var(--workspace-text)]">
@@ -173,10 +173,10 @@ export function Badge({
   tone?: "neutral" | "success" | "warning" | "info" | "danger";
 }) {
   const tones = {
-    neutral: "bg-[var(--workspace-elevated)] text-[var(--workspace-muted)]",
+    neutral: "bg-[var(--workspace-secondary-muted)] text-[var(--workspace-muted)]",
     success: "bg-[var(--status-success-bg)] text-[var(--status-success)]",
     warning: "bg-[var(--status-warning-bg)] text-[var(--status-warning)]",
-    info: "bg-[var(--workspace-accent-muted)] text-[var(--workspace-accent)]",
+    info: "bg-[var(--workspace-secondary-muted)] text-[var(--workspace-secondary-text)] ring-1 ring-inset ring-[var(--workspace-border-strong)]",
     danger: "bg-[var(--status-danger-bg)] text-[var(--status-danger)]",
   };
 
@@ -214,7 +214,7 @@ export function Button({
       "bg-[var(--workspace-accent)] text-[var(--workspace-accent-text)] shadow-[var(--neu-shadow-control)] hover:bg-[var(--workspace-accent-hover)]",
     secondary:
       "neu-control text-[var(--workspace-text)] hover:text-[var(--workspace-text)]",
-    ghost: "rounded-[12px] text-[var(--workspace-muted)] hover:text-[var(--workspace-text)] hover:bg-[var(--workspace-elevated)]",
+    ghost: "rounded-[12px] text-[var(--workspace-muted)] hover:text-[var(--workspace-text)] hover:bg-[var(--workspace-secondary-muted)]",
   };
   const cls = `${base} ${sizes[size]} ${variants[variant]} ${className}`;
 
@@ -244,7 +244,7 @@ export function AttentionItem({
   const border = {
     warning: "border-l-[var(--status-warning)]",
     danger: "border-l-[var(--status-danger)]",
-    info: "border-l-[var(--workspace-accent)]",
+    info: "border-l-[var(--workspace-secondary)]",
   };
   return (
     <div className={`neu-inset rounded-[12px] border-l-[3px] px-4 py-3 ${border[tone]}`}>
@@ -400,41 +400,6 @@ export function EmptyState({
   );
 }
 
-export function Modal({
-  title,
-  children,
-  onClose,
-}: {
-  title: string;
-  children: React.ReactNode;
-  onClose: () => void;
-}) {
-  return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/55 p-4" onClick={onClose} role="presentation">
-      <div
-        role="dialog"
-        aria-modal="true"
-        aria-labelledby="modal-title"
-        className="neu-card w-full max-w-lg p-6"
-        onClick={(e) => e.stopPropagation()}
-      >
-        <div className="mb-5 flex items-start justify-between gap-3">
-          <h2 id="modal-title" className="text-lg font-semibold tracking-tight">
-            {title}
-          </h2>
-          <button
-            type="button"
-            onClick={onClose}
-            className="neu-control h-8 w-8 text-[var(--workspace-muted)] hover:text-[var(--workspace-text)]"
-            aria-label="Close"
-          >
-            ×
-          </button>
-        </div>
-        {children}
-      </div>
-    </div>
-  );
-}
+export { Dialog as Modal, Field, DayPicker } from "@/components/dialog";
 
 export const fieldClass = "neu-input";

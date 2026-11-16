@@ -1,4 +1,4 @@
-import { ollamaChat, isOllamaAvailable } from "@/lib/ollama";
+import { aiChat, getAiStatus } from "@/lib/ai-provider";
 import { buildExplanation, type AiExplanation } from "@/lib/intelligence/explain";
 import { retrieveContextRanked } from "@/lib/rag";
 import type { getMemberContextForAi } from "@/modules/queries";
@@ -31,6 +31,7 @@ export async function generateWorkoutPlan(input: {
   plan: string;
   explanation: AiExplanation;
   modelSource: string;
+  note?: string;
 }> {
   const focus = input.focus ?? input.context.member.goal ?? "general strength";
   const ragQuery = `workout programme ${input.context.member.goal ?? "strength"} ${focus} ${input.weeks} weeks`;
@@ -57,25 +58,28 @@ export async function generateWorkoutPlan(input: {
     2,
   );
 
-  if (!(await isOllamaAvailable())) {
+  const status = await getAiStatus();
+  if (!status.ready) {
     return {
       plan: fallbackPlan(input.weeks),
       explanation,
       modelSource: "fallback",
+      note: status.hint,
     };
   }
 
-  const plan = await ollamaChat([
-    {
-      role: "system",
-      content: `You are a strength & conditioning coach at LMNT Fitness Club.
+  try {
+    const { text: plan, source } = await aiChat([
+      {
+        role: "system",
+        content: `You are a strength & conditioning coach at LMNT Fitness Club.
 Design a structured workout plan using the knowledge base templates.
 Include weekly split, exercises, sets/reps, and progression notes.
 Keep it safe — respect referral flags. Use markdown headings.`,
-    },
-    {
-      role: "user",
-      content: `Knowledge base:
+      },
+      {
+        role: "user",
+        content: `Knowledge base:
 ${knowledge}
 
 Member:
@@ -85,12 +89,20 @@ Create a ${input.weeks}-week plan, ${input.daysPerWeek} days per week.
 Focus: ${focus}.
 Experience: ${input.experience ?? "beginner"}.
 ${input.injuries ? `Injuries/limits: ${input.injuries}` : ""}`,
-    },
-  ]);
+      },
+    ]);
 
-  return {
-    plan,
-    explanation,
-    modelSource: "ollama+rag",
-  };
+    return {
+      plan,
+      explanation,
+      modelSource: `${source}+rag`,
+    };
+  } catch {
+    return {
+      plan: fallbackPlan(input.weeks),
+      explanation,
+      modelSource: "fallback",
+      note: status.hint,
+    };
+  }
 }

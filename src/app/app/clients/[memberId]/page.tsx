@@ -1,4 +1,5 @@
 import { redirect } from "next/navigation";
+import { MemberIntakePanel } from "@/components/admin/member-intake-panel";
 import { OnboardingChecklist } from "@/components/trainer/onboarding-checklist";
 import { AttentionItem, Panel } from "@/components/ui";
 import { assertMemberAccess } from "@/lib/access";
@@ -24,6 +25,8 @@ export default async function ClientOverviewPage({
 
   return (
     <div className="grid gap-6 lg:grid-cols-2">
+      <MemberIntakePanel member={ws.member} />
+
       <Panel title="Coach attention">
         <div className="space-y-2">
           {ws.coachAttention.map((msg, i) => (

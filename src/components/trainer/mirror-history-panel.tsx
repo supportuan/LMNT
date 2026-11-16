@@ -27,7 +27,7 @@ export function MirrorHistoryPanel({
         {previous && (
           <div className="box">
             <b>vs previous</b>
-            <div className="calc" style={{ color: latest.overall >= previous.overall ? "#059669" : "#dc2626" }}>
+            <div className="calc" style={{ color: latest.overall >= previous.overall ? "var(--status-success)" : "var(--status-danger)" }}>
               {latest.overall >= previous.overall ? "+" : ""}
               {latest.overall - previous.overall} pts
             </div>
@@ -48,7 +48,7 @@ export function MirrorHistoryPanel({
               <div key={domain} className="meter">
                 <b>
                   {domain}{" "}
-                  <span style={{ color: diff > 0 ? "#059669" : "#dc2626" }}>
+                  <span style={{ color: diff > 0 ? "var(--status-success)" : "var(--status-danger)" }}>
                     {diff > 0 ? "+" : ""}
                     {diff}
                   </span>

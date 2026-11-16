@@ -2,13 +2,18 @@ import { redirect } from "next/navigation";
 import { ChangePasswordForm } from "@/components/change-password-form";
 import { BranchesAdmin } from "@/components/admin/branches-admin";
 import { OrgPackagesAdmin } from "@/components/admin/org-packages-admin";
-import { Badge, DataTable, PageHeader, Panel } from "@/components/ui";
-import { canAccessModule, getRoleHome } from "@/lib/policy";
+import { DataTable, PageHeader, Panel } from "@/components/ui";
+import { canAccessModule, getRoleHome, ROLE_LABELS, type AppRole } from "@/lib/policy";
 import { workspaceCentreLabel } from "@/lib/branch-scope";
+import { formatDate } from "@/lib/format";
 import { getSession } from "@/lib/session";
 import { getOrgProfile } from "@/modules/admin-queries";
 import { getOrganisationSettings } from "@/modules/queries";
 import { getOrgPackages } from "@/modules/sales-queries";
+
+function roleLabel(role: string) {
+  return ROLE_LABELS[role as AppRole] ?? role.replaceAll("_", " ");
+}
 
 export default async function OrganisationSettingsPage() {
   const session = await getSession();
@@ -23,13 +28,14 @@ export default async function OrganisationSettingsPage() {
 
   const admins = settings.assignments.filter((row) => row.role === "admin");
   const centreNames = Object.fromEntries(settings.centres.map((centre) => [centre.id, centre.name]));
-  const timezone = settings.centres[0]?.timezone ?? "Asia/Kolkata";
+  const timezones = [...new Set(settings.centres.map((c) => c.timezone).filter(Boolean))];
+  const activeBranches = settings.centres.filter((c) => c.status === "active").length;
 
   return (
     <>
       <PageHeader
-        title="Settings"
-        description="Gym profile, admin users, notifications, payment settings, and system."
+        title="Organisation"
+        description="Gym profile, branches, packages, and who has access."
       />
 
       <Panel title="Gym profile">
@@ -39,7 +45,10 @@ export default async function OrganisationSettingsPage() {
             ["Name", org?.name ?? session.organisationName],
             ["Slug", org?.slug ?? "—"],
             ["Status", org?.status ?? "active"],
-            ["Scope", workspaceCentreLabel(session)],
+            ["Branches", `${activeBranches} active · ${settings.centres.length} total`],
+            ["Timezones", timezones.length ? timezones.join(", ") : "—"],
+            ["Workspace scope", workspaceCentreLabel(session)],
+            ["Created", formatDate(org?.createdAt)],
           ]}
         />
       </Panel>
@@ -48,48 +57,16 @@ export default async function OrganisationSettingsPage() {
         <Panel title="Admin users">
           <DataTable
             headers={["User", "Email", "Role", "Branch"]}
-            rows={admins.map((row) => [
-              row.userName,
-              row.userEmail,
-              row.role.replace("_", " "),
-              row.centreId ? (centreNames[row.centreId] ?? "All branches") : "All branches",
-            ])}
-          />
-        </Panel>
-      </div>
-
-      <div className="mt-6 grid gap-[var(--grid-gutter)] lg:grid-cols-2">
-        <Panel title="Notifications">
-          <ul className="space-y-2 text-sm text-[var(--workspace-muted)]">
-            <li>Membership expiry alerts — 14 days before end date</li>
-            <li>Overdue payment reminders — daily digest to gym admins</li>
-            <li>Asset maintenance due — when next service date arrives</li>
-            <li>Session cancellations — posted to Recent Activity</li>
-          </ul>
-        </Panel>
-        <Panel title="Payment settings">
-          <DataTable
-            headers={["Method", "Status"]}
-            rows={[
-              ["UPI", <Badge key="upi" tone="success">Enabled</Badge>],
-              ["Card", <Badge key="card" tone="success">Enabled</Badge>],
-              ["Cash", <Badge key="cash" tone="success">Enabled</Badge>],
-              ["Bank transfer", <Badge key="bank" tone="info">Manual</Badge>],
-            ]}
-          />
-        </Panel>
-      </div>
-
-      <div className="mt-6">
-        <Panel title="System settings">
-          <DataTable
-            headers={["Setting", "Value"]}
-            rows={[
-              ["Timezone", timezone],
-              ["Currency", "INR"],
-              ["Date format", "DD MMM YYYY"],
-              ["Asset status model", "Available / In use / Maintenance / Damaged"],
-            ]}
+            rows={
+              admins.length
+                ? admins.map((row) => [
+                    row.userName,
+                    row.userEmail,
+                    roleLabel(row.role),
+                    row.centreId ? (centreNames[row.centreId] ?? "All branches") : "All branches",
+                  ])
+                : [["—", "No admin assignments", "—", "—"]]
+            }
           />
         </Panel>
       </div>
@@ -113,12 +90,16 @@ export default async function OrganisationSettingsPage() {
       </h2>
       <DataTable
         headers={["User", "Email", "Role", "Branch"]}
-        rows={settings.assignments.map((row) => [
-          row.userName,
-          row.userEmail,
-          row.role.replace("_", " "),
-          row.centreId ? (centreNames[row.centreId] ?? "All") : "All",
-        ])}
+        rows={
+          settings.assignments.length
+            ? settings.assignments.map((row) => [
+                row.userName,
+                row.userEmail,
+                roleLabel(row.role),
+                row.centreId ? (centreNames[row.centreId] ?? "All") : "All",
+              ])
+            : [["—", "No role assignments", "—", "—"]]
+        }
       />
     </>
   );

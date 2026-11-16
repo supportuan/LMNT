@@ -50,52 +50,31 @@ const TRAINER_NAV: NavGroup[] = [
 
 const ADMIN_NAV: NavGroup[] = [
   {
-    items: [{ href: "/app/analytics", label: "Dashboard", module: "analytics" }],
-  },
-  {
     items: [
+      { href: "/app/analytics", label: "Dashboard", module: "analytics" },
       { href: "/app/members", label: "Members", module: "members" },
+      { href: "/app/scheduling", label: "Assessments", module: "calendar" },
       { href: "/app/sessions", label: "Sessions", module: "sessions" },
       { href: "/app/staff", label: "Trainers", module: "staff" },
-    ],
-  },
-  {
-    items: [
       { href: "/app/memberships", label: "Membership plans", module: "memberships" },
+      { href: "/app/pt-packs", label: "PT packs", module: "memberships" },
+      { href: "/app/capability", label: "Capability", module: "assessments" },
       { href: "/app/payments", label: "Payments", module: "payments" },
-    ],
-  },
-  {
-    items: [
-      {
-        href: "/app/assets",
-        label: "Assets",
-        module: "assets",
-        children: [
-          { href: "/app/assets", label: "All Assets", module: "assets" },
-          { href: "/app/assets?view=maintenance", label: "Maintenance", module: "assets" },
-          { href: "/app/work-requests", label: "Work requests", module: "work-requests" },
-          { href: "/app/assets?view=categories", label: "Categories", module: "assets" },
-        ],
-      },
-    ],
-  },
-  {
-    items: [
+      { href: "/app/assets", label: "Assets", module: "assets" },
+      { href: "/app/work-requests", label: "Work requests", module: "work-requests" },
       { href: "/app/calendar", label: "Schedule", module: "calendar" },
       { href: "/app/reports", label: "Reports", module: "reports" },
       { href: "/app/partners", label: "Partners", module: "partners" },
       { href: "/app/moderation", label: "Moderation", module: "moderation" },
+      { href: "/settings/organisation", label: "Organisation", module: "organisation" },
+      { href: "/settings/roles", label: "Roles & permissions", module: "roles" },
     ],
-  },
-  {
-    items: [{ href: "/settings/organisation", label: "Settings", module: "organisation" }],
   },
 ];
 
 const CLIENT_NAV: NavGroup[] = [
   {
-    items: [{ href: "/app/home", label: "Home", module: "home" }],
+    items: [{ href: "/app/member-view", label: "My view", module: "home" }],
   },
   {
     label: "My fitness",
@@ -124,20 +103,34 @@ const CENTRE_MANAGER_NAV: NavGroup[] = [
     items: [{ href: "/app/analytics", label: "Dashboard", module: "analytics" }],
   },
   {
-    label: "Operations",
+    label: "People",
     items: [
       { href: "/app/members", label: "Members", module: "clients" },
-      { href: "/app/memberships", label: "Membership plans", module: "memberships" },
-      { href: "/app/payments", label: "Payments", module: "payments" },
-      { href: "/app/sessions", label: "Sessions", module: "sessions" },
       { href: "/app/staff", label: "Staff", module: "staff" },
+      { href: "/app/scheduling", label: "Assessments", module: "calendar" },
+      { href: "/app/sessions", label: "Sessions", module: "sessions" },
+    ],
+  },
+  {
+    label: "Revenue",
+    items: [
+      { href: "/app/memberships", label: "Membership plans", module: "memberships" },
+      { href: "/app/pt-packs", label: "PT packs", module: "memberships" },
+      { href: "/app/payments", label: "Payments", module: "payments" },
+      { href: "/app/leads", label: "Sales", module: "leads" },
+    ],
+  },
+  {
+    label: "Operations",
+    items: [
+      { href: "/app/capability", label: "Capability", module: "assessments" },
       { href: "/app/assets", label: "Assets", module: "assets" },
       { href: "/app/work-requests", label: "Work requests", module: "work-requests" },
       { href: "/app/inventory", label: "Inventory", module: "inventory" },
-      { href: "/app/leads", label: "Sales", module: "leads" },
       { href: "/app/partners", label: "Partners", module: "partners" },
       { href: "/app/moderation", label: "Moderation", module: "moderation" },
       { href: "/settings/audit", label: "Audit log", module: "audit" },
+      { href: "/settings/roles", label: "Roles & permissions", module: "roles" },
     ],
   },
 ];
@@ -163,6 +156,19 @@ export function canAccessModule(role: AppRole, module: string): boolean {
   return hasPermission(role, permission);
 }
 
+/** Permission-driven module gate (preferred over role-name checks). */
+export function canAccessModuleForSession(
+  session: { activeRole: AppRole; permissions?: Permission[] },
+  module: string,
+): boolean {
+  const permission = MODULE_PERMISSION[module];
+  if (!permission) return false;
+  if (session.permissions && session.permissions.length > 0) {
+    return session.permissions.includes(permission);
+  }
+  return hasPermission(session.activeRole, permission);
+}
+
 export function getNavForRole(role: AppRole): NavGroup[] {
   return NAV_BY_ROLE[role];
 }
@@ -172,7 +178,7 @@ export function getRoleHome(role: AppRole): string {
     admin: "/app/analytics",
     centre_manager: "/app/analytics",
     trainer: "/app/dashboard",
-    client: "/app/home",
+    client: "/app/member-view",
   };
   return homes[role];
 }

@@ -1,11 +1,11 @@
 .coachPro {
-  --blue: #00a6d6;
-  --black: #0b0d0e;
-  --graphite: #15191b;
-  --charcoal: #22272a;
-  --white: #f5f4f0;
-  --muted: #a7afb3;
-  --line: #2d3337;
+  --blue: var(--emerald-neon);
+  --black: var(--jet-950);
+  --graphite: var(--jet-900);
+  --charcoal: var(--jet-800);
+  --white: var(--workspace-text);
+  --muted: var(--moss-300);
+  --line: var(--moss-800);
   min-height: 100vh;
   background: var(--black);
   color: var(--white);
@@ -121,7 +121,7 @@
 
 .coachPro .bodyCard.active {
   border: 2px solid var(--blue);
-  box-shadow: 0 0 0 2px rgba(0, 166, 214, 0.14);
+  box-shadow: 0 0 0 2px var(--emerald-neon-tint);
 }
 
 .coachPro .bodyCard svg {
@@ -201,7 +201,7 @@
 
 .coachPro .programTable th {
   background: var(--blue);
-  color: #071014;
+  color: var(--emerald-neon-ink);
   font-size: 10px;
   text-align: left;
   padding: 9px;
@@ -216,7 +216,7 @@
 .coachPro .logpanel {
   margin-top: 10px;
   background: #f7f7f5 !important;
-  color: #111416 !important;
+  color: var(--jet-900) !important;
   border: 1px solid #d9d9d5 !important;
   border-radius: 12px;
   padding: 18px;
@@ -225,13 +225,13 @@
 .coachPro .logpanel b,
 .coachPro .logpanel label,
 .coachPro .logpanel span {
-  color: #111416 !important;
+  color: var(--jet-900) !important;
 }
 
 .coachPro .logpanel input,
 .coachPro .logpanel select {
   background: #fff !important;
-  color: #111416 !important;
+  color: var(--jet-900) !important;
   border: 1px solid #cfcfca !important;
   width: 100%;
   padding: 8px;
@@ -254,18 +254,18 @@
 }
 
 .coachPro .autoMetric {
-  background: #e9f6fa;
-  border: 1px solid #c7e7f1;
+  background: #eef1e8;
+  border: 1px solid #d3dac6;
   border-radius: 10px;
   padding: 9px;
   font-size: 10px;
-  color: #111416 !important;
+  color: var(--jet-900) !important;
 }
 
 .coachPro .autoMetric b {
   display: block;
   font-size: 17px;
-  color: #111416 !important;
+  color: var(--jet-900) !important;
 }
 
 .coachPro .actions {
@@ -277,12 +277,12 @@
 
 .coachPro .complete {
   background: var(--blue) !important;
-  color: #071014 !important;
+  color: var(--emerald-neon-ink) !important;
 }
 
 .coachPro .share {
   background: #e9ecec !important;
-  color: #111416 !important;
+  color: var(--jet-900) !important;
   border: 1px solid #cfd3d4 !important;
 }
 

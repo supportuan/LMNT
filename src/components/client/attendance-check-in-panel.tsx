@@ -17,7 +17,7 @@ export function AttendanceCheckInPanel() {
   return (
     <Panel title="Today's check-in">
       {done ? (
-        <p className="text-sm text-emerald-600">Checked in successfully.</p>
+        <p className="text-sm text-[var(--status-success)]">Checked in successfully.</p>
       ) : (
         <Button type="button" onClick={checkIn} disabled={loading}>
           {loading ? "Checking in..." : "Check in now"}

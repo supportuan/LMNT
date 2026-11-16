@@ -33,7 +33,7 @@ export function LeadActions({ leadId, stage }: { leadId: string; stage: string }
     router.refresh();
   }
 
-  if (stage === "won") return <span className="text-xs text-emerald-600">Converted</span>;
+  if (stage === "won") return <span className="text-xs text-[var(--status-success)]">Converted</span>;
 
   return (
     <div className="flex gap-2">
@@ -49,7 +49,7 @@ export function LeadActions({ leadId, stage }: { leadId: string; stage: string }
         type="button"
         disabled={loading}
         onClick={convert}
-        className="text-xs font-semibold text-emerald-600"
+        className="text-xs font-semibold text-[var(--status-success)]"
       >
         Convert
       </button>

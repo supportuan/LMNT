@@ -8,6 +8,55 @@
       "when": 1789557619527,
       "tag": "0000_auth_hardening",
       "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "7",
+      "when": 1789587600000,
+      "tag": "0001_member_intake",
+      "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1789591200000,
+      "tag": "0002_gym_memberships",
+      "breakpoints": true
+    },
+    {
+      "idx": 3,
+      "version": "7",
+      "when": 1789594800000,
+      "tag": "0003_assessment_scheduling",
+      "breakpoints": true
+    },
+    {
+      "idx": 4,
+      "version": "7",
+      "when": 1789598400000,
+      "tag": "0004_pt_pack_capability",
+      "breakpoints": true
+    },
+    {
+      "idx": 5,
+      "version": "7",
+      "when": 1789602000000,
+      "tag": "0005_member_hub",
+      "breakpoints": true
+    },
+    {
+      "idx": 6,
+      "version": "7",
+      "when": 1789605600000,
+      "tag": "0006_coach_os",
+      "breakpoints": true
+    },
+    {
+      "idx": 7,
+      "version": "7",
+      "when": 1789609200000,
+      "tag": "0007_dynamic_rbac",
+      "breakpoints": true
     }
   ]
 }

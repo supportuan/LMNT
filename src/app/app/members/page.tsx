@@ -1,7 +1,9 @@
 import Link from "next/link";
 import { redirect } from "next/navigation";
+import { MemberIntakeForm } from "@/components/admin/member-intake-form";
 import { NewClientForm } from "@/components/trainer/new-client-form";
 import { Badge, DataTable, EmptyState, PageHeader, Panel } from "@/components/ui";
+import { displayStatusTone } from "@/lib/gym-membership";
 import { formatDate, formatInr } from "@/lib/format";
 import { canAccessModule, getRoleHome, hasPermission, PERMISSIONS } from "@/lib/policy";
 import { getSession } from "@/lib/session";
@@ -13,7 +15,9 @@ function membershipLabel(member: {
   status: string;
   planStatus: string | null;
   planEndsAt: Date | null;
+  gymDisplayStatus: string | null;
 }) {
+  if (member.gymDisplayStatus) return member.gymDisplayStatus;
   if (member.status !== "active") return member.status;
   if (member.planStatus === "expired" || member.planStatus === "cancelled") return member.planStatus;
   if (member.planEndsAt && member.planEndsAt.getTime() <= Date.now() + 14 * 86400000) return "expiring";
@@ -21,9 +25,12 @@ function membershipLabel(member: {
 }
 
 function membershipTone(label: string) {
-  if (label === "active") return "success" as const;
   if (label === "expiring") return "warning" as const;
-  if (label === "expired" || label === "paused") return "danger" as const;
+  if (["active", "inactive", "paused", "expired", "expiring soon"].includes(label)) {
+    return displayStatusTone(label as "active" | "inactive" | "paused" | "expired" | "expiring soon");
+  }
+  if (label === "active") return "success" as const;
+  if (label === "expired" || label === "paused" || label === "cancelled") return "danger" as const;
   return "neutral" as const;
 }
 
@@ -64,17 +71,20 @@ export default async function MembersPage() {
         }
         action={
           canCreate ? (
-            <NewClientForm
-              centres={orderedCentres}
-              trainers={trainers}
-              packages={packages.filter((pkg) => pkg.active).map((pkg) => ({
-                name: pkg.name,
-                sessionCount: pkg.sessionCount,
-                priceInr: pkg.priceInr,
-                trainerShareBps: pkg.trainerShareBps,
-              }))}
-              buttonLabel="Add member"
-            />
+            <div className="flex flex-wrap gap-2">
+              <MemberIntakeForm centres={orderedCentres} />
+              <NewClientForm
+                centres={orderedCentres}
+                trainers={trainers}
+                packages={packages.filter((pkg) => pkg.active).map((pkg) => ({
+                  name: pkg.name,
+                  sessionCount: pkg.sessionCount,
+                  priceInr: pkg.priceInr,
+                  trainerShareBps: pkg.trainerShareBps,
+                }))}
+                buttonLabel="Add member + PT pack"
+              />
+            </div>
           ) : undefined
         }
       />
@@ -99,8 +109,8 @@ export default async function MembersPage() {
               <div key={`${m.id}-plan`}>
                 <Badge tone={membershipTone(label)}>{label}</Badge>
                 <div className="mt-1 text-[11px] text-[var(--workspace-muted)]">
-                  {m.planName ?? "No plan"}
-                  {m.planEndsAt ? ` · ends ${formatDate(m.planEndsAt)}` : ""}
+                  {m.gymPackLabel ? `Gym ${m.gymPackLabel}` : m.planName ?? "No pack"}
+                  {m.planEndsAt ? ` · PT ends ${formatDate(m.planEndsAt)}` : ""}
                 </div>
               </div>,
               m.trainerName ?? "Unassigned",

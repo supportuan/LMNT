@@ -28,11 +28,11 @@ export function AnalyticsTrendChart({ points }: { points: TrendPoint[] }) {
           Sessions
         </span>
         <span className="flex items-center gap-2 text-[var(--workspace-muted)]">
-          <span className="h-2 w-2 rounded-full bg-[var(--kinetic-orange)]" />
+          <span className="h-2 w-2 rounded-full bg-[var(--moss-500)]" />
           Leads
         </span>
         <span className="flex items-center gap-2 text-[var(--workspace-muted)]">
-          <span className="h-2 w-2 rounded-full bg-[var(--kinetic-cyan)]" />
+          <span className="h-2 w-2 rounded-full bg-[var(--moss-300)]" />
           Check-ins
         </span>
       </div>
@@ -47,12 +47,12 @@ export function AnalyticsTrendChart({ points }: { points: TrendPoint[] }) {
                 title={`${point.sessions} sessions`}
               />
               <div
-                className="w-2 rounded-t bg-[var(--kinetic-orange)] transition-all"
+                className="w-2 rounded-t bg-[var(--moss-500)] transition-all"
                 style={{ height: `${Math.max((point.leads / maxVal) * 100, point.leads > 0 ? 4 : 0)}%` }}
                 title={`${point.leads} leads`}
               />
               <div
-                className="w-2 rounded-t bg-[var(--kinetic-cyan)] transition-all"
+                className="w-2 rounded-t bg-[var(--moss-300)] transition-all"
                 style={{ height: `${Math.max((point.checkIns / maxVal) * 100, point.checkIns > 0 ? 4 : 0)}%` }}
                 title={`${point.checkIns} check-ins`}
               />

@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import type { Permission } from "@/lib/permissions";
-import { hasPermission } from "@/lib/policy";
+import { sessionHasPermission } from "@/lib/rbac/authorize";
 import { getSession, type SessionPayload } from "@/lib/session";
 
 export async function requireApiSession(permission?: Permission) {
@@ -8,7 +8,7 @@ export async function requireApiSession(permission?: Permission) {
   if (!session) {
     return { error: NextResponse.json({ error: "Unauthorized" }, { status: 401 }), session: null };
   }
-  if (permission && !hasPermission(session.activeRole, permission)) {
+  if (permission && !sessionHasPermission(session, permission)) {
     return { error: NextResponse.json({ error: "Forbidden" }, { status: 403 }), session: null };
   }
   return { error: null, session };

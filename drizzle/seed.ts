@@ -131,6 +131,24 @@ async function refreshExistingSeed() {
 
   if (!org) return false;
 
+  const [admin] = await db
+    .select()
+    .from(users)
+    .where(eq(users.email, "admin@lmnt.local"))
+    .limit(1);
+
+  if (!admin) {
+    console.log("Organisation exists but admin@lmnt.local missing — recreate admin or wipe and reseed.");
+    return true;
+  }
+
+  // Admin-only bootstrap: no manager/trainer/client demo accounts.
+  if (process.env.SEED_DEMO_STAFF !== "true") {
+    console.log("Organisation already seeded (admin-only). Skipping staff/client demo refresh.");
+    console.log("Demo account: admin@lmnt.local");
+    return true;
+  }
+
   const [trainer] = await db
     .select()
     .from(users)
@@ -144,7 +162,7 @@ async function refreshExistingSeed() {
     .limit(1);
 
   if (!trainer || !clientUser) {
-    console.log("Organisation exists but demo users missing — run with fresh DB or db:reset.");
+    console.log("Organisation exists but demo staff/client missing — set SEED_DEMO_STAFF=true on a fresh DB.");
     return true;
   }
 
@@ -514,10 +532,32 @@ async function seed() {
 
   const passwordHash = await hashPassword(seedPassword);
 
-  const userRows = await db
+  const [admin] = await db
+    .insert(users)
+    .values([{ email: "admin@lmnt.local", name: "Network Admin", passwordHash }])
+    .returning();
+
+  await db.insert(organisationMemberships).values({
+    userId: admin.id,
+    organisationId: org.id,
+    status: "active",
+  });
+
+  await db.insert(roleAssignments).values([
+    { userId: admin.id, organisationId: org.id, role: "admin", centreId: null },
+  ]);
+
+  if (process.env.SEED_DEMO_STAFF !== "true") {
+    console.log("Seed complete (admin-only).");
+    console.log("Organisation:", org.name);
+    console.log("Branches:", indiranagar.name, ",", koramangala.name);
+    console.log("Demo account: admin@lmnt.local");
+    return;
+  }
+
+  const staffRows = await db
     .insert(users)
     .values([
-      { email: "admin@lmnt.local", name: "Network Admin", passwordHash },
       {
         email: "manager.indiranagar@lmnt.local",
         name: "Priya Sharma",
@@ -538,9 +578,9 @@ async function seed() {
     ])
     .returning();
 
-  const [admin, managerInd, trainerInd, clientUser, managerKor] = userRows;
+  const [managerInd, trainerInd, clientUser, managerKor] = staffRows;
 
-  for (const user of userRows) {
+  for (const user of staffRows) {
     await db.insert(organisationMemberships).values({
       userId: user.id,
       organisationId: org.id,
@@ -549,7 +589,6 @@ async function seed() {
   }
 
   await db.insert(roleAssignments).values([
-    { userId: admin.id, organisationId: org.id, role: "admin", centreId: null },
     {
       userId: managerInd.id,
       organisationId: org.id,
@@ -1072,12 +1111,12 @@ async function seed() {
     metadata: { centres: [indiranagar.slug, koramangala.slug] },
   });
 
-  console.log("Seed complete.");
+  console.log("Seed complete (with demo staff).");
   console.log("");
   console.log("Organisation:", org.name);
   console.log("Branches:", indiranagar.name, ",", koramangala.name);
   console.log("");
-  console.log("Demo accounts (local seed password via SEED_PASSWORD, default password123):");
+  console.log("Demo accounts (SEED_PASSWORD, default password123):");
   console.log("  admin@lmnt.local");
   console.log("  manager.indiranagar@lmnt.local");
   console.log("  trainer.indiranagar@lmnt.local");

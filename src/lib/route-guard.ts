@@ -5,11 +5,13 @@ import { canAccessModule, getRoleHome, type AppRole } from "@/lib/policy";
 export function moduleForPath(pathname: string): string | null {
   if (pathname.startsWith("/settings/organisation")) return "organisation";
   if (pathname.startsWith("/settings/audit")) return "audit";
+  if (pathname.startsWith("/settings/roles")) return "roles";
   if (pathname.startsWith("/app/clients")) return "clients";
   if (pathname.startsWith("/app/sessions")) return "sessions";
   if (pathname.startsWith("/app/dashboard")) return "dashboard";
-  if (pathname.startsWith("/app/calendar") || pathname.startsWith("/app/schedule")) {
-    return pathname.startsWith("/app/schedule") ? "schedule" : "calendar";
+  if (pathname.startsWith("/app/calendar") || pathname.startsWith("/app/schedule") || pathname.startsWith("/app/scheduling")) {
+    if (pathname.startsWith("/app/schedule") && !pathname.startsWith("/app/scheduling")) return "schedule";
+    return "calendar";
   }
   if (pathname.startsWith("/app/programs") || pathname.startsWith("/app/programmes")) return "programs";
   if (pathname.startsWith("/app/progress")) return "progress";
@@ -19,7 +21,7 @@ export function moduleForPath(pathname: string): string | null {
   if (pathname.startsWith("/app/development")) return "development";
   if (pathname.startsWith("/app/analytics") || pathname.startsWith("/app/overview")) return "analytics";
   if (pathname.startsWith("/app/staff")) return "staff";
-  if (pathname.startsWith("/app/home")) return "home";
+  if (pathname.startsWith("/app/home") || pathname.startsWith("/app/member-view")) return "home";
   if (pathname.startsWith("/app/workout")) return "workout";
   if (pathname.startsWith("/app/nutrition")) return "nutrition";
   if (pathname.startsWith("/app/messages")) return "messages";
@@ -43,7 +45,8 @@ export function moduleForPath(pathname: string): string | null {
   if (pathname.startsWith("/app/work-requests")) return "work-requests";
   if (pathname.startsWith("/app/inventory")) return "inventory";
   if (pathname.startsWith("/app/onboarding")) return "onboarding";
-  if (pathname.startsWith("/app/assessments")) return "assessments";
+  if (pathname.startsWith("/app/assessments") || pathname.startsWith("/app/capability")) return "assessments";
+  if (pathname.startsWith("/app/pt-packs")) return "memberships";
   if (pathname.startsWith("/app/members")) return "clients";
   return null;
 }

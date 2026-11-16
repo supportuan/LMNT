@@ -1,4 +1,4 @@
-import { ollamaChat, isOllamaAvailable } from "@/lib/ollama";
+import { aiChat, getAiStatus } from "@/lib/ai-provider";
 import {
   buildExplanation,
   parseNumberedSuggestions,
@@ -78,27 +78,29 @@ export async function generateCoachSuggestions(input: {
     2,
   );
 
-  if (!(await isOllamaAvailable())) {
+  const status = await getAiStatus();
+  if (!status.ready) {
     return {
       suggestions: FALLBACK_SUGGESTIONS,
       raw: FALLBACK_SUGGESTIONS.map((s, i) => `${i + 1}. ${s}`).join("\n"),
       explanation,
       modelSource: "fallback",
-      note: "Ollama is offline — start it with: ollama serve",
+      note: status.hint,
     };
   }
 
-  const raw = await ollamaChat([
-    {
-      role: "system",
-      content: `You are an expert fitness coach assistant for LMNT Fitness Club.
+  try {
+    const { text: raw, source } = await aiChat([
+      {
+        role: "system",
+        content: `You are an expert fitness coach assistant for LMNT Fitness Club.
 Use the knowledge base and member data to suggest what the trainer should say or ask.
 Be concise, practical, and safe. Never diagnose medical conditions.
 Format as numbered talking points (5-7 items).`,
-    },
-    {
-      role: "user",
-      content: `Knowledge base:
+      },
+      {
+        role: "user",
+        content: `Knowledge base:
 ${knowledge}
 
 Member data:
@@ -107,15 +109,24 @@ ${memberSummary}
 Topic / scenario: ${hint}
 
 Provide conversation suggestions for the trainer.`,
-    },
-  ]);
+      },
+    ]);
 
-  const suggestions = parseNumberedSuggestions(raw);
+    const suggestions = parseNumberedSuggestions(raw);
 
-  return {
-    suggestions: suggestions.length > 0 ? suggestions : FALLBACK_SUGGESTIONS,
-    raw,
-    explanation,
-    modelSource: "ollama+rag",
-  };
+    return {
+      suggestions: suggestions.length > 0 ? suggestions : FALLBACK_SUGGESTIONS,
+      raw,
+      explanation,
+      modelSource: `${source}+rag`,
+    };
+  } catch (err) {
+    return {
+      suggestions: FALLBACK_SUGGESTIONS,
+      raw: FALLBACK_SUGGESTIONS.map((s, i) => `${i + 1}. ${s}`).join("\n"),
+      explanation,
+      modelSource: "fallback",
+      note: err instanceof Error ? err.message : status.hint,
+    };
+  }
 }

@@ -15,6 +15,7 @@ export async function getTrainerCalendarEvents(session: SessionPayload): Promise
       memberId: sessions.memberId,
       memberName: members.name,
       programmeTitle: programmes.title,
+      kind: sessions.kind,
     })
     .from(sessions)
     .innerJoin(members, eq(sessions.memberId, members.id))
@@ -37,7 +38,7 @@ export async function getTrainerCalendarEvents(session: SessionPayload): Promise
       id: row.id,
       type: "session",
       title: row.memberName,
-      subtitle: row.programmeTitle ?? "PT Session",
+      subtitle: row.kind === "assessment" ? "Assessment" : row.programmeTitle ?? "PT Session",
       start: start.toISOString(),
       end: end.toISOString(),
       status: row.status,
@@ -108,6 +109,7 @@ export async function getOrgCalendarEvents(session: SessionPayload): Promise<Cal
       memberName: members.name,
       programmeTitle: programmes.title,
       trainerName: users.name,
+      kind: sessions.kind,
     })
     .from(sessions)
     .innerJoin(members, eq(sessions.memberId, members.id))
@@ -119,7 +121,8 @@ export async function getOrgCalendarEvents(session: SessionPayload): Promise<Cal
   return sessionRows.map((row) => {
     const start = row.scheduledAt;
     const end = addMinutes(start, DEFAULT_SESSION_MINS);
-    const programme = row.programmeTitle ?? "PT Session";
+    const programme =
+      row.kind === "assessment" ? "Assessment" : row.programmeTitle ?? "PT Session";
     return {
       id: row.id,
       type: "session" as const,

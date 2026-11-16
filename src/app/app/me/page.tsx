@@ -3,18 +3,14 @@ import { TrainerProfileSettings } from "@/components/trainer/trainer-profile-set
 import { PageHeader } from "@/components/ui";
 import { canAccessModule, getRoleHome } from "@/lib/policy";
 import { getSession } from "@/lib/session";
-import { getScheduleBlocks, getTrainerProfile, getTrainerSettings } from "@/modules/trainer-queries";
+import { getTrainerProfile, getTrainerSettings } from "@/modules/trainer-queries";
 
 export default async function MePage() {
   const session = await getSession();
   if (!session) redirect("/login");
   if (!canAccessModule(session.activeRole, "me")) redirect(getRoleHome(session.activeRole));
 
-  const [settings, blocks, profile] = await Promise.all([
-    getTrainerSettings(session),
-    getScheduleBlocks(session),
-    getTrainerProfile(session),
-  ]);
+  const [settings, profile] = await Promise.all([getTrainerSettings(session), getTrainerProfile(session)]);
 
   const gymName =
     session.centreIds.map((id) => session.centreNames[id]).filter(Boolean).join(", ") || "—";
@@ -22,8 +18,8 @@ export default async function MePage() {
   return (
     <>
       <PageHeader
-        title="Profile / Settings"
-        description="Trainer profile, gym details, notifications, and account."
+        title="Me"
+        description="Protect your boundaries, shut down on time, and keep a weekly review."
       />
       <TrainerProfileSettings
         name={session.name}
@@ -38,7 +34,6 @@ export default async function MePage() {
           visible: profile?.marketplaceVisible ?? true,
         }}
         settings={settings}
-        blocks={blocks}
       />
     </>
   );

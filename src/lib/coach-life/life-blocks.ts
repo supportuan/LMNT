@@ -139,78 +139,54 @@ export async function syncLifeBlocksFromSettings(
     mealWindow?: string | null;
   },
 ) {
-  const centreId = session.centreIds[0];
-  if (!centreId) return { created: 0, existing: 0 };
+  const centreId = session.activeCentreId ?? session.centreIds[0];
+  if (!centreId) return { created: 0, existing: 0, skipped: 0 };
 
   const days = parseTrainingDays(settings.trainingDays);
-  const timeSlot = settings.trainingTime?.trim() || "3–4pm";
+  const wanted: { dayOfWeek: number; timeSlot: string; label: string }[] = [];
+  const trainingSlot = settings.trainingTime?.trim() || "3–4pm";
+  const mealSlot = settings.mealWindow?.trim();
+  for (const dayOfWeek of days) wanted.push({ dayOfWeek, timeSlot: trainingSlot, label: "Own Training" });
+  if (mealSlot) {
+    for (const dayOfWeek of [1, 2, 3, 4, 5, 6]) {
+      wanted.push({ dayOfWeek, timeSlot: mealSlot, label: "Meal / Recovery" });
+    }
+  }
+
+  const current = await db
+    .select({ dayOfWeek: scheduleBlocks.dayOfWeek, timeSlot: scheduleBlocks.timeSlot, blockType: scheduleBlocks.blockType })
+    .from(scheduleBlocks)
+    .where(eq(scheduleBlocks.trainerId, session.userId));
+  const occupied = new Map(current.map((b) => [`${b.dayOfWeek}|${b.timeSlot}`, b.blockType]));
+
   let created = 0;
   let existing = 0;
-
-  for (const dayOfWeek of days) {
-    const [row] = await db
-      .select({ id: scheduleBlocks.id })
-      .from(scheduleBlocks)
-      .where(
-        and(
-          eq(scheduleBlocks.trainerId, session.userId),
-          eq(scheduleBlocks.dayOfWeek, dayOfWeek),
-          eq(scheduleBlocks.timeSlot, timeSlot),
-          eq(scheduleBlocks.blockType, "life"),
-        ),
-      )
-      .limit(1);
-
-    if (row) {
+  let skipped = 0;
+  for (const w of wanted) {
+    const type = occupied.get(`${w.dayOfWeek}|${w.timeSlot}`);
+    if (type === "life") {
       existing++;
       continue;
     }
-
-    await db.insert(scheduleBlocks).values({
-      organisationId: session.organisationId,
-      centreId,
-      trainerId: session.userId,
-      dayOfWeek,
-      timeSlot,
-      blockType: "life",
-      label: "Own training",
-    });
-    created++;
-  }
-
-  const mealWindow = settings.mealWindow?.trim();
-  if (mealWindow && days.length > 0) {
-    for (const dayOfWeek of days) {
-      const [row] = await db
-        .select({ id: scheduleBlocks.id })
-        .from(scheduleBlocks)
-        .where(
-          and(
-            eq(scheduleBlocks.trainerId, session.userId),
-            eq(scheduleBlocks.dayOfWeek, dayOfWeek),
-            eq(scheduleBlocks.timeSlot, mealWindow),
-            eq(scheduleBlocks.blockType, "shutdown"),
-          ),
-        )
-        .limit(1);
-
-      if (row) {
-        existing++;
-        continue;
-      }
-
-      await db.insert(scheduleBlocks).values({
+    if (type) {
+      skipped++;
+      continue;
+    }
+    await db
+      .insert(scheduleBlocks)
+      .values({
         organisationId: session.organisationId,
         centreId,
         trainerId: session.userId,
-        dayOfWeek,
-        timeSlot: mealWindow,
-        blockType: "shutdown",
-        label: "Meal / break",
-      });
-      created++;
-    }
+        dayOfWeek: w.dayOfWeek,
+        timeSlot: w.timeSlot,
+        blockType: "life",
+        label: w.label,
+      })
+      .onConflictDoNothing();
+    occupied.set(`${w.dayOfWeek}|${w.timeSlot}`, "life");
+    created++;
   }
 
-  return { created, existing };
+  return { created, existing, skipped };
 }

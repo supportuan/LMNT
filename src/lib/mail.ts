@@ -67,7 +67,7 @@ function escapeHtml(value: string) {
 
 export function mailLayout(title: string, body: string, cta?: { href: string; label: string }) {
   const button = cta
-    ? `<p style="margin:24px 0"><a href="${escapeHtml(cta.href)}" style="display:inline-block;background:#B7F34A;color:#0B0F0D;font-weight:700;text-decoration:none;padding:12px 18px;border-radius:12px">${escapeHtml(cta.label)}</a></p>`
+    ? `<p style="margin:24px 0"><a href="${escapeHtml(cta.href)}" style="display:inline-block;background:#00F593;color:#00170E;font-weight:700;text-decoration:none;padding:12px 18px;border-radius:12px">${escapeHtml(cta.label)}</a></p>`
     : "";
   return {
     text: [title, "", body, cta ? `${cta.label}: ${cta.href}` : "", "", "LMNT Fitness Club"].filter(Boolean).join("\n"),

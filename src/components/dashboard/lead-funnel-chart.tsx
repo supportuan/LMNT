@@ -10,12 +10,12 @@ const STAGE_LABELS: Record<string, string> = {
 };
 
 const STAGE_COLORS: Record<string, string> = {
-  new: "bg-[#3a4340]",
-  contacted: "bg-[#9AA39D]",
-  consultation: "bg-[#E8C36A]",
-  trial: "bg-[#00dbe9]",
+  new: "bg-[var(--moss-800)]",
+  contacted: "bg-[var(--moss-700)]",
+  consultation: "bg-[var(--moss-500)]",
+  trial: "bg-[var(--moss-300)]",
   won: "bg-[var(--workspace-accent)]",
-  lost: "bg-[#ef8b7a]",
+  lost: "bg-[var(--status-danger)]",
 };
 
 export function LeadFunnelChart({
@@ -49,7 +49,7 @@ export function LeadFunnelChart({
             </span>
             <div className="h-6 flex-1 overflow-hidden rounded bg-[var(--workspace-elevated)]">
               <div
-                className={`h-full ${STAGE_COLORS[s.stage] ?? "bg-zinc-400"}`}
+                className={`h-full ${STAGE_COLORS[s.stage] ?? "bg-[var(--moss-500)]"}`}
                 style={{ width: `${Math.max(4, (s.count / max) * 100)}%` }}
               />
             </div>

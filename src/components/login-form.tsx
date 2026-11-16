@@ -20,8 +20,8 @@ export function LoginForm() {
   const portalAdmin = searchParams.get("portal") === "admin";
   const nextPath = safeNextPath(searchParams.get("next"));
 
-  const accent = portalClient ? "#ff5e07" : "#B7F34A";
-  const accentText = portalClient ? "#370e00" : "#0B0F0D";
+  const accent = "var(--emerald-neon)";
+  const accentText = "var(--emerald-neon-ink)";
 
   const [identifier, setIdentifier] = useState("");
   const [password, setPassword] = useState("");
@@ -71,7 +71,7 @@ export function LoginForm() {
   return (
     <div
       className="relative min-h-screen overflow-hidden"
-      style={{ background: "#0B0F0D", "--login-accent": accent } as React.CSSProperties}
+      style={{ background: "var(--jet-950)", "--login-accent": accent } as React.CSSProperties}
     >
       <LoginVideoBackground />
 
@@ -91,19 +91,19 @@ export function LoginForm() {
             onError={() => setLogoFailed(true)}
           />
         )}
-        <div className="mt-1.5 text-[12px] font-semibold tracking-tight text-[#9AA39D]">{portalLabel}</div>
+        <div className="mt-1.5 text-[12px] font-semibold tracking-tight text-[var(--workspace-muted)]">{portalLabel}</div>
       </div>
 
       <main className="relative z-10 flex min-h-screen items-center justify-center px-6 py-24 md:px-10">
         <div className="w-full max-w-md space-y-6">
           <div>
-            <h1 className="text-2xl font-semibold tracking-tight text-[#F5F7F5]">{heading.title}</h1>
-            <p className="mt-2 text-sm text-[#9AA39D]">{heading.subtitle}</p>
+            <h1 className="text-2xl font-semibold tracking-tight text-[var(--workspace-text)]">{heading.title}</h1>
+            <p className="mt-2 text-sm text-[var(--workspace-muted)]">{heading.subtitle}</p>
           </div>
 
           <form onSubmit={onSubmit} className="neu-card space-y-4 p-6">
             <div>
-              <label htmlFor="identifier" className="mb-1.5 block text-[11px] font-semibold uppercase tracking-[0.14em] text-[#9AA39D]">
+              <label htmlFor="identifier" className="mb-1.5 block text-[11px] font-semibold uppercase tracking-[0.14em] text-[var(--workspace-muted)]">
                 {identifierLabel}
               </label>
               <input
@@ -118,7 +118,7 @@ export function LoginForm() {
               />
             </div>
             <div>
-              <label htmlFor="password" className="mb-1.5 block text-[11px] font-semibold uppercase tracking-[0.14em] text-[#9AA39D]">
+              <label htmlFor="password" className="mb-1.5 block text-[11px] font-semibold uppercase tracking-[0.14em] text-[var(--workspace-muted)]">
                 Password
               </label>
               <input
@@ -132,7 +132,7 @@ export function LoginForm() {
               />
             </div>
 
-            {error && <p className="text-sm text-[#ef8b7a]">{error}</p>}
+            {error && <p className="text-sm text-[var(--status-danger)]">{error}</p>}
 
             <button
               type="submit"
@@ -150,7 +150,7 @@ export function LoginForm() {
                 setForgotStatus("");
                 if (!forgotIdentifier && identifier.includes("@")) setForgotIdentifier(identifier);
               }}
-              className="block w-full text-center text-sm text-[#9AA39D] underline-offset-4 hover:text-[#F5F7F5] hover:underline"
+              className="block w-full text-center text-sm text-[var(--workspace-muted)] underline-offset-4 hover:text-[var(--workspace-text)] hover:underline"
             >
               Forgot password
             </button>
@@ -189,7 +189,7 @@ export function LoginForm() {
                 >
                   {forgotLoading ? "Sending…" : "Send reset link"}
                 </button>
-                {forgotStatus && <p className="text-xs leading-relaxed text-[#9AA39D]">{forgotStatus}</p>}
+                {forgotStatus && <p className="text-xs leading-relaxed text-[var(--workspace-muted)]">{forgotStatus}</p>}
               </div>
             )}
           </form>

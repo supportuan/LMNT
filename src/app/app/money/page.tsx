@@ -10,15 +10,12 @@ export default async function MoneyPage() {
   if (!session) redirect("/login");
   if (!canAccessModule(session.activeRole, "money")) redirect(getRoleHome(session.activeRole));
 
-  const { clients, totalDue, totalPackage, collected, trainerCollected, trainerDue, trainerPackage, lowSessions } =
+  const { clients, totalDue, totalPackage, collected, trainerCollected, trainerDue, trainerPackage } =
     await getTrainerMoneySummary(session);
 
   return (
     <>
-      <PageHeader
-        title="Money"
-        description="Your share of membership revenue, outstanding dues, and renewal signals."
-      />
+      <PageHeader title="Money" description="Track client packages without spreadsheets." />
       <MoneyPageClient
         clients={clients}
         totalDue={totalDue}
@@ -27,7 +24,6 @@ export default async function MoneyPage() {
         trainerCollected={trainerCollected}
         trainerDue={trainerDue}
         trainerPackage={trainerPackage}
-        lowSessions={lowSessions}
       />
     </>
   );

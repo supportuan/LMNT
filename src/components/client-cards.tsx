@@ -8,11 +8,11 @@ export function ClientCards({ clients }: { clients: Client[] }) {
       {clients.map((c) => (
         <article
           key={c.id}
-          className="rounded-xl border border-zinc-800 bg-zinc-900/50 p-4"
+          className="rounded-xl border border-[var(--workspace-border)] bg-[var(--workspace-surface)] p-4"
         >
           <div className="text-lg font-semibold">{c.name}</div>
-          <div className="mt-1 text-sm text-lime-300">{c.goal ?? "Goal not set"}</div>
-          <div className="mt-3 text-xs text-zinc-500">{c.email ?? "No email"}</div>
+          <div className="mt-1 text-sm text-[var(--emerald-neon)]">{c.goal ?? "Goal not set"}</div>
+          <div className="mt-3 text-xs text-[var(--workspace-subtle)]">{c.email ?? "No email"}</div>
         </article>
       ))}
     </div>

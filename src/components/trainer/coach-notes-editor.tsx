@@ -43,7 +43,7 @@ export function CoachNotesEditor({
         <Button type="button" onClick={save} disabled={saving || !body.trim()}>
           {saving ? "Saving..." : "Save notes"}
         </Button>
-        {saved && <span className="text-sm text-emerald-600">Saved</span>}
+        {saved && <span className="text-sm text-[var(--status-success)]">Saved</span>}
       </div>
     </div>
   );

@@ -1,12 +1,12 @@
 .coachMirror {
-  --bg: #131313;
-  --card: #1c1b1b;
-  --ink: #e5e2e1;
-  --muted: #8e9379;
-  --sky: #00dbe9;
-  --sky2: rgba(0, 219, 233, 0.12);
-  --line: rgba(255, 255, 255, 0.1);
-  --char: #2a2a2a;
+  --bg: var(--jet-950);
+  --card: var(--jet-900);
+  --ink: var(--workspace-text);
+  --muted: var(--moss-300);
+  --sky: var(--emerald-neon);
+  --sky2: var(--emerald-neon-tint);
+  --line: var(--moss-800);
+  --char: var(--jet-850);
   min-height: auto;
   background: transparent;
   font-family: Inter, system-ui, -apple-system, Segoe UI, Arial, sans-serif;
@@ -83,7 +83,7 @@
   padding: 12px 13px;
   border: 1px solid var(--line);
   border-radius: 8px;
-  background: #2a2a2a;
+  background: var(--jet-850);
   color: var(--ink);
   font: inherit;
 }
@@ -91,7 +91,7 @@
 .coachMirror .btn {
   border: 0;
   background: var(--sky);
-  color: #002022;
+  color: var(--emerald-neon-ink);
   font-weight: 850;
   padding: 13px 17px;
   border-radius: 8px;
@@ -134,7 +134,7 @@
   min-width: 105px;
   padding: 9px;
   border-radius: 8px;
-  background: #2a2a2a;
+  background: var(--jet-850);
   text-align: center;
   font-size: 12px;
   border: 1px solid var(--line);
@@ -142,13 +142,13 @@
 
 .coachMirror .slot.on {
   background: var(--sky);
-  color: #002022;
+  color: var(--emerald-neon-ink);
   font-weight: 800;
   border-color: var(--sky);
 }
 
 .coachMirror .client {
-  background: #2a2a2a;
+  background: var(--jet-850);
   padding: 18px;
   border-radius: 12px;
   border: 1px solid var(--line);
@@ -160,7 +160,7 @@
 
 .coachMirror .tag {
   display: inline-block;
-  background: #2a2a2a;
+  background: var(--jet-850);
   border: 1px solid var(--line);
   border-radius: 999px;
   padding: 6px 9px;
@@ -182,7 +182,7 @@
 
 .coachMirror .choice {
   border: 1px solid var(--line);
-  background: #2a2a2a;
+  background: var(--jet-850);
   text-align: left;
   padding: 14px;
   color: var(--ink);
@@ -206,7 +206,7 @@
   height: 23px;
   border-radius: 50%;
   background: var(--sky);
-  color: #002022;
+  color: var(--emerald-neon-ink);
   display: grid;
   place-items: center;
   font-size: 12px;
@@ -222,7 +222,7 @@
 .coachMirror .spectrum {
   height: 12px;
   border-radius: 99px;
-  background: linear-gradient(90deg, #353534, var(--sky));
+  background: linear-gradient(90deg, var(--moss-800), var(--sky));
   position: relative;
   margin: 34px 0 17px;
 }
@@ -231,7 +231,7 @@
   position: absolute;
   width: 24px;
   height: 24px;
-  background: #1c1b1b;
+  background: var(--jet-900);
   border: 6px solid var(--sky);
   border-radius: 50%;
   top: -6px;
@@ -248,7 +248,7 @@
 
 .coachMirror .bar {
   height: 10px;
-  background: #2a2a2a;
+  background: var(--jet-850);
   border-radius: 99px;
   overflow: hidden;
 }
@@ -263,7 +263,7 @@
   border: 1px solid var(--line);
   border-radius: 12px;
   padding: 16px;
-  background: #2a2a2a;
+  background: var(--jet-850);
 }
 
 .coachMirror .box b {
@@ -290,7 +290,7 @@
   padding: 11px 12px;
   border: 1px solid var(--line);
   border-radius: 8px;
-  background: #2a2a2a;
+  background: var(--jet-850);
 }
 
 .coachMirror .check span:first-child {

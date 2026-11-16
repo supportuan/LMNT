@@ -73,8 +73,8 @@ export async function AppShell({ children }: { children: React.ReactNode }) {
 
         <div className="shrink-0 space-y-3 border-t p-4" style={{ borderColor: "var(--sidebar-border)" }}>
           <div className="flex items-center justify-start gap-3">
-            <div className="neu-control flex h-9 w-9 items-center justify-center text-xs font-bold text-[var(--workspace-accent-text)]"
-              style={{ background: "var(--sidebar-accent)" }}
+            <div className="neu-control flex h-9 w-9 items-center justify-center text-xs font-bold text-[var(--sidebar-text)]"
+              style={{ background: "var(--moss-700)" }}
             >
               {initials}
             </div>

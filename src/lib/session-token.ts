@@ -1,6 +1,6 @@
 import { SignJWT, jwtVerify } from "jose";
 import { cookies } from "next/headers";
-import type { AppRole } from "@/lib/policy";
+import type { AppRole, Permission } from "@/lib/permissions";
 
 export const SESSION_COOKIE = "lmnt_session";
 export const SESSION_TTL_SECONDS = 60 * 60 * 24;
@@ -16,6 +16,8 @@ export type SessionPayload = {
   centreIds: string[];
   centreNames: Record<string, string>;
   roles: AppRole[];
+  /** Effective permissions resolved from org roles (permission-driven auth). */
+  permissions?: Permission[];
   /** Admin workspace branch. `null` = all branches. */
   activeCentreId: string | null;
   sessionVersion: number;
@@ -44,6 +46,7 @@ export async function createSessionToken(payload: SessionPayload): Promise<strin
     centreIds: payload.centreIds,
     centreNames: payload.centreNames,
     roles: payload.roles,
+    permissions: payload.permissions ?? [],
     activeCentreId: payload.activeCentreId ?? null,
     sessionVersion: payload.sessionVersion ?? 1,
   };

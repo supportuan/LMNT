@@ -13,7 +13,7 @@ export default async function ClientNotesTab({
   const { memberId } = await params;
   const session = await getSession();
   if (!session) redirect("/login");
-  if (session.activeRole === "client") redirect("/app/home");
+  if (session.activeRole === "client") redirect("/app/member-view");
   await assertMemberAccess(session, memberId);
 
   const notes = await getMemberNotes(memberId);

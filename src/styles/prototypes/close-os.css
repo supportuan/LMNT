@@ -1,12 +1,12 @@
 .closeOs {
-  --bg: #131313;
-  --surface: #1c1b1b;
-  --ink: #e5e2e1;
-  --muted: #8e9379;
-  --line: rgba(255, 255, 255, 0.1);
-  --blue: #c3f400;
-  --blue2: rgba(195, 244, 0, 0.12);
-  --green: #4ade80;
+  --bg: var(--jet-950);
+  --surface: var(--jet-900);
+  --ink: var(--workspace-text);
+  --muted: var(--moss-300);
+  --line: var(--moss-800);
+  --blue: var(--emerald-neon);
+  --blue2: var(--emerald-neon-tint);
+  --green: var(--emerald-neon);
   --amber: #fbbf24;
   --red: #f87171;
   --shadow: none;
@@ -92,7 +92,7 @@
 
 .closeOs .tab.active {
   background: var(--blue);
-  color: #161e00;
+  color: var(--emerald-neon-ink);
 }
 
 .closeOs .shell {
@@ -150,7 +150,7 @@
 
 .closeOs .primary {
   background: var(--blue);
-  color: #161e00;
+  color: var(--emerald-neon-ink);
 }
 
 .closeOs .soft {
@@ -206,7 +206,7 @@
 .closeOs textarea {
   width: 100%;
   border: 1px solid var(--line);
-  background: #2a2a2a;
+  background: var(--jet-850);
   border-radius: 8px;
   padding: 11px 12px;
   color: var(--ink);
@@ -249,7 +249,7 @@
 .closeOs .notice {
   font-size: 12px;
   color: var(--muted);
-  background: #2a2a2a;
+  background: var(--jet-850);
   border: 1px solid var(--line);
   padding: 10px 12px;
   border-radius: 8px;
@@ -259,7 +259,7 @@
   padding: 14px;
   border: 1px solid var(--line);
   border-radius: 12px;
-  background: #2a2a2a;
+  background: var(--jet-850);
 }
 
 .closeOs .stat b {
@@ -286,7 +286,7 @@
   display: grid;
   place-items: center;
   position: relative;
-  background: conic-gradient(var(--blue) 0 0%, #edf0f5 0);
+  background: conic-gradient(var(--blue) 0 0%, var(--moss-800) 0);
   flex-shrink: 0;
 }
 
@@ -319,7 +319,7 @@
 
 .closeOs .track {
   height: 8px;
-  background: #2a2a2a;
+  background: var(--jet-850);
   border-radius: 999px;
   overflow: hidden;
 }
@@ -342,7 +342,7 @@
 }
 
 .closeOs .badge.green {
-  background: rgba(74, 222, 128, 0.12);
+  background: var(--emerald-neon-tint);
   color: var(--green);
 }
 
@@ -405,7 +405,7 @@
 
 .closeOs .script {
   border-left: 3px solid var(--blue);
-  background: #2a2a2a;
+  background: var(--jet-850);
   padding: 13px;
   border-radius: 0 8px 8px 0;
   line-height: 1.55;

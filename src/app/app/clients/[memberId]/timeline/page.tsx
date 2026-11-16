@@ -32,7 +32,7 @@ export default async function ClientTimelineTab({
   const { memberId } = await params;
   const session = await getSession();
   if (!session) redirect("/login");
-  if (session.activeRole === "client") redirect("/app/home");
+  if (session.activeRole === "client") redirect("/app/member-view");
   await assertMemberAccess(session, memberId);
 
   const entries = await getMemberTimeline(session, memberId);

@@ -6,6 +6,7 @@ import {
   clientCheckIns,
   coachNotes,
   coachingRelationships,
+  gymMemberships,
   leads,
   memberPlans,
   members,
@@ -23,6 +24,7 @@ import {
   users,
 } from "@/db/schema";
 import { orgAndCentreScope } from "@/lib/branch-scope";
+import { localDateKey } from "@/lib/coach-life/timetable";
 import type { SessionPayload } from "@/lib/session";
 import { applyShareBps, trainerCollectedInr } from "@/lib/trainer-share";
 
@@ -30,6 +32,10 @@ function startOfDay(d = new Date()) {
   const x = new Date(d);
   x.setHours(0, 0, 0, 0);
   return x;
+}
+
+function isSameLocalDay(a: Date, b: Date) {
+  return a.getFullYear() === b.getFullYear() && a.getMonth() === b.getMonth() && a.getDate() === b.getDate();
 }
 
 function endOfDay(d = new Date()) {
@@ -94,7 +100,13 @@ export async function getTrainerDashboard(session: SessionPayload) {
     .from(sessions)
     .innerJoin(members, eq(sessions.memberId, members.id))
     .leftJoin(programmes, eq(sessions.programmeId, programmes.id))
-    .where(and(eq(sessions.trainerId, session.userId), gte(sessions.scheduledAt, now)))
+    .where(
+      and(
+        eq(sessions.trainerId, session.userId),
+        gte(sessions.scheduledAt, now),
+        inArray(sessions.status, ["scheduled", "in_progress"]),
+      ),
+    )
     .orderBy(sessions.scheduledAt)
     .limit(5);
 
@@ -202,7 +214,7 @@ export async function getTrainerDashboard(session: SessionPayload) {
         eq(sessions.trainerId, session.userId),
         gte(sessions.scheduledAt, weekStart),
         lt(sessions.scheduledAt, weekEnd),
-        eq(sessions.status, "scheduled"),
+        inArray(sessions.status, ["scheduled", "in_progress", "completed"]),
       ),
     );
 
@@ -235,33 +247,46 @@ export async function getTrainerDashboard(session: SessionPayload) {
     )
     .limit(1);
 
-  const alerts: { message: string; tone: "warning" | "danger" | "info" }[] = [];
-  if (todaySessions.length > settings.maxConsecutiveSessions) {
+  const activeToday = todaySessions.filter((s) => s.status !== "cancelled");
+  const alerts: { message: string; tone: "warning" | "danger" | "info"; href?: string }[] = [];
+  if (activeToday.length > settings.maxConsecutiveSessions) {
     alerts.push({
-      message: `Heavy day: ${todaySessions.length} sessions. Consider a recovery buffer.`,
+      message: `Heavy day: ${activeToday.length} sessions. Consider adding a recovery buffer.`,
       tone: "warning",
+      href: "/app/calendar",
     });
   }
   if (lifeBlocks.length === 0) {
     alerts.push({
       message: "Your own training/recovery is not protected on the timetable.",
       tone: "warning",
+      href: "/app/me",
     });
   }
   if (totalDue > 0) {
     alerts.push({
       message: `₹${totalDue.toLocaleString("en-IN")} in client payments need attention.`,
       tone: "info",
+      href: "/app/money",
     });
   }
 
   let energyScore = 85;
-  if (todaySessions.length > settings.maxConsecutiveSessions) energyScore = 55;
-  else if (lifeBlocks.length === 0) energyScore -= 10;
+  if (activeToday.length > settings.maxConsecutiveSessions) energyScore = 55;
+  if (lifeBlocks.length === 0) energyScore -= 10;
   if (clientFollowUps.value > 0) energyScore -= 5;
+  energyScore = Math.max(0, Math.min(100, energyScore));
+  const energyMessage =
+    energyScore >= 80
+      ? "Your schedule has breathing room."
+      : energyScore >= 60
+        ? "Your schedule needs more recovery protection."
+        : "You're overloaded today — protect a recovery block.";
 
   const nextSession =
-    todaySessions.find((s) => s.status === "scheduled" || s.status === "in_progress") ??
+    todaySessions.find(
+      (s) => (s.status === "scheduled" || s.status === "in_progress") && s.scheduledAt.getTime() >= now.getTime() - 60 * 60 * 1000,
+    ) ??
     (upcomingSessions[0]
       ? {
           id: upcomingSessions[0].id,
@@ -274,26 +299,30 @@ export async function getTrainerDashboard(session: SessionPayload) {
   return {
     greeting: session.name.split(" ")[0],
     stats: {
-      todaySessions: todaySessions.length,
+      todaySessions: activeToday.length,
       weekSessions: weekSessions.length,
       activeClients: activeClients.value,
       followUps: leadFollowUps.value + clientFollowUps.value,
       pendingTasks: openTasks.length + leadFollowUps.value + clientFollowUps.value,
       programReviews: 0,
-      coachingLoadHours: todaySessions.length,
+      coachingLoadHours: weekSessions.length,
     },
     nextClient: nextSession
       ? {
           name: nextSession.memberName,
-          time: new Date(nextSession.scheduledAt).toLocaleTimeString([], {
-            hour: "2-digit",
+          time: new Date(nextSession.scheduledAt).toLocaleTimeString("en-IN", {
+            hour: "numeric",
             minute: "2-digit",
           }),
+          day: isSameLocalDay(new Date(nextSession.scheduledAt), now)
+            ? "Today"
+            : new Date(nextSession.scheduledAt).toLocaleDateString("en-IN", { weekday: "short", day: "numeric", month: "short" }),
           sessionId: nextSession.id,
           memberId: nextSession.memberId,
         }
       : null,
     energyScore,
+    energyMessage,
     alerts,
     settings,
     todaySessions: todaySessions.map((s) => ({
@@ -337,11 +366,28 @@ export async function getTrainerOpenTasks(session: SessionPayload) {
   }));
 }
 
+export async function getTrainerClientOptions(session: SessionPayload) {
+  return db
+    .select({ id: members.id, name: members.name })
+    .from(members)
+    .innerJoin(
+      coachingRelationships,
+      and(
+        eq(coachingRelationships.memberId, members.id),
+        eq(coachingRelationships.trainerId, session.userId),
+        eq(coachingRelationships.active, true),
+      ),
+    )
+    .where(and(eq(members.organisationId, session.organisationId), eq(members.status, "active")))
+    .orderBy(members.name);
+}
+
 export type TrainerClientCard = {
   id: string;
   name: string;
   goal: string | null;
   email: string | null;
+  phone: string | null;
   status: string;
   nextSession: string | null;
   lastSession: string | null;
@@ -354,6 +400,10 @@ export type TrainerClientCard = {
   needsFollowUp: boolean;
   programReviewDue: boolean;
   noSession14d: boolean;
+  totalSessions: number | null;
+  trainingDays: string | null;
+  trainingTime: string | null;
+  lastNote: string | null;
 };
 
 export async function getTrainerClientsEnriched(session: SessionPayload): Promise<TrainerClientCard[]> {
@@ -363,6 +413,7 @@ export async function getTrainerClientsEnriched(session: SessionPayload): Promis
       name: members.name,
       goal: members.goal,
       email: members.email,
+      phone: members.phone,
       status: members.status,
       needsFollowUp: coachingRelationships.needsFollowUp,
     })
@@ -411,11 +462,22 @@ export async function getTrainerClientsEnriched(session: SessionPayload): Promis
     const [plan] = await db
       .select({
         sessionsRemaining: memberPlans.sessionsRemaining,
+        totalSessions: memberPlans.totalSessions,
         amountDue: memberPlans.amountDue,
         packageValue: memberPlans.packageValue,
+        trainingDays: memberPlans.trainingDays,
+        trainingTime: memberPlans.trainingTime,
       })
       .from(memberPlans)
       .where(and(eq(memberPlans.memberId, c.id), eq(memberPlans.status, "active")))
+      .orderBy(desc(memberPlans.createdAt))
+      .limit(1);
+
+    const [note] = await db
+      .select({ body: coachNotes.body })
+      .from(coachNotes)
+      .where(eq(coachNotes.memberId, c.id))
+      .orderBy(desc(coachNotes.createdAt))
       .limit(1);
 
     const [assessment] = await db
@@ -455,6 +517,10 @@ export async function getTrainerClientsEnriched(session: SessionPayload): Promis
       needsFollowUp: c.needsFollowUp,
       programReviewDue,
       noSession14d,
+      totalSessions: plan?.totalSessions ?? null,
+      trainingDays: plan?.trainingDays ?? null,
+      trainingTime: plan?.trainingTime ?? null,
+      lastNote: note?.body ?? null,
     });
   }
 
@@ -505,6 +571,13 @@ export async function getClientWorkspace(session: SessionPayload, memberId: stri
     .where(and(eq(memberPlans.memberId, memberId), eq(memberPlans.status, "active")))
     .limit(1);
 
+  const [gymMembership] = await db
+    .select()
+    .from(gymMemberships)
+    .where(eq(gymMemberships.memberId, memberId))
+    .orderBy(desc(gymMemberships.createdAt))
+    .limit(1);
+
   const [onboarding] = await db
     .select()
     .from(onboardingAssignments)
@@ -544,6 +617,7 @@ export async function getClientWorkspace(session: SessionPayload, memberId: stri
     sessions: memberSessions,
     completedCount,
     plan,
+    gymMembership: gymMembership ?? null,
     onboarding,
     nextSession,
     coachAttention,
@@ -725,11 +799,40 @@ export type TrainerSettingsData = {
   lifeNotes: string | null;
   top3: string[];
   nonNegotiables: { label: string; done: boolean }[];
+  shutdownTime: string;
+  weeklyReview: { weekOf: string; worked: string; fix: string } | null;
   notifications: { sessionReminders: boolean; clientUpdates: boolean; emailDigest: boolean };
 };
 
-const DEFAULT_TOP3 = ["Deliver great sessions", "One career-building task", "Protect recovery time"];
+const DEFAULT_TOP3 = ["Deliver great sessions", "One career-building task", "Protect my own training"];
+const DEFAULT_NON_NEGOTIABLES = [
+  "Top 3 priorities clear",
+  "Deep Work protected",
+  "Admin batched",
+  "Meal before PM shift",
+  "Shutdown time protected",
+];
 const DEFAULT_NOTIFICATIONS = { sessionReminders: true, clientUpdates: true, emailDigest: false };
+
+function toSettingsData(row: typeof trainerSettings.$inferSelect): TrainerSettingsData {
+  const freshDay = row.checklistDate !== localDateKey();
+  const saved = row.nonNegotiables?.length
+    ? row.nonNegotiables
+    : DEFAULT_NON_NEGOTIABLES.map((label) => ({ label, done: false }));
+  return {
+    id: row.id,
+    maxConsecutiveSessions: row.maxConsecutiveSessions,
+    trainingDays: row.trainingDays,
+    trainingTime: row.trainingTime,
+    mealWindow: row.mealWindow,
+    lifeNotes: row.lifeNotes,
+    top3: row.top3?.length ? row.top3 : DEFAULT_TOP3,
+    nonNegotiables: freshDay ? saved.map((n) => ({ ...n, done: false })) : saved,
+    shutdownTime: row.shutdownTime ?? "10:00 PM",
+    weeklyReview: row.weeklyReview ?? null,
+    notifications: row.notifications ?? DEFAULT_NOTIFICATIONS,
+  };
+}
 
 export async function getTrainerSettings(session: SessionPayload): Promise<TrainerSettingsData> {
   const [existing] = await db
@@ -743,19 +846,7 @@ export async function getTrainerSettings(session: SessionPayload): Promise<Train
     )
     .limit(1);
 
-  if (existing) {
-    return {
-      id: existing.id,
-      maxConsecutiveSessions: existing.maxConsecutiveSessions,
-      trainingDays: existing.trainingDays,
-      trainingTime: existing.trainingTime,
-      mealWindow: existing.mealWindow,
-      lifeNotes: existing.lifeNotes,
-      top3: existing.top3 ?? DEFAULT_TOP3,
-      nonNegotiables: existing.nonNegotiables ?? [],
-      notifications: existing.notifications ?? DEFAULT_NOTIFICATIONS,
-    };
-  }
+  if (existing) return toSettingsData(existing);
 
   const [created] = await db
     .insert(trainerSettings)
@@ -763,19 +854,11 @@ export async function getTrainerSettings(session: SessionPayload): Promise<Train
       organisationId: session.organisationId,
       userId: session.userId,
     })
+    .onConflictDoNothing()
     .returning();
 
-  return {
-    id: created.id,
-    maxConsecutiveSessions: created.maxConsecutiveSessions,
-    trainingDays: created.trainingDays,
-    trainingTime: created.trainingTime,
-    mealWindow: created.mealWindow,
-    lifeNotes: created.lifeNotes,
-    top3: created.top3 ?? DEFAULT_TOP3,
-    nonNegotiables: created.nonNegotiables ?? [],
-    notifications: created.notifications ?? DEFAULT_NOTIFICATIONS,
-  };
+  if (created) return toSettingsData(created);
+  return getTrainerSettings(session);
 }
 
 export type ScheduleBlockRow = {

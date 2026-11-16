@@ -83,7 +83,7 @@ export function CommunicationPanel({
                 key={m.id}
                 className={`rounded-md border px-4 py-3 text-sm ${
                   m.senderId === trainerUserId
-                    ? "border-cyan-200 bg-cyan-50"
+                    ? "border-[var(--moss-700)] bg-[var(--moss-tint)]"
                     : "border-[var(--workspace-border)]"
                 }`}
               >

@@ -37,11 +37,11 @@ export function ResetPasswordForm({ token }: { token: string }) {
   }
 
   return (
-    <div className="relative min-h-screen overflow-hidden" style={{ background: "#0B0F0D" }}>
+    <div className="relative min-h-screen overflow-hidden" style={{ background: "var(--jet-950)" }}>
       <LoginVideoBackground />
       <div className="absolute left-0 top-0 z-20 px-6 py-5 md:px-8 md:py-6">
         {logoFailed ? (
-          <div className="text-lg font-extrabold tracking-[0.18em] text-[#B7F34A]">LMNT</div>
+          <div className="text-lg font-extrabold tracking-[0.18em] text-[var(--emerald-neon)]">LMNT</div>
         ) : (
           <Image
             src="/logo.png"
@@ -57,11 +57,11 @@ export function ResetPasswordForm({ token }: { token: string }) {
       <main className="relative z-10 flex min-h-screen items-center justify-center px-6 py-24 md:px-10">
         <div className="w-full max-w-md space-y-6">
           <div>
-            <h1 className="text-2xl font-semibold tracking-tight text-[#F5F7F5]">Set a new password</h1>
-            <p className="mt-2 text-sm text-[#9AA39D]">Choose a password with at least 8 characters.</p>
+            <h1 className="text-2xl font-semibold tracking-tight text-[var(--workspace-text)]">Set a new password</h1>
+            <p className="mt-2 text-sm text-[var(--workspace-muted)]">Choose a password with at least 8 characters.</p>
           </div>
           {!token ? (
-            <p className="neu-card p-6 text-sm text-[#ef8b7a]">This reset link is missing. Request a new one from the login page.</p>
+            <p className="neu-card p-6 text-sm text-[var(--status-danger)]">This reset link is missing. Request a new one from the login page.</p>
           ) : (
             <form onSubmit={onSubmit} className="neu-card space-y-4 p-6">
               <input
@@ -84,11 +84,11 @@ export function ResetPasswordForm({ token }: { token: string }) {
                 onChange={(e) => setConfirm(e.target.value)}
                 className="neu-input"
               />
-              {error && <p className="text-sm text-[#ef8b7a]">{error}</p>}
+              {error && <p className="text-sm text-[var(--status-danger)]">{error}</p>}
               <button
                 type="submit"
                 disabled={loading || password.length < 8}
-                className="w-full rounded-[12px] bg-[#B7F34A] px-4 py-3 text-sm font-bold text-[#0B0F0D] shadow-[var(--neu-shadow-control)] transition hover:opacity-95 disabled:opacity-50"
+                className="w-full rounded-[12px] bg-[var(--emerald-neon)] px-4 py-3 text-sm font-bold text-[var(--emerald-neon-ink)] shadow-[var(--neu-shadow-control)] transition hover:opacity-95 disabled:opacity-50"
               >
                 {loading ? "Saving…" : "Update password"}
               </button>

@@ -1,5 +1,6 @@
 import {
   boolean,
+  date,
   index,
   integer,
   jsonb,
@@ -34,7 +35,19 @@ export const leadStageEnum = pgEnum("lead_stage", [
   "lost",
 ]);
 export const memberStatusEnum = pgEnum("member_status", ["active", "paused", "expired"]);
-export const planStatusEnum = pgEnum("plan_status", ["active", "cancelled", "expired"]);
+export const memberGenderEnum = pgEnum("member_gender", [
+  "male",
+  "female",
+  "other",
+  "prefer_not_to_say",
+]);
+export const planStatusEnum = pgEnum("plan_status", ["active", "paused", "cancelled", "expired"]);
+export const gymMembershipStatusEnum = pgEnum("gym_membership_status", [
+  "active",
+  "inactive",
+  "paused",
+  "expired",
+]);
 export const assessmentStatusEnum = pgEnum("assessment_status", [
   "draft",
   "in_progress",
@@ -53,6 +66,7 @@ export const sessionStatusEnum = pgEnum("session_status", [
   "completed",
   "cancelled",
 ]);
+export const sessionKindEnum = pgEnum("session_kind", ["pt", "assessment"]);
 export const taskStatusEnum = pgEnum("task_status", [
   "open",
   "in_progress",
@@ -146,6 +160,8 @@ export const paymentMethodEnum = pgEnum("payment_method", [
   "bank_transfer",
   "other",
 ]);
+export const wearableSourceEnum = pgEnum("wearable_source", ["whoop", "oura", "ring", "manual"]);
+export const coachQuestionStatusEnum = pgEnum("coach_question_status", ["open", "answered"]);
 
 export const organisations = pgTable("organisations", {
   id: uuid("id").defaultRandom().primaryKey(),
@@ -214,6 +230,62 @@ export const organisationMemberships = pgTable(
   ],
 );
 
+/** Org-defined role (name is display metadata only — never authorize by name). */
+export const orgRoles = pgTable(
+  "org_roles",
+  {
+    id: uuid("id").defaultRandom().primaryKey(),
+    organisationId: uuid("organisation_id")
+      .notNull()
+      .references(() => organisations.id, { onDelete: "cascade" }),
+    name: text("name").notNull(),
+    description: text("description"),
+    /** Internal bridge to legacy app_role enum during transition; not for authorization. */
+    legacyKey: text("legacy_key"),
+    active: boolean("active").notNull().default(true),
+    sortOrder: integer("sort_order").notNull().default(0),
+    createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
+    updatedAt: timestamp("updated_at", { withTimezone: true }).notNull().defaultNow(),
+  },
+  (table) => [
+    uniqueIndex("org_roles_org_name_idx").on(table.organisationId, table.name),
+    uniqueIndex("org_roles_org_legacy_idx").on(table.organisationId, table.legacyKey),
+    index("org_roles_org_idx").on(table.organisationId),
+  ],
+);
+
+export const accessScopeEnum = pgEnum("access_scope", [
+  "global",
+  "organisation",
+  "region",
+  "center",
+  "department",
+  "team",
+  "assigned",
+  "self",
+]);
+
+export const orgRolePermissions = pgTable(
+  "org_role_permissions",
+  {
+    id: uuid("id").defaultRandom().primaryKey(),
+    organisationId: uuid("organisation_id")
+      .notNull()
+      .references(() => organisations.id, { onDelete: "cascade" }),
+    orgRoleId: uuid("org_role_id")
+      .notNull()
+      .references(() => orgRoles.id, { onDelete: "cascade" }),
+    permission: text("permission").notNull(),
+    scope: accessScopeEnum("scope").notNull().default("organisation"),
+    createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
+  },
+  (table) => [
+    uniqueIndex("org_role_perm_unique_idx").on(table.orgRoleId, table.permission),
+    index("org_role_perm_role_idx").on(table.orgRoleId),
+    index("org_role_perm_org_idx").on(table.organisationId),
+  ],
+);
+
 export const roleAssignments = pgTable(
   "role_assignments",
   {
@@ -226,11 +298,16 @@ export const roleAssignments = pgTable(
       .references(() => organisations.id, { onDelete: "cascade" }),
     centreId: uuid("centre_id").references(() => centres.id, { onDelete: "cascade" }),
     role: roleEnum("role").notNull(),
+    orgRoleId: uuid("org_role_id").references(() => orgRoles.id, { onDelete: "set null" }),
+    startsAt: timestamp("starts_at", { withTimezone: true }),
+    endsAt: timestamp("ends_at", { withTimezone: true }),
+    active: boolean("active").notNull().default(true),
     createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
   },
   (table) => [
     index("role_assignments_user_org_idx").on(table.userId, table.organisationId),
     index("role_assignments_centre_idx").on(table.centreId),
+    index("role_assignments_org_role_idx").on(table.orgRoleId),
   ],
 );
 
@@ -297,6 +374,7 @@ export const leads = pgTable(
     stage: leadStageEnum("stage").notNull().default("new"),
     notes: text("notes"),
     nextAction: text("next_action"),
+    memberId: uuid("member_id").references(() => members.id, { onDelete: "set null" }),
     convertedMemberId: uuid("converted_member_id"),
     createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
     updatedAt: timestamp("updated_at", { withTimezone: true }).notNull().defaultNow(),
@@ -304,6 +382,7 @@ export const leads = pgTable(
   (table) => [
     index("leads_org_centre_idx").on(table.organisationId, table.centreId),
     index("leads_owner_idx").on(table.ownerId),
+    index("leads_member_idx").on(table.memberId),
   ],
 );
 
@@ -395,10 +474,20 @@ export const members = pgTable(
       .references(() => centres.id, { onDelete: "cascade" }),
     userId: uuid("user_id").references(() => users.id),
     name: text("name").notNull(),
+    firstName: text("first_name"),
+    lastName: text("last_name"),
+    dateOfBirth: date("date_of_birth"),
+    gender: memberGenderEnum("gender"),
     email: text("email"),
     phone: text("phone"),
+    idDocumentKey: text("id_document_key"),
+    idDocumentFilename: text("id_document_filename"),
+    emergencyContactName: text("emergency_contact_name"),
+    emergencyContactPhone: text("emergency_contact_phone"),
+    intakeFeedback: text("intake_feedback"),
     status: memberStatusEnum("status").notNull().default("active"),
     goal: text("goal"),
+    goalTargetSessions: integer("goal_target_sessions"),
     createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
     updatedAt: timestamp("updated_at", { withTimezone: true }).notNull().defaultNow(),
   },
@@ -459,10 +548,41 @@ export const memberPlans = pgTable("member_plans", {
   packageValue: integer("package_value").notNull().default(0),
   amountDue: integer("amount_due").notNull().default(0),
   trainerShareBps: integer("trainer_share_bps").notNull().default(5000),
+  trainerId: uuid("trainer_id").references(() => users.id, { onDelete: "set null" }),
+  trainingDays: text("training_days"),
+  trainingTime: text("training_time"),
+  validityMonths: integer("validity_months"),
   startsAt: timestamp("starts_at", { withTimezone: true }).notNull(),
   endsAt: timestamp("ends_at", { withTimezone: true }),
   createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
 });
+
+/** Facility / gym access packs (3–24 month), separate from PT session plans. */
+export const gymMemberships = pgTable(
+  "gym_memberships",
+  {
+    id: uuid("id").defaultRandom().primaryKey(),
+    organisationId: uuid("organisation_id")
+      .notNull()
+      .references(() => organisations.id, { onDelete: "cascade" }),
+    centreId: uuid("centre_id")
+      .notNull()
+      .references(() => centres.id, { onDelete: "cascade" }),
+    memberId: uuid("member_id")
+      .notNull()
+      .references(() => members.id, { onDelete: "cascade" }),
+    packMonths: integer("pack_months").notNull(),
+    startsAt: timestamp("starts_at", { withTimezone: true }).notNull(),
+    endsAt: timestamp("ends_at", { withTimezone: true }).notNull(),
+    status: gymMembershipStatusEnum("status").notNull().default("active"),
+    createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
+    updatedAt: timestamp("updated_at", { withTimezone: true }).notNull().defaultNow(),
+  },
+  (table) => [
+    index("gym_memberships_member_idx").on(table.memberId),
+    index("gym_memberships_org_centre_idx").on(table.organisationId, table.centreId),
+  ],
+);
 
 export const coachingRelationships = pgTable(
   "coaching_relationships",
@@ -546,10 +666,24 @@ export const assessments = pgTable(
     referralRequired: boolean("referral_required").notNull().default(false),
     scores: jsonb("scores").$type<Record<string, number>>(),
     notes: text("notes"),
+    intakeData: jsonb("intake_data").$type<Record<string, unknown>>(),
+    capabilityScore: integer("capability_score"),
+    capabilityProfile: jsonb("capability_profile").$type<{
+      bucket: string;
+      daysPerWeek: number;
+      immediateGoal: string;
+      longTermGoal: string;
+      rationale: string;
+    }>(),
+    scheduledAt: timestamp("scheduled_at", { withTimezone: true }),
+    leadId: uuid("lead_id").references(() => leads.id, { onDelete: "set null" }),
     completedAt: timestamp("completed_at", { withTimezone: true }),
     createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
   },
-  (table) => [index("assessments_member_idx").on(table.memberId)],
+  (table) => [
+    index("assessments_member_idx").on(table.memberId),
+    index("assessments_scheduled_idx").on(table.scheduledAt),
+  ],
 );
 
 export const programmes = pgTable(
@@ -609,6 +743,8 @@ export const sessions = pgTable(
       .references(() => members.id, { onDelete: "cascade" }),
     trainerId: uuid("trainer_id").references(() => users.id),
     programmeId: uuid("programme_id").references(() => programmes.id),
+    assessmentId: uuid("assessment_id").references(() => assessments.id, { onDelete: "set null" }),
+    kind: sessionKindEnum("kind").notNull().default("pt"),
     status: sessionStatusEnum("status").notNull().default("scheduled"),
     scheduledAt: timestamp("scheduled_at", { withTimezone: true }).notNull(),
     completedAt: timestamp("completed_at", { withTimezone: true }),
@@ -783,6 +919,88 @@ export const progressSnapshots = pgTable(
   (table) => [index("progress_snapshots_member_idx").on(table.memberId)],
 );
 
+export const memberDailyLogs = pgTable(
+  "member_daily_logs",
+  {
+    id: uuid("id").defaultRandom().primaryKey(),
+    organisationId: uuid("organisation_id")
+      .notNull()
+      .references(() => organisations.id, { onDelete: "cascade" }),
+    memberId: uuid("member_id")
+      .notNull()
+      .references(() => members.id, { onDelete: "cascade" }),
+    logDate: date("log_date").notNull(),
+    calories: integer("calories"),
+    dailyReport: text("daily_report"),
+    createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
+  },
+  (table) => [
+    index("member_daily_logs_member_idx").on(table.memberId),
+    uniqueIndex("member_daily_logs_day_idx").on(table.memberId, table.logDate),
+  ],
+);
+
+export const memberVacations = pgTable(
+  "member_vacations",
+  {
+    id: uuid("id").defaultRandom().primaryKey(),
+    organisationId: uuid("organisation_id")
+      .notNull()
+      .references(() => organisations.id, { onDelete: "cascade" }),
+    memberId: uuid("member_id")
+      .notNull()
+      .references(() => members.id, { onDelete: "cascade" }),
+    startsAt: date("starts_at").notNull(),
+    endsAt: date("ends_at").notNull(),
+    notes: text("notes"),
+    createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
+  },
+  (table) => [index("member_vacations_member_idx").on(table.memberId)],
+);
+
+export const memberWearables = pgTable(
+  "member_wearables",
+  {
+    id: uuid("id").defaultRandom().primaryKey(),
+    organisationId: uuid("organisation_id")
+      .notNull()
+      .references(() => organisations.id, { onDelete: "cascade" }),
+    memberId: uuid("member_id")
+      .notNull()
+      .references(() => members.id, { onDelete: "cascade" }),
+    source: wearableSourceEnum("source").notNull().default("manual"),
+    recordedAt: timestamp("recorded_at", { withTimezone: true }).notNull().defaultNow(),
+    recovery: integer("recovery"),
+    sleepHours: integer("sleep_hours"),
+    strain: integer("strain"),
+    hrv: integer("hrv"),
+    steps: integer("steps"),
+    notes: text("notes"),
+    createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
+  },
+  (table) => [index("member_wearables_member_idx").on(table.memberId)],
+);
+
+export const memberCoachQuestions = pgTable(
+  "member_coach_questions",
+  {
+    id: uuid("id").defaultRandom().primaryKey(),
+    organisationId: uuid("organisation_id")
+      .notNull()
+      .references(() => organisations.id, { onDelete: "cascade" }),
+    memberId: uuid("member_id")
+      .notNull()
+      .references(() => members.id, { onDelete: "cascade" }),
+    trainerId: uuid("trainer_id").references(() => users.id, { onDelete: "set null" }),
+    question: text("question").notNull(),
+    answer: text("answer"),
+    status: coachQuestionStatusEnum("status").notNull().default("open"),
+    createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
+    answeredAt: timestamp("answered_at", { withTimezone: true }),
+  },
+  (table) => [index("member_coach_questions_member_idx").on(table.memberId)],
+);
+
 export const tasks = pgTable(
   "tasks",
   {
@@ -823,6 +1041,9 @@ export const trainerSettings = pgTable(
     lifeNotes: text("life_notes"),
     top3: jsonb("top3").$type<string[]>().default(["Deliver great sessions", "One career-building task", "Protect recovery time"]),
     nonNegotiables: jsonb("non_negotiables").$type<{ label: string; done: boolean }[]>().default([]),
+    checklistDate: text("checklist_date"),
+    shutdownTime: text("shutdown_time").default("10:00 PM"),
+    weeklyReview: jsonb("weekly_review").$type<{ weekOf: string; worked: string; fix: string }>(),
     notifications: jsonb("notifications")
       .$type<{ sessionReminders: boolean; clientUpdates: boolean; emailDigest: boolean }>()
       .default({ sessionReminders: true, clientUpdates: true, emailDigest: false }),
@@ -1313,10 +1534,13 @@ export const onboardingAssignments = pgTable(
 );
 
 export type AppRole = (typeof roleEnum.enumValues)[number];
+export type AccessScope = (typeof accessScopeEnum.enumValues)[number];
 
 export type Organisation = typeof organisations.$inferSelect;
 export type Centre = typeof centres.$inferSelect;
 export type User = typeof users.$inferSelect;
+export type OrgRole = typeof orgRoles.$inferSelect;
+export type OrgRolePermission = typeof orgRolePermissions.$inferSelect;
 export type RoleAssignment = typeof roleAssignments.$inferSelect;
 export type Lead = typeof leads.$inferSelect;
 export type Member = typeof members.$inferSelect;

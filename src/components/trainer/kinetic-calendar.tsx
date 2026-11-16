@@ -44,10 +44,10 @@ function eventCardClass(event: CalendarEvent) {
 
 function eventTitleColor(event: CalendarEvent) {
   const cls = eventCardClass(event);
-  if (cls === "kinetic-hiit") return "text-[#ff5e07]";
-  if (cls === "kinetic-cardio") return "text-[#00dbe9]";
-  if (cls === "kinetic-muted") return "text-[#8e9379]";
-  return "text-[#c3f400]";
+  if (cls === "kinetic-hiit") return "text-[var(--kinetic-orange)]";
+  if (cls === "kinetic-cardio") return "text-[var(--moss-300)]";
+  if (cls === "kinetic-muted") return "text-[var(--moss-400)]";
+  return "text-[var(--emerald-neon)]";
 }
 
 function relativeTime(iso: string) {
@@ -142,16 +142,16 @@ export function KineticCalendarView({
   };
 
   return (
-    <div className="kinetic-calendar flex min-h-[calc(100vh-4rem)] flex-col bg-[#131313] text-[#e5e2e1] lg:flex-row">
+    <div className="kinetic-calendar flex min-h-[calc(100vh-4rem)] flex-col bg-[var(--jet-950)] text-[var(--workspace-text)] lg:flex-row">
       <div className="flex min-w-0 flex-1 flex-col overflow-hidden">
-        <div className="flex flex-col gap-4 border-b border-[#444933] px-4 py-4 sm:flex-row sm:items-center sm:justify-between md:px-6">
+        <div className="flex flex-col gap-4 border-b border-[var(--moss-800)] px-4 py-4 sm:flex-row sm:items-center sm:justify-between md:px-6">
           <div className="flex flex-wrap items-center gap-4">
             <h2 className="text-xl font-bold tracking-tight">{headerMonth}</h2>
-            <div className="flex rounded border border-white/10 bg-[#2a2a2a] p-1">
+            <div className="flex rounded border border-[var(--moss-800)] bg-[var(--jet-850)] p-1">
               <button
                 type="button"
                 onClick={() => navigate(-1)}
-                className="rounded p-1 text-[#c4c9ac] transition hover:bg-[#353534] hover:text-white"
+                className="rounded p-1 text-[var(--moss-300)] transition hover:bg-[var(--moss-800)] hover:text-white"
                 aria-label="Previous"
               >
                 ‹
@@ -159,14 +159,14 @@ export function KineticCalendarView({
               <button
                 type="button"
                 onClick={() => navigate(0)}
-                className="rounded px-3 py-1 font-mono text-xs font-medium uppercase tracking-wide hover:bg-[#353534]"
+                className="rounded px-3 py-1 font-mono text-xs font-medium uppercase tracking-wide hover:bg-[var(--moss-800)]"
               >
                 Today
               </button>
               <button
                 type="button"
                 onClick={() => navigate(1)}
-                className="rounded p-1 text-[#c4c9ac] transition hover:bg-[#353534] hover:text-white"
+                className="rounded p-1 text-[var(--moss-300)] transition hover:bg-[var(--moss-800)] hover:text-white"
                 aria-label="Next"
               >
                 ›
@@ -175,12 +175,12 @@ export function KineticCalendarView({
           </div>
 
           <div className="flex flex-wrap items-center gap-3">
-            <div className="flex rounded border border-white/10 bg-[#2a2a2a] p-1 font-mono text-xs uppercase tracking-wide">
+            <div className="flex rounded border border-[var(--moss-800)] bg-[var(--jet-850)] p-1 font-mono text-xs uppercase tracking-wide">
               <button
                 type="button"
                 onClick={() => setView("week")}
                 className={`rounded px-4 py-1.5 font-bold transition ${
-                  view === "week" ? "bg-[#353534] text-[#e5e2e1]" : "text-[#c4c9ac] hover:text-white"
+                  view === "week" ? "bg-[var(--moss-800)] text-[var(--workspace-text)]" : "text-[var(--moss-300)] hover:text-white"
                 }`}
               >
                 Week
@@ -189,7 +189,7 @@ export function KineticCalendarView({
                 type="button"
                 onClick={() => setView("month")}
                 className={`rounded px-4 py-1.5 transition ${
-                  view === "month" ? "bg-[#353534] font-bold text-[#e5e2e1]" : "text-[#c4c9ac] hover:text-white"
+                  view === "month" ? "bg-[var(--moss-800)] font-bold text-[var(--workspace-text)]" : "text-[var(--moss-300)] hover:text-white"
                 }`}
               >
                 Month
@@ -198,7 +198,7 @@ export function KineticCalendarView({
             <button
               type="button"
               onClick={() => openCreate("session")}
-              className="flex items-center gap-2 rounded bg-[#c3f400] px-4 py-2 font-mono text-xs font-bold uppercase tracking-wide text-[#283500] transition hover:bg-[#abd600]"
+              className="flex items-center gap-2 rounded bg-[var(--emerald-neon)] px-4 py-2 font-mono text-xs font-bold uppercase tracking-wide text-[var(--emerald-neon-ink)] transition hover:bg-[var(--emerald-neon-hover)]"
             >
               <span className="text-base leading-none">+</span>
               Quick Add
@@ -207,34 +207,34 @@ export function KineticCalendarView({
         </div>
 
         <div className="flex flex-1 flex-col overflow-hidden p-4 md:p-6">
-          <div className="flex min-h-[560px] flex-1 flex-col overflow-hidden rounded-xl border border-white/10 bg-[#1c1b1b]">
+          <div className="flex min-h-[560px] flex-1 flex-col overflow-hidden rounded-xl border border-[var(--moss-800)] bg-[var(--jet-900)]">
             {view === "week" ? (
               <>
-                <div className="grid grid-cols-[60px_repeat(7,1fr)] border-b border-[#444933] bg-[#201f1f]">
-                  <div className="border-r border-[#444933] p-3" />
+                <div className="grid grid-cols-[60px_repeat(7,1fr)] border-b border-[var(--moss-800)] bg-[var(--jet-900)]">
+                  <div className="border-r border-[var(--moss-800)] p-3" />
                   {weekDays.map((day) => {
                     const isToday = isSameDay(day, today);
                     const weekend = isWeekend(day);
                     return (
                       <div
                         key={day.toISOString()}
-                        className={`relative border-r border-[#444933] p-3 text-center last:border-r-0 ${
-                          isToday ? "bg-[#353534]/30" : ""
+                        className={`relative border-r border-[var(--moss-800)] p-3 text-center last:border-r-0 ${
+                          isToday ? "bg-[var(--moss-800)]/30" : ""
                         }`}
                       >
                         {isToday && (
-                          <div className="absolute left-0 right-0 top-0 h-1 bg-[#c3f400]" />
+                          <div className="absolute left-0 right-0 top-0 h-1 bg-[var(--emerald-neon)]" />
                         )}
                         <div
                           className={`font-mono text-xs uppercase tracking-wider ${
-                            isToday ? "font-bold text-[#c3f400]" : weekend ? "text-[#8e9379]" : "text-[#c4c9ac]"
+                            isToday ? "font-bold text-[var(--emerald-neon)]" : weekend ? "text-[var(--moss-400)]" : "text-[var(--moss-300)]"
                           }`}
                         >
                           {day.toLocaleDateString(undefined, { weekday: "short" })}
                         </div>
                         <div
                           className={`mt-1 text-xl font-bold ${
-                            isToday ? "text-[#c3f400]" : weekend ? "text-[#8e9379]" : ""
+                            isToday ? "text-[var(--emerald-neon)]" : weekend ? "text-[var(--moss-400)]" : ""
                           }`}
                         >
                           {day.getDate()}
@@ -246,13 +246,13 @@ export function KineticCalendarView({
 
                 <div className="relative flex-1 overflow-y-auto">
                   <div
-                    className="grid gap-px bg-[#353535]"
+                    className="grid gap-px bg-[var(--moss-900)]"
                     style={{ gridTemplateColumns: "60px repeat(7, 1fr)" }}
                   >
                     {hours.map((hour) => (
                       <Fragment key={hour}>
                         <div
-                          className="flex items-start justify-end bg-[#131313] px-2 py-2 font-mono text-[10px] text-[#c4c9ac]"
+                          className="flex items-start justify-end bg-[var(--jet-950)] px-2 py-2 font-mono text-[10px] text-[var(--moss-300)]"
                           style={{ minHeight: HOUR_HEIGHT }}
                         >
                           {String(hour).padStart(2, "0")}:00
@@ -260,12 +260,12 @@ export function KineticCalendarView({
                         {weekDays.map((day) => (
                           <div
                             key={`${day.toISOString()}-${hour}`}
-                            className={`relative bg-[#131313] p-1 ${isWeekend(day) ? "opacity-50" : ""}`}
+                            className={`relative bg-[var(--jet-950)] p-1 ${isWeekend(day) ? "opacity-50" : ""}`}
                             style={{ minHeight: HOUR_HEIGHT }}
                           >
                             <button
                               type="button"
-                              className="absolute inset-0 w-full hover:bg-[#c3f400]/5"
+                              className="absolute inset-0 w-full hover:bg-[var(--emerald-neon)]/5"
                               onClick={() => onSlotClick(day, hour)}
                               aria-label="Add session"
                             />
@@ -299,13 +299,13 @@ export function KineticCalendarView({
                                   setCreateOpen(false);
                                 }}
                               >
-                                <div className="font-mono text-[10px] text-[#c4c9ac]">
+                                <div className="font-mono text-[10px] text-[var(--moss-300)]">
                                   {formatTime(start)} – {formatTime(end)}
                                 </div>
                                 <div className={`font-mono text-xs font-bold ${eventTitleColor(event)}`}>
                                   {event.type === "session" ? event.subtitle ?? "PT Session" : event.title}
                                 </div>
-                                <div className="mt-1 font-mono text-[11px] text-[#e5e2e1]">👤 {event.title}</div>
+                                <div className="mt-1 font-mono text-[11px] text-[var(--workspace-text)]">👤 {event.title}</div>
                               </button>
                             );
                           })}
@@ -315,18 +315,18 @@ export function KineticCalendarView({
                   </div>
                 </div>
 
-                <div className="flex flex-wrap justify-center gap-6 border-t border-[#444933] bg-[#2a2a2a] p-3 font-mono text-xs uppercase tracking-wide">
+                <div className="flex flex-wrap justify-center gap-6 border-t border-[var(--moss-800)] bg-[var(--jet-850)] p-3 font-mono text-xs uppercase tracking-wide">
                   <div className="flex items-center gap-2">
-                    <div className="h-3 w-3 rounded bg-[#c3f400]" />
-                    <span className="text-[#c4c9ac]">Strength / Session</span>
+                    <div className="h-3 w-3 rounded bg-[var(--emerald-neon)]" />
+                    <span className="text-[var(--moss-300)]">Strength / Session</span>
                   </div>
                   <div className="flex items-center gap-2">
-                    <div className="h-3 w-3 rounded bg-[#ff5e07]" />
-                    <span className="text-[#c4c9ac]">In progress / HIIT</span>
+                    <div className="h-3 w-3 rounded bg-[var(--kinetic-orange)]" />
+                    <span className="text-[var(--moss-300)]">In progress / HIIT</span>
                   </div>
                   <div className="flex items-center gap-2">
-                    <div className="h-3 w-3 rounded bg-[#00dbe9]" />
-                    <span className="text-[#c4c9ac]">Tasks / Recovery</span>
+                    <div className="h-3 w-3 rounded bg-[var(--moss-300)]" />
+                    <span className="text-[var(--moss-300)]">Tasks / Recovery</span>
                   </div>
                 </div>
               </>
@@ -347,33 +347,33 @@ export function KineticCalendarView({
         </div>
       </div>
 
-      <aside className="hidden w-80 shrink-0 flex-col border-l border-[#444933] bg-[#201f1f] lg:flex">
-        <div className="border-b border-[#444933] p-4">
+      <aside className="hidden w-80 shrink-0 flex-col border-l border-[var(--moss-800)] bg-[var(--jet-900)] lg:flex">
+        <div className="border-b border-[var(--moss-800)] p-4">
           <h3 className="text-lg font-bold">Upcoming</h3>
         </div>
         <div className="flex-1 overflow-y-auto p-4">
-          <div className="font-mono text-xs uppercase tracking-wider text-[#c4c9ac]">Today &amp; next</div>
+          <div className="font-mono text-xs uppercase tracking-wider text-[var(--moss-300)]">Today &amp; next</div>
           <div className="mt-3 space-y-3">
             {upcoming.length === 0 ? (
-              <p className="text-sm text-[#8e9379]">No upcoming sessions.</p>
+              <p className="text-sm text-[var(--moss-400)]">No upcoming sessions.</p>
             ) : (
               upcoming.map((ev) => (
                 <button
                   key={`${ev.type}-${ev.id}`}
                   type="button"
                   onClick={() => setSelectedEvent(ev)}
-                  className="w-full rounded-lg border border-[#444933] bg-[#131313] p-3 text-left transition hover:border-[#c3f400]/40"
+                  className="w-full rounded-lg border border-[var(--moss-800)] bg-[var(--jet-950)] p-3 text-left transition hover:border-[var(--emerald-neon)]/40"
                 >
                   <div className="mb-2 flex items-start justify-between">
                     <span className={`font-mono text-xs font-bold ${eventTitleColor(ev)}`}>
                       {ev.type === "session" ? ev.subtitle ?? "PT Session" : ev.title}
                     </span>
-                    <span className="font-mono text-[10px] text-[#8e9379]">{relativeTime(ev.start)}</span>
+                    <span className="font-mono text-[10px] text-[var(--moss-400)]">{relativeTime(ev.start)}</span>
                   </div>
-                  <div className="font-mono text-xs text-[#c4c9ac]">
+                  <div className="font-mono text-xs text-[var(--moss-300)]">
                     {formatTime(new Date(ev.start))} – {formatTime(new Date(ev.end))}
                   </div>
-                  <div className="mt-1 font-mono text-xs text-[#c4c9ac]">👤 {ev.title}</div>
+                  <div className="mt-1 font-mono text-xs text-[var(--moss-300)]">👤 {ev.title}</div>
                 </button>
               ))
             )}
@@ -381,22 +381,22 @@ export function KineticCalendarView({
 
           {pendingLeads.length > 0 && (
             <div className="mt-8">
-              <div className="flex items-center justify-between font-mono text-xs uppercase tracking-wider text-[#c4c9ac]">
+              <div className="flex items-center justify-between font-mono text-xs uppercase tracking-wider text-[var(--moss-300)]">
                 Pending requests
-                <span className="rounded-full bg-[#ffb4ab] px-2 py-0.5 text-[10px] font-bold text-[#690005]">
+                <span className="rounded-full bg-[var(--status-danger)] px-2 py-0.5 text-[10px] font-bold text-[var(--jet-950)]">
                   {pendingLeads.length}
                 </span>
               </div>
               <div className="mt-3 space-y-3">
                 {pendingLeads.slice(0, 3).map((lead) => (
-                  <div key={lead.id} className="rounded-lg border border-[#444933] bg-[#131313] p-3">
-                    <div className="font-mono text-xs font-bold capitalize text-[#e5e2e1]">
+                  <div key={lead.id} className="rounded-lg border border-[var(--moss-800)] bg-[var(--jet-950)] p-3">
+                    <div className="font-mono text-xs font-bold capitalize text-[var(--workspace-text)]">
                       {lead.stage.replace("_", " ")}
                     </div>
-                    <div className="mt-1 text-sm text-[#c4c9ac]">New lead: {lead.name}</div>
+                    <div className="mt-1 text-sm text-[var(--moss-300)]">New lead: {lead.name}</div>
                     <Link
                       href="/app/leads"
-                      className="mt-3 inline-block rounded bg-[#c3f400] px-3 py-1 font-mono text-xs font-bold text-[#283500] hover:bg-[#abd600]"
+                      className="mt-3 inline-block rounded bg-[var(--emerald-neon)] px-3 py-1 font-mono text-xs font-bold text-[var(--emerald-neon-ink)] hover:bg-[var(--emerald-neon-hover)]"
                     >
                       View in Leads
                     </Link>
@@ -444,8 +444,8 @@ function NowLine() {
   const top = (mins / 60) * HOUR_HEIGHT;
   return (
     <div className="pointer-events-none absolute left-0 right-0 z-20" style={{ top }}>
-      <div className="relative flex h-px items-center bg-[#ffb4ab]">
-        <div className="-ml-1 h-2 w-2 rounded-full bg-[#ffb4ab]" />
+      <div className="relative flex h-px items-center bg-[var(--status-danger)]">
+        <div className="-ml-1 h-2 w-2 rounded-full bg-[var(--status-danger)]" />
       </div>
     </div>
   );
@@ -468,14 +468,14 @@ function MonthView({
 }) {
   return (
     <div className="flex-1 overflow-auto p-2">
-      <div className="grid grid-cols-7 gap-px bg-[#353535] font-mono text-xs uppercase tracking-wide text-[#c4c9ac]">
+      <div className="grid grid-cols-7 gap-px bg-[var(--moss-900)] font-mono text-xs uppercase tracking-wide text-[var(--moss-300)]">
         {["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"].map((d) => (
-          <div key={d} className="bg-[#1c1b1b] p-2 text-center">
+          <div key={d} className="bg-[var(--jet-900)] p-2 text-center">
             {d}
           </div>
         ))}
       </div>
-      <div className="grid grid-cols-7 gap-px bg-[#353535]">
+      <div className="grid grid-cols-7 gap-px bg-[var(--moss-900)]">
         {monthDays.map((day) => {
           const inMonth = day.getMonth() === cursor.getMonth();
           const dayEvents = events.filter((e) => isSameDay(new Date(e.start), day));
@@ -484,13 +484,13 @@ function MonthView({
               key={day.toISOString()}
               type="button"
               onClick={() => onDayClick(day)}
-              className={`min-h-[100px] bg-[#131313] p-2 text-left hover:bg-[#1c1b1b] ${
+              className={`min-h-[100px] bg-[var(--jet-950)] p-2 text-left hover:bg-[var(--jet-900)] ${
                 !inMonth ? "opacity-40" : ""
               }`}
             >
               <span
                 className={`inline-flex h-7 w-7 items-center justify-center rounded-full text-sm font-bold ${
-                  isSameDay(day, today) ? "bg-[#c3f400] text-[#283500]" : ""
+                  isSameDay(day, today) ? "bg-[var(--emerald-neon)] text-[var(--emerald-neon-ink)]" : ""
                 }`}
               >
                 {day.getDate()}
@@ -583,21 +583,21 @@ function CreateModal({
 
   return (
     <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/70 p-4 backdrop-blur-sm">
-      <div className="w-full max-w-md rounded-xl border border-[#444933] bg-[#201f1f] shadow-2xl">
-        <div className="flex items-center justify-between border-b border-[#444933] p-4">
+      <div className="w-full max-w-md rounded-xl border border-[var(--moss-800)] bg-[var(--jet-900)] shadow-2xl">
+        <div className="flex items-center justify-between border-b border-[var(--moss-800)] p-4">
           <h3 className="text-lg font-bold">New {kind === "session" ? "Session" : "Task"}</h3>
-          <button type="button" onClick={onClose} className="text-[#c4c9ac] hover:text-white">
+          <button type="button" onClick={onClose} className="text-[var(--moss-300)] hover:text-white">
             ✕
           </button>
         </div>
-        <div className="flex gap-2 border-b border-[#444933] px-4 py-3">
+        <div className="flex gap-2 border-b border-[var(--moss-800)] px-4 py-3">
           {(["session", "task"] as const).map((k) => (
             <button
               key={k}
               type="button"
               onClick={() => onSwitchKind(k)}
               className={`rounded px-3 py-1 font-mono text-xs uppercase ${
-                kind === k ? "bg-[#c3f400] font-bold text-[#283500]" : "text-[#c4c9ac]"
+                kind === k ? "bg-[var(--emerald-neon)] font-bold text-[var(--emerald-neon-ink)]" : "text-[var(--moss-300)]"
               }`}
             >
               {k}
@@ -608,11 +608,11 @@ function CreateModal({
           {kind === "session" ? (
             <>
               <label className="block text-sm">
-                <span className="mb-1 block font-mono text-xs uppercase text-[#c4c9ac]">Client</span>
+                <span className="mb-1 block font-mono text-xs uppercase text-[var(--moss-300)]">Client</span>
                 <select
                   value={memberId}
                   onChange={(e) => setMemberId(e.target.value)}
-                  className="w-full rounded border border-[#444933] bg-[#131313] px-3 py-2 text-sm text-[#e5e2e1]"
+                  className="w-full rounded border border-[var(--moss-800)] bg-[var(--jet-950)] px-3 py-2 text-sm text-[var(--workspace-text)]"
                 >
                   {clients.map((c) => (
                     <option key={c.id} value={c.id}>
@@ -623,11 +623,11 @@ function CreateModal({
               </label>
               {trainers && trainers.length > 0 && (
                 <label className="block text-sm">
-                  <span className="mb-1 block font-mono text-xs uppercase text-[#c4c9ac]">Trainer</span>
+                  <span className="mb-1 block font-mono text-xs uppercase text-[var(--moss-300)]">Trainer</span>
                   <select
                     value={trainerId}
                     onChange={(e) => setTrainerId(e.target.value)}
-                    className="w-full rounded border border-[#444933] bg-[#131313] px-3 py-2 text-sm text-[#e5e2e1]"
+                    className="w-full rounded border border-[var(--moss-800)] bg-[var(--jet-950)] px-3 py-2 text-sm text-[var(--workspace-text)]"
                   >
                     {trainers.map((t) => (
                       <option key={t.id} value={t.id}>
@@ -641,40 +641,40 @@ function CreateModal({
           ) : (
             <>
               <label className="block text-sm">
-                <span className="mb-1 block font-mono text-xs uppercase text-[#c4c9ac]">Title</span>
+                <span className="mb-1 block font-mono text-xs uppercase text-[var(--moss-300)]">Title</span>
                 <input
                   value={title}
                   onChange={(e) => setTitle(e.target.value)}
-                  className="w-full rounded border border-[#444933] bg-[#131313] px-3 py-2 text-sm"
+                  className="w-full rounded border border-[var(--moss-800)] bg-[var(--jet-950)] px-3 py-2 text-sm"
                 />
               </label>
               <label className="block text-sm">
-                <span className="mb-1 block font-mono text-xs uppercase text-[#c4c9ac]">Notes</span>
+                <span className="mb-1 block font-mono text-xs uppercase text-[var(--moss-300)]">Notes</span>
                 <textarea
                   value={description}
                   onChange={(e) => setDescription(e.target.value)}
                   rows={2}
-                  className="w-full rounded border border-[#444933] bg-[#131313] px-3 py-2 text-sm"
+                  className="w-full rounded border border-[var(--moss-800)] bg-[var(--jet-950)] px-3 py-2 text-sm"
                 />
               </label>
             </>
           )}
           <label className="block text-sm">
-            <span className="mb-1 block font-mono text-xs uppercase text-[#c4c9ac]">Date &amp; time</span>
+            <span className="mb-1 block font-mono text-xs uppercase text-[var(--moss-300)]">Date &amp; time</span>
             <input
               type="datetime-local"
               value={datetime}
               onChange={(e) => setDatetime(e.target.value)}
-              className="w-full rounded border border-[#444933] bg-[#131313] px-3 py-2 text-sm"
+              className="w-full rounded border border-[var(--moss-800)] bg-[var(--jet-950)] px-3 py-2 text-sm"
             />
           </label>
-          {error && <p className="text-sm text-[#ffb4ab]">{error}</p>}
+          {error && <p className="text-sm text-[var(--status-danger)]">{error}</p>}
         </div>
-        <div className="flex justify-end gap-2 border-t border-[#444933] p-4">
+        <div className="flex justify-end gap-2 border-t border-[var(--moss-800)] p-4">
           <button
             type="button"
             onClick={onClose}
-            className="rounded px-4 py-2 font-mono text-xs uppercase text-[#c4c9ac] hover:bg-[#353534]"
+            className="rounded px-4 py-2 font-mono text-xs uppercase text-[var(--moss-300)] hover:bg-[var(--moss-800)]"
           >
             Cancel
           </button>
@@ -682,7 +682,7 @@ function CreateModal({
             type="button"
             disabled={loading}
             onClick={submit}
-            className="rounded bg-[#c3f400] px-4 py-2 font-mono text-xs font-bold uppercase text-[#283500] disabled:opacity-50"
+            className="rounded bg-[var(--emerald-neon)] px-4 py-2 font-mono text-xs font-bold uppercase text-[var(--emerald-neon-ink)] disabled:opacity-50"
           >
             {loading ? "Saving…" : "Save"}
           </button>
@@ -728,44 +728,44 @@ function EventModal({
   return (
     <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/70 p-4 backdrop-blur-sm">
       <div
-        className={`w-full max-w-sm rounded-xl border border-[#444933] bg-[#201f1f] ${eventCardClass(event)} border-l-4 p-5`}
+        className={`w-full max-w-sm rounded-xl border border-[var(--moss-800)] bg-[var(--jet-900)] ${eventCardClass(event)} border-l-4 p-5`}
       >
         <div className="flex justify-between">
           <div>
-            <div className="font-mono text-xs uppercase text-[#c4c9ac]">
+            <div className="font-mono text-xs uppercase text-[var(--moss-300)]">
               {event.type === "session" ? "Client session" : "Task"}
             </div>
             <h3 className={`mt-1 text-xl font-bold ${eventTitleColor(event)}`}>
               {event.type === "session" ? event.subtitle ?? "PT Session" : event.title}
             </h3>
-            <p className="text-sm text-[#c4c9ac]">👤 {event.title}</p>
+            <p className="text-sm text-[var(--moss-300)]">👤 {event.title}</p>
           </div>
-          <button type="button" onClick={onClose} className="text-[#c4c9ac]">
+          <button type="button" onClick={onClose} className="text-[var(--moss-300)]">
             ✕
           </button>
         </div>
-        <p className="mt-4 font-mono text-sm text-[#e5e2e1]">
+        <p className="mt-4 font-mono text-sm text-[var(--workspace-text)]">
           {start.toLocaleDateString(undefined, { weekday: "long", month: "long", day: "numeric" })}
           <br />
           {formatTime(start)} – {formatTime(end)}
         </p>
         {canManage && (
           <label className="mt-4 block text-sm">
-            <span className="mb-1 block font-mono text-xs uppercase text-[#c4c9ac]">Reschedule</span>
+            <span className="mb-1 block font-mono text-xs uppercase text-[var(--moss-300)]">Reschedule</span>
             <input
               type="datetime-local"
               value={datetime}
               onChange={(e) => setDatetime(e.target.value)}
-              className="w-full rounded border border-[#444933] bg-[#131313] px-3 py-2 text-sm text-[#e5e2e1]"
+              className="w-full rounded border border-[var(--moss-800)] bg-[var(--jet-950)] px-3 py-2 text-sm text-[var(--workspace-text)]"
             />
           </label>
         )}
-        {error && <p className="mt-2 text-sm text-[#ffb4ab]">{error}</p>}
+        {error && <p className="mt-2 text-sm text-[var(--status-danger)]">{error}</p>}
         <div className="mt-4 flex flex-wrap gap-2">
           {event.href && (
             <Link
               href={event.href}
-              className="rounded bg-[#c3f400] px-4 py-2 font-mono text-xs font-bold text-[#283500]"
+              className="rounded bg-[var(--emerald-neon)] px-4 py-2 font-mono text-xs font-bold text-[var(--emerald-neon-ink)]"
             >
               Open
             </Link>
@@ -773,7 +773,7 @@ function EventModal({
           {event.memberId && (
             <Link
               href={`/app/clients/${event.memberId}`}
-              className="rounded border border-[#444933] px-4 py-2 font-mono text-xs text-[#e5e2e1]"
+              className="rounded border border-[var(--moss-800)] px-4 py-2 font-mono text-xs text-[var(--workspace-text)]"
             >
               Client
             </Link>
@@ -784,7 +784,7 @@ function EventModal({
                 type="button"
                 disabled={loading}
                 onClick={() => patch({ scheduledAt: fromDatetimeLocalValue(datetime).toISOString() })}
-                className="rounded border border-[#444933] px-4 py-2 font-mono text-xs text-[#e5e2e1] disabled:opacity-50"
+                className="rounded border border-[var(--moss-800)] px-4 py-2 font-mono text-xs text-[var(--workspace-text)] disabled:opacity-50"
               >
                 Reschedule
               </button>
@@ -792,7 +792,7 @@ function EventModal({
                 type="button"
                 disabled={loading}
                 onClick={() => patch({ status: "cancelled" })}
-                className="rounded border border-[#ff5e07]/40 px-4 py-2 font-mono text-xs text-[#ff5e07] disabled:opacity-50"
+                className="rounded border border-[var(--kinetic-orange)]/40 px-4 py-2 font-mono text-xs text-[var(--kinetic-orange)] disabled:opacity-50"
               >
                 Cancel
               </button>

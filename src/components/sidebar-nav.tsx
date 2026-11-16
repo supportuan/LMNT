@@ -18,11 +18,6 @@ function isActive(pathname: string, href: string, search?: string | null) {
   if (path === "/app/home" || path === "/app/overview") {
     return pathname === path || pathname === "/";
   }
-  if (path === "/app/assets") {
-    if (pathname !== "/app/assets") return false;
-    const view = params.get("view");
-    return !view || !["maintenance", "categories"].includes(view);
-  }
   return pathname === path || pathname.startsWith(`${path}/`);
 }
 
@@ -48,8 +43,8 @@ function NavLink({
         nested ? "pl-4" : ""
       } ${
         active
-          ? "neu-pressed bg-[var(--workspace-accent-muted)] font-semibold text-[var(--workspace-accent)]"
-          : "text-[var(--sidebar-muted)] hover:bg-[var(--workspace-elevated)] hover:text-[var(--sidebar-text)]"
+          ? "relative bg-[var(--emerald-neon-tint)] font-semibold text-[var(--emerald-neon)] shadow-[inset_3px_0_0_var(--emerald-neon),inset_0_0_0_1px_rgba(20,245,160,0.18)]"
+          : "text-[var(--sidebar-muted)] hover:bg-[var(--workspace-secondary-muted)] hover:text-[var(--sidebar-text)]"
       }`}
     >
       <NavIcon name={icon} className="shrink-0" />

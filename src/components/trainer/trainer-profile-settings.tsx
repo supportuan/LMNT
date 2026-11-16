@@ -2,10 +2,11 @@
 
 import { useState } from "react";
 import { ChangePasswordForm } from "@/components/change-password-form";
-import { Button, Panel } from "@/components/ui";
 import { LogoutButton } from "@/components/logout-button";
-import { TrainerMarketplaceForm } from "@/components/trainer/trainer-marketplace-form";
 import { MeBoundariesForm } from "@/components/trainer/me-boundaries-form";
+import { TrainerMarketplaceForm } from "@/components/trainer/trainer-marketplace-form";
+import { Button } from "@/components/ui";
+import { sendJson } from "@/lib/send-json";
 
 type Notifications = {
   sessionReminders: boolean;
@@ -21,7 +22,6 @@ export function TrainerProfileSettings({
   timezone,
   profile,
   settings,
-  blocks,
 }: {
   name: string;
   email: string;
@@ -40,35 +40,34 @@ export function TrainerProfileSettings({
     trainingTime: string | null;
     mealWindow: string | null;
     lifeNotes: string | null;
-    nonNegotiables: { label: string; done: boolean }[];
+    shutdownTime: string;
+    weeklyReview: { weekOf: string; worked: string; fix: string } | null;
     notifications: Notifications;
   };
-  blocks: {
-    id: string;
-    dayOfWeek: number;
-    timeSlot: string;
-    blockType: string;
-    label: string;
-  }[];
 }) {
   const [notifications, setNotifications] = useState(settings.notifications);
   const [saving, setSaving] = useState(false);
   const [saved, setSaved] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
   async function saveNotifications() {
     setSaving(true);
-    await fetch("/api/trainer/settings", {
-      method: "PATCH",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ notifications }),
-    });
+    setError(null);
+    const res = await sendJson("/api/trainer/settings", "PATCH", { notifications });
     setSaving(false);
+    if (!res.ok) {
+      setError(res.error);
+      return;
+    }
     setSaved(true);
   }
 
   return (
-    <div className="space-y-6">
-      <Panel title="Trainer profile">
+    <div className="space-y-[var(--grid-gutter)]">
+      <MeBoundariesForm settings={settings} />
+
+      <section className="neu-card p-[var(--card-padding)]">
+        <h2 className="mb-4 text-base font-semibold tracking-tight">Trainer profile</h2>
         <dl className="mb-6 grid gap-3 text-sm sm:grid-cols-2">
           <div>
             <dt className="text-[var(--workspace-muted)]">Name</dt>
@@ -85,9 +84,10 @@ export function TrainerProfileSettings({
           initialSessionsPerWeek={profile.sessionsPerWeek}
           initialVisible={profile.visible}
         />
-      </Panel>
+      </section>
 
-      <Panel title="Gym details">
+      <section className="neu-card p-[var(--card-padding)]">
+        <h2 className="mb-4 text-base font-semibold tracking-tight">Gym details</h2>
         <dl className="grid gap-3 text-sm sm:grid-cols-3">
           <div>
             <dt className="text-[var(--workspace-muted)]">Gym</dt>
@@ -102,9 +102,10 @@ export function TrainerProfileSettings({
             <dd className="font-medium">{timezone}</dd>
           </div>
         </dl>
-      </Panel>
+      </section>
 
-      <Panel title="Notifications">
+      <section className="neu-card p-[var(--card-padding)]">
+        <h2 className="mb-4 text-base font-semibold tracking-tight">Notifications</h2>
         <div className="space-y-3 text-sm">
           {(
             [
@@ -113,7 +114,10 @@ export function TrainerProfileSettings({
               ["emailDigest", "Email digest"],
             ] as const
           ).map(([key, label]) => (
-            <label key={key} className="flex items-center justify-between gap-3 rounded-lg border border-[var(--workspace-border)] px-4 py-3">
+            <label
+              key={key}
+              className="flex items-center justify-between gap-3 rounded-[12px] bg-[var(--moss-tint)] px-4 py-3 ring-1 ring-inset ring-[var(--moss-800)]"
+            >
               <span>{label}</span>
               <input
                 type="checkbox"
@@ -122,22 +126,24 @@ export function TrainerProfileSettings({
               />
             </label>
           ))}
-          <Button type="button" size="sm" onClick={saveNotifications} disabled={saving}>
-            {saving ? "Saving…" : "Save notifications"}
-          </Button>
-          {saved && <span className="ml-2 text-xs text-[var(--status-success)]">Saved</span>}
+          <div className="flex items-center gap-2 pt-1">
+            <Button type="button" size="sm" onClick={saveNotifications} disabled={saving}>
+              {saving ? "Saving…" : "Save notifications"}
+            </Button>
+            {saved && !error && <span className="text-xs text-[var(--status-success)]">Saved</span>}
+            {error && <span className="text-xs text-[var(--status-danger)]">{error}</span>}
+          </div>
         </div>
-      </Panel>
+      </section>
 
-      <Panel title="Account">
+      <section className="neu-card p-[var(--card-padding)]">
+        <h2 className="mb-2 text-base font-semibold tracking-tight">Account</h2>
         <p className="mb-4 text-sm text-[var(--workspace-muted)]">Change your password, then sign out on shared devices.</p>
         <ChangePasswordForm />
         <div className="mt-6 max-w-xs">
           <LogoutButton />
         </div>
-      </Panel>
-
-      <MeBoundariesForm settings={settings} blocks={blocks} />
+      </section>
     </div>
   );
 }
