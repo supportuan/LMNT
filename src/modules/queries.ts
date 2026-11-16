@@ -9,7 +9,6 @@ import {
   coachingRelationships,
   gymMemberships,
   inventoryItems,
-  leads,
   memberPlans,
   members,
   onboardingAssignments,
@@ -20,7 +19,7 @@ import {
   trainerProfiles,
   users,
 } from "@/db/schema";
-import { startOfDay, startOfMonth } from "@/lib/format";
+import { startOfDay } from "@/lib/format";
 import { trainerCollectedInr } from "@/lib/trainer-share";
 import { assetNeedsAttention, assetUiStatus } from "@/lib/asset-status";
 import type { SessionPayload } from "@/lib/session";

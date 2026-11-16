@@ -5,8 +5,6 @@ import { users } from "@/db/schema";
 import {
   SESSION_COOKIE,
   clearSessionCookie,
-  createSessionToken,
-  setSessionCookie,
   verifySessionToken,
   type SessionPayload,
 } from "@/lib/session-token";

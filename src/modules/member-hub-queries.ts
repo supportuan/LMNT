@@ -9,7 +9,6 @@ import {
   memberPlans,
   memberVacations,
   memberWearables,
-  members,
   programmes,
   sessions,
   users,

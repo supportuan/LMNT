@@ -1,4 +1,4 @@
-import { and, desc, eq, inArray } from "drizzle-orm";
+import { and, desc, eq } from "drizzle-orm";
 import { db } from "@/db";
 import { assets, users, workRequests } from "@/db/schema";
 import { orgAndCentreScope } from "@/lib/branch-scope";

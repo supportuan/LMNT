@@ -4,7 +4,6 @@ import {
   attendanceRecords,
   centres,
   leads,
-  memberPlans,
   members,
   paymentRecords,
   roleAssignments,
